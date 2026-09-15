@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TáNaMão - Marketplace Regional</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7f8;
+            color: #222;
+        }
+
+        header {
+            background: #087f5b;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+
+        header p {
+            margin: 5px 0 0;
+        }
+
+        .hero {
+            background: white;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .search {
+            max-width: 700px;
+            margin: 25px auto;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        input {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            flex: 1;
+            min-width: 220px;
+        }
+
+        button {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            background: #f59f00;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 30px 20px;
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 15px;
+        }
+
+        .category {
+            background: white;
+            padding: 25px 10px;
+            text-align: center;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+
+        .stores {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .store {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        footer {
+            background: #123;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>TáNaMão</h1>
+    <p>Sua região. Suas lojas. Na sua mão.</p>
+</header>
+
+<section class="hero">
+
+    <h2>Compre da sua região</h2>
+
+    <p>
+        Encontre produtos das lojas próximas de você.
+    </p>
+
+    <div class="search">
+
+        <input
+            type="text"
+            placeholder="Digite seu CEP"
+        >
+
+        <input
+            type="search"
+            placeholder="O que você está procurando?"
+        >
+
+        <button>Buscar</button>
+
+    </div>
+
+</section>
+
+<div class="container">
+
+    <h2>🛍️ Categorias</h2>
+
+    <div class="categories">
+
+        <div class="category">📱<br>Celulares</div>
+
+        <div class="category">💻<br>Eletrônicos</div>
+
+        <div class="category">👕<br>Moda</div>
+
+        <div class="category">🏠<br>Casa</div>
+
+        <div class="category">🛒<br>Mercado</div>
+
+        <div class="category">💄<br>Beleza</div>
+
+    </div>
+
+</div>
+
+<div class="container">
+
+    <h2>🏪 Lojas da sua região</h2>
+
+    <div class="stores">
+
+        <div class="store">
+            <h3>Loja parceira</h3>
+            <p>Produtos e ofertas da sua região.</p>
+        </div>
+
+        <div class="store">
+            <h3>Em breve</h3>
+            <p>Cadastre sua loja no TáNaMão.</p>
+        </div>
+
+        <div class="store">
+            <h3>Seja parceiro</h3>
+            <p>Venda seus produtos pela internet.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="container">
+
+    <h2>🔥 Produtos em destaque</h2>
+
+    <p>
+        Os produtos dos comerciantes aparecerão aqui.
+    </p>
+
+</div>
+
+<footer>
+
+    <h2>TáNaMão</h2>
+
+    <p>
+        Sua região. Suas lojas. Na sua mão.
+    </p>
+
+    <p>
+        © 2026 TáNaMão
+    </p>
+
+</footer>
+
+</body>
+</html>
