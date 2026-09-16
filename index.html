@@ -1107,7 +1107,7 @@ async function conectarMercadoPagoVendedor() {
         if (!authData?.user) { abrirLogin(); return; }
         const { data: loja } = await supabaseClient.from("stores").select("id").eq("owner_id", authData.user.id).maybeSingle();
         if (!loja) { alert("Cadastre sua loja antes de conectar o Mercado Pago."); return; }
-        const { data, error } = await supabaseClient.functions.invoke("mercadopago-oauth-iniciar", { body: { store_id: loja.id } });
+        const { data, error } = await supabaseClient.functions.invoke("mp-oauth-start", { body: { store_id: loja.id } });
         if (error) throw error;
         if (!data?.authorization_url) throw new Error(data?.error || "Não foi possível gerar o link de autorização.");
         window.location.href = data.authorization_url;
