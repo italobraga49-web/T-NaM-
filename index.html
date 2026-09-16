@@ -3768,13 +3768,26 @@ async function excluirProduto(id) {
 
 async function abrirPedidosVendedor() {
     const { data, error } = await supabaseClient.auth.getUser();
-    if (error || !data.user) { abrirLogin(); return; }
 
-    const { data: perfil } = await supabaseClient
+    if (error || !data.user) {
+        abrirLogin();
+        return;
+    }
+
+    const { data: perfil, error: erroPerfil } = await supabaseClient
         .from("profiles")
         .select("tipo")
         .eq("id", data.user.id)
         .single();
+
+    if (erroPerfil) {
+        console.error("Erro ao verificar perfil do vendedor:", erroPerfil);
+        alert(
+            "Não foi possível verificar o perfil.\n\n" +
+            (erroPerfil.message || "Erro desconhecido.")
+        );
+        return;
+    }
 
     if (!perfil || (perfil.tipo !== "vendedor" && perfil.tipo !== "revendedor")) {
         alert("Esta área é exclusiva para revendedores.");
@@ -3783,7 +3796,7 @@ async function abrirPedidosVendedor() {
 
     const { data: loja, error: erroLoja } = await supabaseClient
         .from("stores")
-        .select("id")
+        .select("id, nome")
         .eq("owner_id", data.user.id)
         .maybeSingle();
 
@@ -3792,55 +3805,167 @@ async function abrirPedidosVendedor() {
         return;
     }
 
+    /*
+      Busca somente itens de produtos pertencentes à loja atual.
+      O pedido também traz endereço e observações, quando essas colunas
+      existem na tabela orders.
+    */
     const { data: itens, error: erroItens } = await supabaseClient
         .from("order_items")
         .select(`
-            id, quantidade, preco_unitario, subtotal,
-            orders (id, status, total, created_at, customer_id),
-            products!inner (id, nome, store_id)
+            id,
+            quantidade,
+            preco_unitario,
+            subtotal,
+            orders (
+                id,
+                status,
+                total,
+                created_at,
+                customer_id,
+                store_id,
+                endereco_entrega,
+                observacoes
+            ),
+            products!inner (
+                id,
+                nome,
+                store_id
+            )
         `)
         .eq("products.store_id", loja.id)
+        .eq("orders.store_id", loja.id)
         .order("id", { ascending: false });
 
     if (erroItens) {
-        console.error(erroItens);
-        alert("Não foi possível carregar os pedidos. Verifique a configuração das tabelas de pedidos no Supabase.\n\n" + erroItens.message);
+        console.error("Erro ao carregar pedidos do vendedor:", erroItens);
+
+        alert(
+            "❌ NÃO FOI POSSÍVEL CARREGAR OS PEDIDOS.\n\n" +
+            "Código: " + (erroItens.code || "não informado") + "\n" +
+            "Mensagem: " + (erroItens.message || "não informada") + "\n" +
+            "Detalhes: " + (erroItens.details || "não informado") + "\n" +
+            "Sugestão: " + (erroItens.hint || "não informada")
+        );
         return;
     }
 
     const pedidos = {};
+
     (itens || []).forEach(item => {
         const pedido = item.orders;
+
         if (!pedido) return;
-        if (!pedidos[pedido.id]) pedidos[pedido.id] = { ...pedido, itens: [] };
+
+        if (!pedidos[pedido.id]) {
+            pedidos[pedido.id] = {
+                ...pedido,
+                itens: []
+            };
+        }
+
         pedidos[pedido.id].itens.push(item);
     });
 
     const lista = Object.values(pedidos);
-    let html = `<div style="position:fixed;inset:0;background:#f5f7fa;z-index:12000;overflow:auto;"><div style="max-width:1000px;margin:0 auto;padding:30px 20px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;">
-            <div><h1 style="margin:0;">🛒 Pedidos recebidos</h1><p style="color:#666;">Acompanhe e atualize os pedidos da sua loja.</p></div>
-            <button onclick="this.closest('[style*=fixed]').remove()" style="border:0;background:#ddd;padding:12px 18px;border-radius:8px;cursor:pointer;">Voltar</button>
-        </div>`;
+
+    let html = `
+        <div id="painelPedidosVendedor"
+             style="position:fixed;inset:0;background:#f5f7fa;z-index:12000;overflow:auto;">
+            <div style="max-width:1000px;margin:0 auto;padding:30px 20px;">
+
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:25px;flex-wrap:wrap;">
+                    <div>
+                        <h1 style="margin:0;">🛒 Pedidos recebidos</h1>
+                        <p style="color:#666;margin:6px 0 0;">
+                            ${escapeHtml(loja.nome || "Minha loja")}
+                        </p>
+                    </div>
+
+                    <button
+                        onclick="document.getElementById('painelPedidosVendedor')?.remove()"
+                        style="border:0;background:#ddd;padding:12px 18px;border-radius:8px;cursor:pointer;">
+                        Voltar
+                    </button>
+                </div>
+    `;
 
     if (!lista.length) {
-        html += `<div style="background:white;padding:35px;border-radius:15px;text-align:center;color:#666;">Nenhum pedido recebido ainda.</div>`;
+        html += `
+            <div style="background:white;padding:35px;border-radius:15px;text-align:center;color:#666;">
+                <div style="font-size:42px;">📦</div>
+                <strong>Nenhum pedido recebido ainda.</strong>
+                <p>Quando um cliente comprar um produto da sua loja, o pedido aparecerá aqui.</p>
+            </div>
+        `;
     } else {
         html += lista.map(pedido => `
-            <div style="background:white;padding:20px;border-radius:15px;box-shadow:0 3px 15px rgba(0,0,0,.08);margin-bottom:18px;">
+            <div style="background:white;padding:20px;border-radius:15px;
+                        box-shadow:0 3px 15px rgba(0,0,0,.08);margin-bottom:18px;">
+
                 <div style="display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;">
-                    <div><strong>Pedido #${escapeHtml(pedido.id)}</strong><div style="color:#666;margin-top:5px;">${new Date(pedido.created_at).toLocaleString('pt-BR')}</div></div>
-                    <select onchange="atualizarStatusPedido('${pedido.id}', this.value)" style="padding:9px;border:1px solid #ddd;border-radius:8px;">
-                        ${['pendente','confirmado','em_preparo','saiu_para_entrega','entregue','cancelado'].map(st => `<option value="${st}" ${pedido.status===st?'selected':''}>${formatarStatusPedido(st)}</option>`).join('')}
+                    <div>
+                        <strong>Pedido #${escapeHtml(pedido.id)}</strong>
+                        <div style="color:#666;margin-top:5px;">
+                            ${new Date(pedido.created_at).toLocaleString('pt-BR')}
+                        </div>
+                    </div>
+
+                    <select
+                        onchange="atualizarStatusPedido('${pedido.id}', this.value)"
+                        style="padding:9px;border:1px solid #ddd;border-radius:8px;">
+                        ${[
+                            'pendente',
+                            'confirmado',
+                            'em_preparo',
+                            'saiu_para_entrega',
+                            'entregue',
+                            'cancelado'
+                        ].map(st => `
+                            <option value="${st}" ${pedido.status === st ? 'selected' : ''}>
+                                ${formatarStatusPedido(st)}
+                            </option>
+                        `).join('')}
                     </select>
                 </div>
-                <div style="margin-top:15px;color:#444;"><strong>Entrega:</strong> ${escapeHtml(pedido.endereco_entrega || 'Não informado')}</div>
-                ${pedido.observacoes ? `<div style="margin-top:8px;color:#666;"><strong>Obs.:</strong> ${escapeHtml(pedido.observacoes)}</div>` : ''}
-                <div style="margin-top:15px;">${pedido.itens.map(i => `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eee;"><span>${i.quantidade}x ${escapeHtml(i.products?.nome || 'Produto')}</span><strong>R$ ${Number(i.subtotal).toFixed(2).replace('.', ',')}</strong></div>`).join('')}</div>
-                <div style="text-align:right;font-size:19px;margin-top:15px;"><strong>Total: R$ ${Number(pedido.total).toFixed(2).replace('.', ',')}</strong></div>
-            </div>`).join('');
+
+                <div style="margin-top:15px;color:#444;">
+                    <strong>📍 Entrega:</strong>
+                    ${escapeHtml(pedido.endereco_entrega || 'Não informado')}
+                </div>
+
+                ${pedido.observacoes ? `
+                    <div style="margin-top:8px;color:#666;">
+                        <strong>📝 Observações:</strong>
+                        ${escapeHtml(pedido.observacoes)}
+                    </div>
+                ` : ''}
+
+                <div style="margin-top:15px;">
+                    ${pedido.itens.map(i => `
+                        <div style="display:flex;justify-content:space-between;
+                                    gap:10px;padding:9px 0;border-bottom:1px solid #eee;">
+                            <span>
+                                ${i.quantidade}x ${escapeHtml(i.products?.nome || 'Produto')}
+                            </span>
+                            <strong>
+                                R$ ${Number(i.subtotal || 0).toFixed(2).replace('.', ',')}
+                            </strong>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div style="text-align:right;font-size:19px;margin-top:15px;">
+                    <strong>
+                        Total: R$ ${Number(pedido.total || 0).toFixed(2).replace('.', ',')}
+                    </strong>
+                </div>
+            </div>
+        `).join('');
     }
+
     html += `</div></div>`;
+
     document.body.insertAdjacentHTML('beforeend', html);
 }
 
@@ -3849,11 +3974,44 @@ function formatarStatusPedido(status) {
 }
 
 async function atualizarStatusPedido(id, status) {
-    const { error } = await supabaseClient.from("orders").update({ status }).eq("id", id);
-    if (error) {
-        alert("Não foi possível atualizar o pedido.\n\n" + error.message);
+    const { data: authData, error: authError } =
+        await supabaseClient.auth.getUser();
+
+    if (authError || !authData.user) {
+        abrirLogin();
         return;
     }
+
+    const { data: loja, error: erroLoja } = await supabaseClient
+        .from("stores")
+        .select("id")
+        .eq("owner_id", authData.user.id)
+        .maybeSingle();
+
+    if (erroLoja || !loja) {
+        alert("Sua loja não foi encontrada.");
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from("orders")
+        .update({ status })
+        .eq("id", id)
+        .eq("store_id", loja.id);
+
+    if (error) {
+        console.error("Erro ao atualizar status:", error);
+
+        alert(
+            "❌ NÃO FOI POSSÍVEL ATUALIZAR O PEDIDO.\n\n" +
+            "Código: " + (error.code || "não informado") + "\n" +
+            "Mensagem: " + (error.message || "não informada") + "\n" +
+            "Detalhes: " + (error.details || "não informado") + "\n" +
+            "Sugestão: " + (error.hint || "não informada")
+        );
+        return;
+    }
+
     alert("✅ Status do pedido atualizado.");
 }
 
