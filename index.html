@@ -20,7 +20,7 @@
         }
 
         header {
-            background: linear-gradient(135deg, #19a463, #0d8b51);
+            background: linear-gradient(135deg, #ff6a00, #111111);
             color: white;
             padding: 15px 5%;
             display: flex;
@@ -28,6 +28,36 @@
             justify-content: space-between;
             gap: 20px;
             flex-wrap: wrap;
+        }
+
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            height: 68px;
+            width: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        .login-logo-img {
+            width: min(260px, 100%);
+            height: auto;
+            display: block;
+            margin: 0 auto 15px;
+            object-fit: contain;
+        }
+
+        .footer-logo-img {
+            width: 210px;
+            max-width: 80%;
+            height: auto;
+            display: block;
+            margin: 0 auto 15px;
         }
 
         .logo {
@@ -55,7 +85,7 @@
 
         .btn-entrar {
             background: white;
-            color: #138b55;
+            color: #ff6a00;
         }
 
         .carrinho {
@@ -64,7 +94,7 @@
         }
 
         .hero {
-            background: linear-gradient(135deg, #19a463, #0d8b51);
+            background: linear-gradient(135deg, #ff6a00, #111111);
             color: white;
             padding: 50px 5%;
             text-align: center;
@@ -170,7 +200,7 @@
 
         .produto-preco {
             font-size: 22px;
-            color: #19a463;
+            color: #ff6a00;
             font-weight: bold;
             margin: 12px 0;
         }
@@ -178,7 +208,7 @@
         .btn-produto {
             width: 100%;
             padding: 12px;
-            background: #19a463;
+            background: #ff6a00;
             border: none;
             color: white;
             border-radius: 9px;
@@ -231,7 +261,7 @@
         .login-logo {
             font-size: 30px;
             font-weight: 900;
-            color: #19a463;
+            color: #ff6a00;
             text-align: center;
             margin-bottom: 15px;
         }
@@ -260,7 +290,7 @@
 
         .login-box input:focus,
         .login-box select:focus {
-            border-color: #19a463;
+            border-color: #ff6a00;
         }
 
         .btn-login-principal {
@@ -268,7 +298,7 @@
             border: none;
             padding: 14px;
             border-radius: 10px;
-            background: #19a463;
+            background: #ff6a00;
             color: white;
             font-size: 16px;
             font-weight: bold;
@@ -281,7 +311,7 @@
             padding: 10px;
             border: none;
             background: transparent;
-            color: #19a463;
+            color: #ff6a00;
             cursor: pointer;
         }
 
@@ -308,8 +338,12 @@
 
 <header>
 
-    <div class="logo">
-        TáNa<span>Mão</span>
+    <div class="logo-area">
+        <img
+            src="logo-tanamao.png"
+            alt="TáNaMão Marketplace"
+            class="logo-img"
+        >
     </div>
 
     <div class="header-actions">
@@ -321,23 +355,27 @@
             Entrar
         </button>
 <button
-    id="btnPainelVendedor"
-    onclick="abrirPainelVendedor()"
-    style="
-        display:none;
-        background:#16a34a;
-        color:white;
-        border:none;
-        padding:10px 16px;
-        border-radius:8px;
-        cursor:pointer;
-        font-weight:bold;
-        margin-left:8px;
-    "
->
-    🏪 Painel do Vendedor
-</button>
-           
+            id="btnPainelVendedor"
+            onclick="abrirPainelVendedor()"
+            style="
+                display:none;
+                background:#ff6a00;
+                color:white;
+                border:none;
+                padding:10px 16px;
+                border-radius:8px;
+                cursor:pointer;
+                font-weight:bold;
+                margin-left:8px;
+            "
+        >
+            🏪 Painel do Vendedor
+        </button>
+
+        <button
+            class="carrinho"
+            onclick="mostrarCarrinho()"
+        >
             🛒 Carrinho
             (<span id="cartCount">0</span>)
         </button>
@@ -596,7 +634,11 @@
 
 <footer>
 
-    <strong>TáNaMão</strong>
+    <img
+        src="logo-tanamao.png"
+        alt="TáNaMão Marketplace"
+        class="footer-logo-img"
+    >
 
     <p>
         Marketplace local para conectar clientes,
@@ -1199,7 +1241,7 @@
 
         elemento.style.color =
             sucesso
-                ? "#19a463"
+                ? "#ff6a00"
                 : "#d62828";
 
     }
@@ -1296,7 +1338,7 @@
                 <button
                     onclick="abrirCadastroLoja()"
                     style="
-                        background:#16a34a;
+                        background:#ff6a00;
                         color:white;
                         border:0;
                         padding:12px 18px;
@@ -1326,7 +1368,7 @@
                 <button
                   onclick="abrirListaProdutos()"
                     style="
-                        background:#f97316;
+                        background:#ff6a00;
                         color:white;
                         border:0;
                         padding:12px 18px;
@@ -1450,7 +1492,7 @@
                 <button
                     onclick="salvarLoja()"
                     style="
-                        background:#16a34a;
+                        background:#ff6a00;
                         color:white;
                         border:0;
                         padding:14px 25px;
@@ -1902,7 +1944,7 @@ window.addEventListener("load", function() {
                 style="
                     width:100%;
                     margin-top:20px;
-                    background:#16a34a;
+                    background:#ff6a00;
                     color:white;
                     border:0;
                     padding:15px;
@@ -2151,7 +2193,6 @@ async function salvarProduto() {
 }
 
 </script>
- <!-- ==============================
      ÁREA: MEUS PRODUTOS
 ================================ -->
 
@@ -2459,7 +2500,7 @@ async function carregarMeusProdutos() {
             <div style="
                 font-size:20px;
                 font-weight:bold;
-                color:#16a34a;
+                color:#ff6a00;
                 margin:15px 0;
             ">
                 R$ ${
@@ -2749,607 +2790,5 @@ async function excluirProduto(id) {
 }
 
 </script>
-<!-- ==============================
-     ÁREA: MEUS PRODUTOS
-================================ -->
-
-<div
-    id="listaMeusProdutos"
-    style="
-        display:none;
-        position:fixed;
-        inset:0;
-        background:#f5f7fa;
-        z-index:10001;
-        overflow-y:auto;
-    "
->
-
-    <div style="
-        max-width:1000px;
-        margin:0 auto;
-        padding:30px 20px;
-    ">
-
-        <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:25px;
-        ">
-
-            <div>
-
-                <h1>📦 Meus Produtos</h1>
-
-                <p style="color:#666;">
-                    Produtos cadastrados na sua loja
-                </p>
-
-            </div>
-
-            <button
-                onclick="fecharListaProdutos()"
-                style="
-                    border:0;
-                    background:#ddd;
-                    padding:12px 18px;
-                    border-radius:8px;
-                    cursor:pointer;
-                "
-            >
-                Voltar
-            </button>
-
-        </div>
-
-
-        <div
-            id="produtosContainer"
-            style="
-                display:grid;
-                grid-template-columns:
-                    repeat(auto-fit,minmax(250px,1fr));
-                gap:20px;
-            "
-        >
-        </div>
-
-
-        <div
-            id="mensagemListaProdutos"
-            style="
-                margin-top:20px;
-                font-weight:bold;
-            "
-        >
-        </div>
-
-    </div>
-
-</div>
-
-
-<script>
-
-/* =========================================
-   ABRIR LISTA DE PRODUTOS
-========================================= */
-
-async function abrirListaProdutos() {
-
-    document.getElementById(
-        "listaMeusProdutos"
-    ).style.display = "block";
-
-    await carregarMeusProdutos();
-
-}
-
-
-/* =========================================
-   FECHAR LISTA
-========================================= */
-
-function fecharListaProdutos() {
-
-    document.getElementById(
-        "listaMeusProdutos"
-    ).style.display = "none";
-
-}
-
-
-/* =========================================
-   CARREGAR PRODUTOS DO VENDEDOR
-========================================= */
-
-async function carregarMeusProdutos() {
-
-    const container =
-        document.getElementById(
-            "produtosContainer"
-        );
-
-    const mensagem =
-        document.getElementById(
-            "mensagemListaProdutos"
-        );
-
-
-    container.innerHTML = "";
-
-    mensagem.style.color = "#555";
-
-    mensagem.textContent =
-        "Carregando produtos...";
-
-
-    /* USUÁRIO LOGADO */
-
-    const {
-        data: { user }
-    } =
-        await window.supabaseClient.auth.getUser();
-
-
-    if (!user) {
-
-        mensagem.style.color = "red";
-
-        mensagem.textContent =
-            "Você precisa estar logado.";
-
-        return;
-
-    }
-
-
-    /* LOCALIZAR LOJA */
-
-    const {
-        data: loja,
-        error: erroLoja
-    } =
-        await window.supabaseClient
-            .from("stores")
-            .select("id")
-            .eq("owner_id", user.id)
-            .single();
-
-
-    if (erroLoja || !loja) {
-
-        console.error(
-            "Erro ao localizar loja:",
-            erroLoja
-        );
-
-        mensagem.style.color = "red";
-
-        mensagem.textContent =
-            "Sua loja não foi encontrada.";
-
-        return;
-
-    }
-
-
-    /* BUSCAR PRODUTOS */
-
-    const {
-        data: produtos,
-        error
-    } =
-        await window.supabaseClient
-            .from("products")
-            .select(`
-                id,
-                nome,
-                descricao,
-                preco,
-                estoque,
-                ativo,
-                categories (
-                    nome
-                )
-            `)
-            .eq("store_id", loja.id)
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
-
-
-    if (error) {
-
-        console.error(
-            "Erro ao carregar produtos:",
-            error
-        );
-
-        mensagem.style.color = "red";
-
-        mensagem.textContent =
-            "Erro ao carregar produtos: " +
-            error.message;
-
-        return;
-
-    }
-
-
-    mensagem.textContent = "";
-
-
-    if (!produtos || produtos.length === 0) {
-
-        mensagem.style.color = "#666";
-
-        mensagem.textContent =
-            "Sua loja ainda não possui produtos cadastrados.";
-
-        return;
-
-    }
-
-
-    /* CRIAR CARDS */
-
-    produtos.forEach(produto => {
-
-        const card =
-            document.createElement("div");
-
-
-        card.style.cssText = `
-            background:white;
-            border-radius:15px;
-            padding:20px;
-            box-shadow:0 3px 15px rgba(0,0,0,.08);
-        `;
-
-
-        const categoria =
-            produto.categories
-                ? produto.categories.nome
-                : "Sem categoria";
-
-
-        const status =
-            produto.ativo
-                ? "🟢 Ativo"
-                : "🔴 Inativo";
-
-
-        card.innerHTML = `
-
-            <h3 style="
-                margin-top:0;
-                margin-bottom:8px;
-            ">
-                ${produto.nome}
-            </h3>
-
-
-            <div style="
-                color:#666;
-                font-size:14px;
-                margin-bottom:12px;
-            ">
-                ${categoria}
-            </div>
-
-
-            <p style="
-                min-height:45px;
-                color:#555;
-            ">
-                ${
-                    produto.descricao ||
-                    "Sem descrição"
-                }
-            </p>
-
-
-            <div style="
-                font-size:20px;
-                font-weight:bold;
-                color:#16a34a;
-                margin:15px 0;
-            ">
-                R$ ${
-                    Number(produto.preco)
-                        .toFixed(2)
-                        .replace(".", ",")
-                }
-            </div>
-
-
-            <div style="
-                margin-bottom:10px;
-            ">
-                📦 Estoque:
-                <strong>
-                    ${produto.estoque}
-                </strong>
-            </div>
-
-
-            <div style="
-                margin-bottom:15px;
-            ">
-                ${status}
-            </div>
-
-
-            <div style="
-                display:flex;
-                gap:8px;
-            ">
-
-                <button
-                    onclick="editarProduto('${produto.id}')"
-                    style="
-                        flex:1;
-                        border:0;
-                        background:#2563eb;
-                        color:white;
-                        padding:10px;
-                        border-radius:8px;
-                        cursor:pointer;
-                        font-weight:bold;
-                    "
-                >
-                    ✏️ Editar
-                </button>
-
-
-                <button
-                    onclick="excluirProduto('${produto.id}')"
-                    style="
-                        flex:1;
-                        border:0;
-                        background:#dc2626;
-                        color:white;
-                        padding:10px;
-                        border-radius:8px;
-                        cursor:pointer;
-                        font-weight:bold;
-                    "
-                >
-                    🗑️ Excluir
-                </button>
-
-            </div>
-
-        `;
-
-
-        container.appendChild(card);
-
-    });
-
-}
-
-
-/* =========================================
-   EDITAR PRODUTO
-========================================= */
-
-async function editarProduto(id) {
-
-    const novoNome =
-        prompt(
-            "Digite o novo nome do produto:"
-        );
-
-
-    if (novoNome === null) {
-        return;
-    }
-
-
-    if (!novoNome.trim()) {
-
-        alert(
-            "O nome do produto não pode ficar vazio."
-        );
-
-        return;
-
-    }
-
-
-    const novaDescricao =
-        prompt(
-            "Digite a nova descrição do produto:"
-        );
-
-
-    if (novaDescricao === null) {
-        return;
-    }
-
-
-    const novoPreco =
-        prompt(
-            "Digite o novo preço do produto:"
-        );
-
-
-    if (novoPreco === null) {
-        return;
-    }
-
-
-    const preco =
-        parseFloat(
-            novoPreco.replace(",", ".")
-        );
-
-
-    if (
-        isNaN(preco) ||
-        preco < 0
-    ) {
-
-        alert(
-            "Digite um preço válido."
-        );
-
-        return;
-
-    }
-
-
-    const novoEstoque =
-        prompt(
-            "Digite a nova quantidade em estoque:"
-        );
-
-
-    if (novoEstoque === null) {
-        return;
-    }
-
-
-    const estoque =
-        parseInt(novoEstoque);
-
-
-    if (
-        isNaN(estoque) ||
-        estoque < 0
-    ) {
-
-        alert(
-            "Digite um estoque válido."
-        );
-
-        return;
-
-    }
-
-
-    /* ATUALIZAR NO SUPABASE */
-
-    const {
-        error
-    } =
-        await window.supabaseClient
-            .from("products")
-            .update({
-
-                nome:
-                    novoNome.trim(),
-
-                descricao:
-                    novaDescricao.trim(),
-
-                preco:
-                    preco,
-
-                estoque:
-                    estoque
-
-            })
-            .eq(
-                "id",
-                id
-            );
-
-
-    if (error) {
-
-        console.error(
-            "Erro ao atualizar produto:",
-            error
-        );
-
-        alert(
-            "❌ Erro ao atualizar produto:\n\n" +
-            error.message
-        );
-
-        return;
-
-    }
-
-
-    alert(
-        "✅ Produto atualizado com sucesso!"
-    );
-
-
-    /* RECARREGAR LISTA */
-
-    await carregarMeusProdutos();
-
-}
-
-
-/* =========================================
-   EXCLUIR PRODUTO
-========================================= */
-
-async function excluirProduto(id) {
-
-    const confirmar =
-        confirm(
-            "Tem certeza que deseja excluir este produto?"
-        );
-
-
-    if (!confirmar) {
-        return;
-    }
-
-
-    const {
-        error
-    } =
-        await window.supabaseClient
-            .from("products")
-            .delete()
-            .eq(
-                "id",
-                id
-            );
-
-
-    if (error) {
-
-        console.error(
-            "Erro ao excluir produto:",
-            error
-        );
-
-        alert(
-            "❌ Erro ao excluir produto:\n\n" +
-            error.message
-        );
-
-        return;
-
-    }
-
-
-    alert(
-        "✅ Produto excluído com sucesso!"
-    );
-
-
-    await carregarMeusProdutos();
-
-}
-
-</script>
-
 </body>
-</html>
-</body>
-
 </html>
