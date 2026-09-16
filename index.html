@@ -857,6 +857,22 @@
     );
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+    window.SUPABASE_URL =
+        "https://sfzfoavesiintdyoxkca.supabase.co";
+
+    window.SUPABASE_PUBLISHABLE_KEY =
+        "sb_publishable_wM4A1etSRHTcUpE4qUXb-A_suN-jnep";
+
+    window.supabaseClient =
+        window.supabase.createClient(
+            window.SUPABASE_URL,
+            window.SUPABASE_PUBLISHABLE_KEY
+        );
+
+    console.log("✅ TáNaMão conectado ao Supabase!");
+</script>
 </body>
 </html>
