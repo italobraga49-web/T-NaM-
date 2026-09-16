@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>TáNaMão | Marketplace Regional</title>
+    <title>TáNaMão - Marketplace Local</title>
 
     <style>
         * {
@@ -15,14 +15,14 @@
 
         body {
             font-family: Arial, Helvetica, sans-serif;
-            background: #f5f7f8;
+            background: #f5f5f5;
             color: #222;
         }
 
         header {
-            background: #087f5b;
+            background: linear-gradient(135deg, #19a463, #0d8b51);
             color: white;
-            padding: 16px 6%;
+            padding: 15px 5%;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -32,277 +32,273 @@
 
         .logo {
             font-size: 30px;
-            font-weight: 800;
+            font-weight: 900;
         }
 
         .logo span {
-            color: #ffd43b;
+            color: #ff9d00;
         }
 
-        .location {
-            background: rgba(255,255,255,.15);
-            padding: 10px 15px;
-            border-radius: 8px;
-        }
-
-        .header-buttons {
+        .header-actions {
             display: flex;
+            align-items: center;
             gap: 10px;
         }
 
-        .header-buttons button {
+        .header-actions button {
             border: none;
-            padding: 11px 16px;
-            border-radius: 8px;
+            border-radius: 10px;
+            padding: 11px 18px;
             cursor: pointer;
             font-weight: bold;
         }
 
-        .login {
+        .btn-entrar {
             background: white;
-            color: #087f5b;
+            color: #138b55;
         }
 
-        .cart {
-            background: #f59f00;
+        .carrinho {
+            background: #ff9d00;
             color: white;
         }
 
         .hero {
-            background: linear-gradient(135deg, #087f5b, #0ca678);
+            background: linear-gradient(135deg, #19a463, #0d8b51);
             color: white;
-            padding: 70px 20px;
+            padding: 50px 5%;
             text-align: center;
         }
 
         .hero h1 {
-            font-size: clamp(35px, 6vw, 60px);
-            margin-bottom: 15px;
+            font-size: 42px;
+            margin-bottom: 12px;
         }
 
         .hero p {
-            font-size: 20px;
-            margin-bottom: 30px;
+            font-size: 18px;
+            margin-bottom: 25px;
         }
 
-        .search-box {
+        .busca {
             max-width: 850px;
             margin: auto;
             background: white;
             padding: 10px;
-            border-radius: 12px;
+            border-radius: 14px;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .search-box input {
+        .busca input {
             flex: 1;
-            border: none;
+            min-width: 180px;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
             outline: none;
-            padding: 15px;
-            font-size: 16px;
         }
 
-        .search-box button {
-            background: #f59f00;
-            color: white;
+        .busca button {
+            padding: 14px 25px;
+            background: #ff9d00;
             border: none;
-            border-radius: 8px;
-            padding: 0 25px;
+            color: white;
+            border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 45px 20px;
+        section {
+            padding: 35px 5%;
         }
 
-        .section-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .titulo-secao {
+            text-align: center;
             margin-bottom: 25px;
         }
 
-        .section-title h2 {
+        .titulo-secao h2 {
             font-size: 28px;
+            margin-bottom: 7px;
         }
 
-        .categories {
+        .categorias {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
         }
 
-        .category {
+        .categoria {
             background: white;
-            border-radius: 12px;
-            padding: 25px 10px;
+            padding: 25px 15px;
+            border-radius: 15px;
             text-align: center;
+            box-shadow: 0 3px 12px rgba(0,0,0,.07);
             cursor: pointer;
-            transition: .2s;
-            box-shadow: 0 3px 12px rgba(0,0,0,.05);
         }
 
-        .category:hover {
-            transform: translateY(-4px);
-        }
-
-        .category .icon {
+        .categoria .icone {
             font-size: 35px;
             margin-bottom: 10px;
         }
 
-        .stores,
-        .products {
+        .lojas,
+        .produtos,
+        .parceiros {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
         }
 
-        .store,
-        .product {
+        .card {
             background: white;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 3px 15px rgba(0,0,0,.07);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.07);
         }
 
-        .store-image {
-            height: 130px;
-            background: #d3f9d8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 55px;
-        }
-
-        .store-info,
-        .product-info {
-            padding: 18px;
-        }
-
-        .store-info h3,
-        .product-info h3 {
+        .card h3 {
             margin-bottom: 8px;
         }
 
-        .rating {
-            color: #f59f00;
-            margin: 8px 0;
+        .card p {
+            color: #666;
+            line-height: 1.5;
         }
 
-        .product-image {
-            height: 180px;
-            background: #e9ecef;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 65px;
-        }
-
-        .price {
-            font-size: 23px;
+        .produto-preco {
+            font-size: 22px;
+            color: #19a463;
             font-weight: bold;
-            color: #087f5b;
             margin: 12px 0;
         }
 
-        .buy-button {
+        .btn-produto {
             width: 100%;
-            border: none;
             padding: 12px;
-            border-radius: 8px;
-            background: #087f5b;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .partners {
-            background: white;
-            margin-top: 20px;
-            border-radius: 16px;
-            padding: 40px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-
-        .partner-card {
-            padding: 30px;
-            border-radius: 12px;
-            background: #f8f9fa;
-        }
-
-        .partner-card h3 {
-            margin-bottom: 12px;
-            font-size: 23px;
-        }
-
-        .partner-card button {
-            margin-top: 20px;
+            background: #19a463;
             border: none;
-            background: #f59f00;
             color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: bold;
+            border-radius: 9px;
             cursor: pointer;
+            font-weight: bold;
         }
 
         footer {
-            background: #123;
+            background: #222;
             color: white;
-            padding: 45px 20px;
-            margin-top: 40px;
+            text-align: center;
+            padding: 30px;
+            margin-top: 20px;
         }
 
-        .footer-content {
-            max-width: 1200px;
-            margin: auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
+        /* LOGIN */
+
+        .modal-login {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            background: rgba(0,0,0,.65);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        footer h3 {
+        .login-box {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.25);
+        }
+
+        .fechar-login {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            border: none;
+            background: transparent;
+            font-size: 30px;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .login-logo {
+            font-size: 30px;
+            font-weight: 900;
+            color: #19a463;
+            text-align: center;
             margin-bottom: 15px;
         }
 
-        footer p {
-            color: #ced4da;
-            line-height: 1.7;
-        }
-
-        .copyright {
+        .login-box h2 {
             text-align: center;
-            margin-top: 35px;
-            padding-top: 20px;
-            border-top: 1px solid #343a40;
-            color: #adb5bd;
+            margin-bottom: 8px;
         }
 
-        @media (max-width: 700px) {
+        .login-subtitulo {
+            text-align: center;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .login-box input,
+        .login-box select {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .login-box input:focus,
+        .login-box select:focus {
+            border-color: #19a463;
+        }
+
+        .btn-login-principal {
+            width: 100%;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            background: #19a463;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-alternar {
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: #19a463;
+            cursor: pointer;
+        }
+
+        .mensagem-login {
+            text-align: center;
+            min-height: 20px;
+            margin: 12px 0;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 30px;
+            }
 
             header {
                 justify-content: center;
-                text-align: center;
-            }
-
-            .search-box {
-                flex-direction: column;
-            }
-
-            .search-box button {
-                padding: 15px;
-            }
-
-            .partners {
-                grid-template-columns: 1fr;
-                padding: 20px;
             }
         }
     </style>
@@ -316,19 +312,20 @@
         TáNa<span>Mão</span>
     </div>
 
-    <div class="location">
-        📍 Informe sua localização
-    </div>
+    <div class="header-actions">
 
-    <div class="header-buttons">
-
-        <button class="login" onclick="abrirLogin()">
+        <button
+            class="btn-entrar"
+            id="btnLogin"
+            onclick="abrirLogin()">
             Entrar
         </button>
 
-        <button class="cart">
+        <button
+            class="carrinho"
+            onclick="mostrarCarrinho()">
             🛒 Carrinho
-            <span id="cartCount">0</span>
+            (<span id="cartCount">0</span>)
         </button>
 
     </div>
@@ -338,28 +335,26 @@
 
 <section class="hero">
 
-    <h1>Compre da sua região.</h1>
+    <h1>O que você procura está TáNaMão!</h1>
 
     <p>
-        Suas lojas. Seus produtos. Tudo na sua mão.
+        Encontre produtos, lojas e serviços perto de você.
     </p>
 
-    <div class="search-box">
+    <div class="busca">
 
         <input
             type="text"
             id="cep"
-            placeholder="Digite seu CEP"
-        >
+            placeholder="Digite seu CEP">
 
         <input
-            type="search"
+            type="text"
             id="search"
-            placeholder="O que você está procurando?"
-        >
+            placeholder="O que você está procurando?">
 
         <button onclick="buscar()">
-            🔎 Buscar
+            Buscar
         </button>
 
     </div>
@@ -367,56 +362,48 @@
 </section>
 
 
-<section class="container">
+<section>
 
-    <div class="section-title">
+    <div class="titulo-secao">
 
-        <h2>
-            🛍️ Categorias
-        </h2>
+        <h2>Categorias</h2>
+
+        <p>
+            Encontre tudo de forma rápida e fácil.
+        </p>
 
     </div>
 
-    <div class="categories">
+    <div class="categorias" id="listaCategorias">
 
-        <div class="category">
-            <div class="icon">📱</div>
-            Celulares
+        <div class="categoria">
+            <div class="icone">🛒</div>
+            <strong>Mercado</strong>
         </div>
 
-        <div class="category">
-            <div class="icon">💻</div>
-            Eletrônicos
+        <div class="categoria">
+            <div class="icone">📱</div>
+            <strong>Eletrônicos</strong>
         </div>
 
-        <div class="category">
-            <div class="icon">👕</div>
-            Moda
+        <div class="categoria">
+            <div class="icone">🏠</div>
+            <strong>Casa</strong>
         </div>
 
-        <div class="category">
-            <div class="icon">🏠</div>
-            Casa
+        <div class="categoria">
+            <div class="icone">👕</div>
+            <strong>Moda</strong>
         </div>
 
-        <div class="category">
-            <div class="icon">🛒</div>
-            Mercado
+        <div class="categoria">
+            <div class="icone">💄</div>
+            <strong>Beleza</strong>
         </div>
 
-        <div class="category">
-            <div class="icon">💄</div>
-            Beleza
-        </div>
-
-        <div class="category">
-            <div class="icon">🍔</div>
-            Alimentação
-        </div>
-
-        <div class="category">
-            <div class="icon">🔧</div>
-            Serviços
+        <div class="categoria">
+            <div class="icone">💊</div>
+            <strong>Farmácia</strong>
         </div>
 
     </div>
@@ -424,269 +411,167 @@
 </section>
 
 
-<section class="container">
+<section>
 
-    <div class="section-title">
+    <div class="titulo-secao">
 
-        <h2>
-            🏪 Lojas da sua região
-        </h2>
+        <h2>Lojas próximas</h2>
 
-    </div>
-
-    <div class="stores">
-
-        <div class="store">
-
-            <div class="store-image">
-                🏪
-            </div>
-
-            <div class="store-info">
-
-                <h3>
-                    Seja uma loja parceira
-                </h3>
-
-                <p>
-                    Venda seus produtos pelo TáNaMão.
-                </p>
-
-                <div class="rating">
-                    ★★★★★
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="store">
-
-            <div class="store-image">
-                📦
-            </div>
-
-            <div class="store-info">
-
-                <h3>
-                    Mais lojas em breve
-                </h3>
-
-                <p>
-                    Estamos preparando o marketplace da sua região.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="store">
-
-            <div class="store-image">
-                🚀
-            </div>
-
-            <div class="store-info">
-
-                <h3>
-                    Quer vender?
-                </h3>
-
-                <p>
-                    Cadastre sua empresa no TáNaMão.
-                </p>
-
-            </div>
-
-        </div>
+        <p>
+            Em breve você poderá encontrar lojas da sua região.
+        </p>
 
     </div>
 
-</section>
+    <div class="lojas">
 
+        <div class="card">
 
-<section class="container">
-
-    <div class="section-title">
-
-        <h2>
-            🔥 Produtos em destaque
-        </h2>
-
-    </div>
-
-    <div class="products">
-
-        <div class="product">
-
-            <div class="product-image">
-                📱
-            </div>
-
-            <div class="product-info">
-
-                <h3>
-                    Smartphone
-                </h3>
-
-                <p>
-                    Produto de uma loja parceira
-                </p>
-
-                <div class="price">
-                    R$ 999,90
-                </div>
-
-                <button
-                    class="buy-button"
-                    onclick="adicionarCarrinho()"
-                >
-                    Adicionar ao carrinho
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="product">
-
-            <div class="product-image">
-                🎧
-            </div>
-
-            <div class="product-info">
-
-                <h3>
-                    Fone Bluetooth
-                </h3>
-
-                <p>
-                    Produto em destaque
-                </p>
-
-                <div class="price">
-                    R$ 89,90
-                </div>
-
-                <button
-                    class="buy-button"
-                    onclick="adicionarCarrinho()"
-                >
-                    Adicionar ao carrinho
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="product">
-
-            <div class="product-image">
-                ⌚
-            </div>
-
-            <div class="product-info">
-
-                <h3>
-                    Smartwatch
-                </h3>
-
-                <p>
-                    Produto em destaque
-                </p>
-
-                <div class="price">
-                    R$ 149,90
-                </div>
-
-                <button
-                    class="buy-button"
-                    onclick="adicionarCarrinho()"
-                >
-                    Adicionar ao carrinho
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="product">
-
-            <div class="product-image">
-                👟
-            </div>
-
-            <div class="product-info">
-
-                <h3>
-                    Tênis
-                </h3>
-
-                <p>
-                    Produto em destaque
-                </p>
-
-                <div class="price">
-                    R$ 129,90
-                </div>
-
-                <button
-                    class="buy-button"
-                    onclick="adicionarCarrinho()"
-                >
-                    Adicionar ao carrinho
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<section class="container">
-
-    <div class="partners">
-
-        <div class="partner-card">
-
-            <h3>
-                🏪 Venda no TáNaMão
-            </h3>
+            <h3>🏪 Sua loja aqui</h3>
 
             <p>
-                Coloque sua loja na internet, anuncie seus produtos
-                e receba pedidos de clientes da sua região.
+                Cadastre sua loja no TáNaMão e venda para sua região.
             </p>
 
-            <button>
-                Quero vender
+        </div>
+
+        <div class="card">
+
+            <h3>🛍️ Comércio local</h3>
+
+            <p>
+                Produtos e serviços perto de você.
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <h3>📦 Entrega rápida</h3>
+
+            <p>
+                Receba seus pedidos na sua casa.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <div class="titulo-secao">
+
+        <h2>Produtos</h2>
+
+        <p>
+            Confira alguns produtos disponíveis.
+        </p>
+
+    </div>
+
+    <div class="produtos">
+
+        <div class="card">
+
+            <h3>📱 Celular</h3>
+
+            <p>
+                Smartphones e acessórios.
+            </p>
+
+            <div class="produto-preco">
+                R$ 999,90
+            </div>
+
+            <button
+                class="btn-produto"
+                onclick="adicionarCarrinho()">
+                Adicionar ao carrinho
             </button>
 
         </div>
 
 
-        <div class="partner-card">
+        <div class="card">
 
-            <h3>
-                🏍️ Seja entregador
-            </h3>
+            <h3>🎧 Fone Bluetooth</h3>
 
             <p>
-                Faça entregas para as lojas parceiras e acompanhe
-                seus pedidos diretamente pelo TáNaMão.
+                Fone sem fio.
             </p>
 
-            <button>
-                Quero ser entregador
+            <div class="produto-preco">
+                R$ 79,90
+            </div>
+
+            <button
+                class="btn-produto"
+                onclick="adicionarCarrinho()">
+                Adicionar ao carrinho
             </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>👕 Camiseta</h3>
+
+            <p>
+                Moda para toda a família.
+            </p>
+
+            <div class="produto-preco">
+                R$ 49,90
+            </div>
+
+            <button
+                class="btn-produto"
+                onclick="adicionarCarrinho()">
+                Adicionar ao carrinho
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <div class="titulo-secao">
+
+        <h2>Faça parte do TáNaMão</h2>
+
+        <p>
+            Venda seus produtos ou faça entregas.
+        </p>
+
+    </div>
+
+    <div class="parceiros">
+
+        <div class="card">
+
+            <h3>🏪 Seja vendedor</h3>
+
+            <p>
+                Cadastre sua loja e comece a vender para clientes da sua região.
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <h3>🛵 Seja entregador</h3>
+
+            <p>
+                Trabalhe realizando entregas pelo TáNaMão.
+            </p>
 
         </div>
 
@@ -697,85 +582,118 @@
 
 <footer>
 
-    <div class="footer-content">
+    <strong>TáNaMão</strong>
 
-        <div>
+    <p>
+        Marketplace local para conectar clientes,
+        lojas e entregadores.
+    </p>
 
-            <h3>
-                TáNaMão
-            </h3>
+    <br>
 
-            <p>
-                Sua região. Suas lojas. Na sua mão.
-            </p>
-
-        </div>
-
-
-        <div>
-
-            <h3>
-                Marketplace
-            </h3>
-
-            <p>
-                Produtos
-            </p>
-
-            <p>
-                Lojas
-            </p>
-
-            <p>
-                Categorias
-            </p>
-
-        </div>
-
-
-        <div>
-
-            <h3>
-                Parceiros
-            </h3>
-
-            <p>
-                Venda conosco
-            </p>
-
-            <p>
-                Seja entregador
-            </p>
-
-        </div>
-
-
-        <div>
-
-            <h3>
-                Atendimento
-            </h3>
-
-            <p>
-                Central de ajuda
-            </p>
-
-            <p>
-                Fale conosco
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="copyright">
-
-        © 2026 TáNaMão — Marketplace Regional
-
-    </div>
+    © 2026 TáNaMão
 
 </footer>
+
+
+<!-- MODAL LOGIN -->
+
+<div
+    id="modalLogin"
+    class="modal-login">
+
+    <div class="login-box">
+
+        <button
+            class="fechar-login"
+            onclick="fecharLogin()">
+            ×
+        </button>
+
+        <div class="login-logo">
+            TáNaMão
+        </div>
+
+        <h2 id="tituloLogin">
+            Entrar
+        </h2>
+
+        <p
+            class="login-subtitulo"
+            id="subtituloLogin">
+            Entre na sua conta para continuar
+        </p>
+
+
+        <div
+            id="camposCadastro"
+            style="display:none;">
+
+            <input
+                type="text"
+                id="cadNome"
+                placeholder="Seu nome">
+
+            <input
+                type="tel"
+                id="cadTelefone"
+                placeholder="Seu telefone">
+
+            <select id="cadTipo">
+
+                <option value="cliente">
+                    Sou cliente
+                </option>
+
+                <option value="vendedor">
+                    Sou vendedor
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <input
+            type="email"
+            id="loginEmail"
+            placeholder="E-mail">
+
+
+        <input
+            type="password"
+            id="loginSenha"
+            placeholder="Senha">
+
+
+        <button
+            class="btn-login-principal"
+            id="btnAcaoLogin"
+            onclick="entrarOuCadastrar()">
+
+            Entrar
+
+        </button>
+
+
+        <p
+            id="mensagemLogin"
+            class="mensagem-login">
+        </p>
+
+
+        <button
+            class="btn-alternar"
+            id="btnAlternarLogin"
+            onclick="alternarLoginCadastro()">
+
+            Ainda não tenho conta
+
+        </button>
+
+    </div>
+
+</div>
 
 
 <!-- SUPABASE -->
@@ -784,30 +702,37 @@
 
 <script>
 
-    const SUPABASE_URL =
+    window.SUPABASE_URL =
         "https://sfzfoavesiintdyoxkca.supabase.co";
 
-    const SUPABASE_PUBLISHABLE_KEY =
-        sb_publishable_wM4A1etSRHTcUpE4qUXb-A_suN-jnep
+    window.SUPABASE_PUBLISHABLE_KEY =
+        "sb_publishable_wM4A1etSRHTcUpE4qUXb-A_suN-jnep";
 
 
-   window.supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-    );
+    window.supabaseClient =
+        window.supabase.createClient(
+            window.SUPABASE_URL,
+            window.SUPABASE_PUBLISHABLE_KEY
         );
 
 
+    console.log(
+        "✅ TáNaMão conectado ao Supabase!"
+    );
+
+
     let cartCount = 0;
+
+    let modoCadastro = false;
 
 
     function adicionarCarrinho() {
 
         cartCount++;
 
-        document.getElementById("cartCount").textContent =
-            cartCount;
+        document.getElementById(
+            "cartCount"
+        ).textContent = cartCount;
 
         alert(
             "Produto adicionado ao carrinho!"
@@ -816,13 +741,28 @@
     }
 
 
+    function mostrarCarrinho() {
+
+        alert(
+            "Seu carrinho possui " +
+            cartCount +
+            " produto(s)."
+        );
+
+    }
+
+
     function buscar() {
 
         const busca =
-            document.getElementById("search").value;
+            document.getElementById(
+                "search"
+            ).value.trim();
 
         const cep =
-            document.getElementById("cep").value;
+            document.getElementById(
+                "cep"
+            ).value.trim();
 
 
         if (!busca && !cep) {
@@ -837,7 +777,7 @@
 
 
         alert(
-            "Busca preparada! Em breve os produtos reais aparecerão aqui."
+            "Busca preparada! Os produtos reais serão carregados do banco na próxima etapa."
         );
 
     }
@@ -845,34 +785,424 @@
 
     function abrirLogin() {
 
-        alert(
-            "O sistema de login será ativado na próxima etapa."
+        document.getElementById(
+            "modalLogin"
+        ).style.display = "flex";
+
+
+        verificarUsuario();
+
+    }
+
+
+    function fecharLogin() {
+
+        document.getElementById(
+            "modalLogin"
+        ).style.display = "none";
+
+    }
+
+
+    function alternarLoginCadastro() {
+
+        modoCadastro = !modoCadastro;
+
+
+        const campos =
+            document.getElementById(
+                "camposCadastro"
+            );
+
+
+        const titulo =
+            document.getElementById(
+                "tituloLogin"
+            );
+
+
+        const subtitulo =
+            document.getElementById(
+                "subtituloLogin"
+            );
+
+
+        const botao =
+            document.getElementById(
+                "btnAcaoLogin"
+            );
+
+
+        const alternar =
+            document.getElementById(
+                "btnAlternarLogin"
+            );
+
+
+        if (modoCadastro) {
+
+            campos.style.display =
+                "block";
+
+            titulo.textContent =
+                "Criar conta";
+
+            subtitulo.textContent =
+                "Cadastre-se gratuitamente no TáNaMão";
+
+            botao.textContent =
+                "Criar minha conta";
+
+            alternar.textContent =
+                "Já tenho uma conta";
+
+        } else {
+
+            campos.style.display =
+                "none";
+
+            titulo.textContent =
+                "Entrar";
+
+            subtitulo.textContent =
+                "Entre na sua conta para continuar";
+
+            botao.textContent =
+                "Entrar";
+
+            alternar.textContent =
+                "Ainda não tenho conta";
+
+        }
+
+
+        limparMensagem();
+
+    }
+
+
+    async function entrarOuCadastrar() {
+
+        limparMensagem();
+
+
+        const email =
+            document.getElementById(
+                "loginEmail"
+            ).value.trim();
+
+
+        const senha =
+            document.getElementById(
+                "loginSenha"
+            ).value;
+
+
+        if (!email || !senha) {
+
+            mostrarMensagem(
+                "Preencha seu e-mail e sua senha."
+            );
+
+            return;
+
+        }
+
+
+        if (modoCadastro) {
+
+            await cadastrarUsuario(
+                email,
+                senha
+            );
+
+        } else {
+
+            await fazerLogin(
+                email,
+                senha
+            );
+
+        }
+
+    }
+
+
+    async function cadastrarUsuario(
+        email,
+        senha
+    ) {
+
+        const nome =
+            document.getElementById(
+                "cadNome"
+            ).value.trim();
+
+
+        const telefone =
+            document.getElementById(
+                "cadTelefone"
+            ).value.trim();
+
+
+        const tipo =
+            document.getElementById(
+                "cadTipo"
+            ).value;
+
+
+        if (!nome) {
+
+            mostrarMensagem(
+                "Digite seu nome."
+            );
+
+            return;
+
+        }
+
+
+        if (!telefone) {
+
+            mostrarMensagem(
+                "Digite seu telefone."
+            );
+
+            return;
+
+        }
+
+
+        if (senha.length < 6) {
+
+            mostrarMensagem(
+                "A senha precisa ter pelo menos 6 caracteres."
+            );
+
+            return;
+
+        }
+
+
+        const {
+            data,
+            error
+        } =
+            await window.supabaseClient.auth.signUp({
+
+                email: email,
+
+                password: senha,
+
+                options: {
+
+                    data: {
+
+                        nome: nome,
+
+                        telefone: telefone,
+
+                        tipo: tipo
+
+                    }
+
+                }
+
+            });
+
+
+        if (error) {
+
+            mostrarMensagem(
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        mostrarMensagem(
+            "Conta criada! Verifique seu e-mail para confirmar o cadastro.",
+            true
         );
 
     }
 
 
-    console.log(
-        "TáNaMão: biblioteca Supabase carregada."
-    );
+    async function fazerLogin(
+        email,
+        senha
+    ) {
 
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        const {
+            data,
+            error
+        } =
+            await window.supabaseClient.auth.signInWithPassword({
 
-<script>
-    window.SUPABASE_URL =
-        "https://sfzfoavesiintdyoxkca.supabase.co";
+                email: email,
 
-    window.SUPABASE_PUBLISHABLE_KEY =
-        "sb_publishable_wM4A1etSRHTcUpE4qUXb-A_suN-jnep";
+                password: senha
 
-    window.supabaseClient =
-        window.supabase.createClient(
-            window.SUPABASE_URL,
-            window.SUPABASE_PUBLISHABLE_KEY
+            });
+
+
+        if (error) {
+
+            mostrarMensagem(
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        mostrarMensagem(
+            "Login realizado com sucesso!",
+            true
         );
 
-    console.log("✅ TáNaMão conectado ao Supabase!");
+
+        atualizarBotaoUsuario();
+
+
+        setTimeout(
+            function() {
+
+                fecharLogin();
+
+            },
+            1000
+        );
+
+    }
+
+
+    async function verificarUsuario() {
+
+        const {
+            data
+        } =
+            await window.supabaseClient.auth.getUser();
+
+
+        if (data.user) {
+
+            document.getElementById(
+                "tituloLogin"
+            ).textContent =
+                "Você está conectado";
+
+
+            document.getElementById(
+                "subtituloLogin"
+            ).textContent =
+                data.user.email;
+
+
+            document.getElementById(
+                "btnAcaoLogin"
+            ).textContent =
+                "Sair da conta";
+
+
+            document.getElementById(
+                "btnAcaoLogin"
+            ).onclick =
+                sairDaConta;
+
+
+            document.getElementById(
+                "camposCadastro"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "btnAlternarLogin"
+            ).style.display =
+                "none";
+
+        }
+
+    }
+
+
+    async function atualizarBotaoUsuario() {
+
+        const {
+            data
+        } =
+            await window.supabaseClient.auth.getUser();
+
+
+        const botao =
+            document.getElementById(
+                "btnLogin"
+            );
+
+
+        if (data.user) {
+
+            botao.textContent =
+                "Minha conta";
+
+        } else {
+
+            botao.textContent =
+                "Entrar";
+
+        }
+
+    }
+
+
+    async function sairDaConta() {
+
+        await window.supabaseClient.auth.signOut();
+
+        location.reload();
+
+    }
+
+
+    function mostrarMensagem(
+        texto,
+        sucesso = false
+    ) {
+
+        const elemento =
+            document.getElementById(
+                "mensagemLogin"
+            );
+
+
+        elemento.textContent =
+            texto;
+
+
+        elemento.style.color =
+            sucesso
+                ? "#19a463"
+                : "#d62828";
+
+    }
+
+
+    function limparMensagem() {
+
+        document.getElementById(
+            "mensagemLogin"
+        ).textContent = "";
+
+    }
+
+
+    atualizarBotaoUsuario();
+
 </script>
+
 </body>
 </html>
