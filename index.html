@@ -2578,6 +2578,11 @@ async function salvarProduto() {
             ).value
         );
 
+    const ativo =
+        document.getElementById(
+            "produtoAtivo"
+        )?.checked !== false;
+
 
     if (!nome) {
 
@@ -2722,7 +2727,7 @@ async function salvarProduto() {
                     estoque,
 
                 ativo:
-                    true
+                    ativo
 
             })
             .select()
@@ -2751,7 +2756,9 @@ async function salvarProduto() {
         "green";
 
     mensagem.textContent =
-        "✅ Produto cadastrado com sucesso!";
+        ativo
+            ? "✅ Produto cadastrado e publicado no marketplace!"
+            : "✅ Produto cadastrado como inativo.";
 
 
     document.getElementById(
@@ -2777,6 +2784,10 @@ async function salvarProduto() {
     document.getElementById(
         "produtoEstoque"
     ).value = "";
+
+    const produtoAtivo =
+        document.getElementById("produtoAtivo");
+    if (produtoAtivo) produtoAtivo.checked = true;
 
 
     console.log(
@@ -3862,6 +3873,7 @@ document.addEventListener(
                 id="produtoEstoque"
                 type="number"
                 min="0"
+                step="1"
                 placeholder="Quantidade em estoque"
                 style="
                     width:100%;
@@ -3871,6 +3883,34 @@ document.addEventListener(
                     border-radius:8px;
                 "
             >
+
+            <label style="
+                display:flex;
+                align-items:center;
+                gap:10px;
+                margin-top:18px;
+                padding:12px;
+                background:#f8f8f8;
+                border-radius:8px;
+                cursor:pointer;
+                font-weight:bold;
+            ">
+                <input
+                    id="produtoAtivo"
+                    type="checkbox"
+                    checked
+                    style="width:18px;height:18px;"
+                >
+                Produto disponível no marketplace
+            </label>
+
+            <small style="
+                display:block;
+                margin-top:8px;
+                color:#777;
+            ">
+                Desmarque se quiser cadastrar o produto agora e deixá-lo oculto até estar pronto.
+            </small>
 
             <button
                 onclick="salvarProduto()"
