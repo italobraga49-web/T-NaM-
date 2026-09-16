@@ -524,74 +524,20 @@
 
     </div>
 
-    <div class="produtos">
-
-        <div class="card">
-
-            <h3>📱 Celular</h3>
-
-            <p>
-                Smartphones e acessórios.
-            </p>
-
-            <div class="produto-preco">
-                R$ 999,90
-            </div>
-
-            <button
-                class="btn-produto"
-                onclick="adicionarCarrinho()">
-                Adicionar ao carrinho
-            </button>
-
+    <section class="products-section">
+    <div class="section-header">
+        <div>
+            <h2>🛍️ Produtos disponíveis</h2>
+            <p>Encontre produtos de lojas da sua região</p>
         </div>
-
-
-        <div class="card">
-
-            <h3>🎧 Fone Bluetooth</h3>
-
-            <p>
-                Fone sem fio.
-            </p>
-
-            <div class="produto-preco">
-                R$ 79,90
-            </div>
-
-            <button
-                class="btn-produto"
-                onclick="adicionarCarrinho()">
-                Adicionar ao carrinho
-            </button>
-
-        </div>
-
-
-        <div class="card">
-
-            <h3>👕 Camiseta</h3>
-
-            <p>
-                Moda para toda a família.
-            </p>
-
-            <div class="produto-preco">
-                R$ 49,90
-            </div>
-
-            <button
-                class="btn-produto"
-                onclick="adicionarCarrinho()">
-                Adicionar ao carrinho
-            </button>
-
-        </div>
-
     </div>
 
-</section>
-
+    <div id="produtosMarketplace" class="products-grid">
+        <div class="loading-produtos">
+            <span>⏳</span>
+            <p>Carregando produtos...</p>
+        </div>
+    
 
 <section>
 
@@ -2786,6 +2732,196 @@ async function excluirProduto(id) {
 
     await carregarMeusProdutos();
 
+}
+
+</script>
+        <script>
+async function carregarProdutosMarketplace() {
+    const container = document.getElementById("produtosMarketplace");
+
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="loading-produtos">
+            <span>⏳</span>
+            <p>Carregando produtos...</p>
+        </div>
+    `;
+
+    try {
+        const { data, error } = await supabase
+            .from("products")
+            .select(`
+                id,
+                nome,
+                descricao,
+                preco,
+                estoque,
+                ativo,
+                created_at,
+                categories (
+                    nome
+                ),
+                stores (
+                    id,
+                    nome,
+                    cidade,
+                    estado
+                )
+            `)
+            .eq("ativo", true)
+            .gt("estoque", 0)
+            .order("created_at", { ascending: false });
+
+        if (error) {
+            console.error("Erro ao carregar produtos:", error);
+
+            container.innerHTML = `
+                <div class="empty-products">
+                    <span>⚠️</span>
+                    <p>Não foi possível carregar os produtos.</p>
+                </div>
+            `;
+
+            return;
+        }
+
+        if (!data || data.length === 0) {
+            container.innerHTML = `
+                <div class="empty-products">
+                    <span>🛍️</span>
+                    <h3>Nenhum produto disponível</h3>
+                    <p>Os produtos cadastrados pelas lojas aparecerão aqui.</p>
+                </div>
+            `;
+
+            return;
+        }
+
+        container.innerHTML = data.map(produto => {
+
+            const categoria = produto.categories?.nome || "Sem categoria";
+            const loja = produto.stores?.nome || "Loja";
+            const cidade = produto.stores?.cidade || "";
+
+            const preco = Number(produto.preco || 0).toLocaleString(
+                "pt-BR",
+                {
+                    style: "currency",
+                    currency: "BRL"
+                }
+            );
+
+            return `
+                <div class="product-card">
+
+                    <div class="product-image">
+                        🛍️
+                    </div>
+
+                    <div class="product-info">
+
+                        <span class="product-category">
+                            ${categoria}
+                        </span>
+
+                        <h3>${produto.nome}</h3>
+
+                        <p class="product-description">
+                            ${produto.descricao || "Produto disponível na loja."}
+                        </p>
+
+                        <div class="product-store">
+                            🏪 ${loja}
+                        </div>
+
+                        ${
+                            cidade
+                            ? `<div class="product-location">
+                                📍 ${cidade}${produto.stores?.estado ? " - " + produto.stores.estado : ""}
+                               </div>`
+                            : ""
+                        }
+
+                        <div class="product-bottom">
+
+                            <strong class="product-price">
+                                ${preco}
+                            </strong>
+
+                            <button
+                                class="btn-add-cart"
+                                onclick="adicionarProdutoCarrinho(${produto.id})"
+                            >
+                                🛒 Comprar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
+
+    } catch (erro) {
+
+        console.error("Erro inesperado:", erro);
+
+        container.innerHTML = `
+            <div class="empty-products">
+                <span>⚠️</span>
+                <p>Erro ao carregar os produtos.</p>
+            </div>
+        `;
+    }
+}
+</script><script>
+document.addEventListener("DOMContentLoaded", function () {
+    carregarProdutosMarketplace();
+});
+</script><script>
+
+let carrinho = [];
+
+function adicionarProdutoCarrinho(id) {
+
+    const produtoExistente = carrinho.find(
+        produto => produto.id === id
+    );
+
+    if (produtoExistente) {
+
+        produtoExistente.quantidade++;
+
+    } else {
+
+        carrinho.push({
+            id: id,
+            quantidade: 1
+        });
+
+    }
+
+    atualizarContadorCarrinho();
+
+    alert("✅ Produto adicionado ao carrinho!");
+}
+
+
+function atualizarContadorCarrinho() {
+
+    const quantidade = carrinho.reduce(
+        (total, produto) => total + produto.quantidade,
+        0
+    );
+
+    const contador = document.getElementById("cartCount");
+
+    if (contador) {
+        contador.textContent = quantidade;
+    }
 }
 
 </script>
