@@ -2552,7 +2552,20 @@ async function editarProduto(id) {
 
 }
    async function editarProduto(id) {
+async function editarProduto(id) {
 
+    alert("1 - FUNÇÃO INICIOU");
+
+    const novoNome = prompt("2 - DIGITE O NOVO NOME:");
+
+    if (novoNome === null) {
+        alert("3 - VOCÊ CANCELOU");
+        return;
+    }
+
+    alert("4 - NOME RECEBIDO: " + novoNome);
+
+}
     const novoNome = prompt("Digite o novo nome do produto:");
 
     if (novoNome === null) return;
