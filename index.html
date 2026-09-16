@@ -2464,19 +2464,20 @@ async function carregarMeusProdutos() {
 }
 
 
-function editarProduto(id) {
 async function editarProduto(id) {
 
-    const novoNome = prompt(
-        "Digite o novo nome do produto:"
-    );
+    alert("1 - FUNÇÃO INICIOU");
 
-    if (novoNome === null) return;
+    const novoNome = prompt("2 - DIGITE O NOVO NOME:");
 
-    if (!novoNome.trim()) {
-        alert("O nome não pode ficar vazio.");
+    if (novoNome === null) {
+        alert("3 - VOCÊ CANCELOU");
         return;
     }
+
+    alert("4 - NOME RECEBIDO: " + novoNome);
+
+}
 
     const novaDescricao = prompt(
         "Digite a nova descrição do produto:"
