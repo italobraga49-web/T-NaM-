@@ -2423,17 +2423,86 @@ async function carregarMeusProdutos() {
             ">
 
                 <button
-                    onclick="editarProduto('${produto.id}')"
-                    style="
-                        flex:1;
-                        border:0;
-                        background:#2563eb;
-                        color:white;
-                        padding:10px;
-                        border-radius:8px;
-                        cursor:pointer;
-                    "
-                >
+                   async function editarProduto(id) {
+
+    const novoNome = prompt(
+        "Digite o novo nome do produto:"
+    );
+
+    if (novoNome === null) return;
+
+    if (!novoNome.trim()) {
+        alert("O nome não pode ficar vazio.");
+        return;
+    }
+
+    const novaDescricao = prompt(
+        "Digite a nova descrição do produto:"
+    );
+
+    if (novaDescricao === null) return;
+
+    const novoPreco = prompt(
+        "Digite o novo preço do produto:"
+    );
+
+    if (novoPreco === null) return;
+
+    const preco = parseFloat(
+        novoPreco.replace(",", ".")
+    );
+
+    if (isNaN(preco) || preco < 0) {
+        alert("Digite um preço válido.");
+        return;
+    }
+
+    const novoEstoque = prompt(
+        "Digite a nova quantidade em estoque:"
+    );
+
+    if (novoEstoque === null) return;
+
+    const estoque = parseInt(novoEstoque);
+
+    if (isNaN(estoque) || estoque < 0) {
+        alert("Digite um estoque válido.");
+        return;
+    }
+
+    const { error } =
+        await window.supabaseClient
+            .from("products")
+            .update({
+                nome: novoNome.trim(),
+                descricao: novaDescricao.trim(),
+                preco: preco,
+                estoque: estoque
+            })
+            .eq("id", id);
+
+    if (error) {
+
+        console.error(
+            "Erro ao atualizar produto:",
+            error
+        );
+
+        alert(
+            "❌ Erro ao atualizar: " +
+            error.message
+        );
+
+        return;
+    }
+
+    alert(
+        "✅ Produto atualizado com sucesso!"
+    );
+
+    await carregarMeusProdutos();
+
+}
                     ✏️ Editar
                 </button>
 
