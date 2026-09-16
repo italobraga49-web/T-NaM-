@@ -1950,8 +1950,11 @@ function mostrarProdutos(
                     return `
                         <div class="product-card">
 
-                            <div class="product-image">
-                                🛍️
+                            <div class="product-image" style="overflow:hidden;position:relative;">
+                                ${produto.imagem_url
+                                    ? `<img src="${escapeHtml(produto.imagem_url)}" alt="${escapeHtml(produto.nome)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><span style="display:none;align-items:center;justify-content:center;width:100%;height:100%;font-size:42px;">🛍️</span>`
+                                    : `<span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:42px;">🛍️</span>`
+                                }
                             </div>
 
                             <div class="product-info">
@@ -2537,6 +2540,26 @@ async function carregarCategorias() {
 }
 
 
+document.addEventListener("DOMContentLoaded", () => {
+    const inputImagem = document.getElementById("produtoImagem");
+    const preview = document.getElementById("produtoImagemPreview");
+    const previewImg = document.getElementById("produtoImagemPreviewImg");
+
+    if (inputImagem && preview && previewImg) {
+        inputImagem.addEventListener("change", () => {
+            const arquivo = inputImagem.files?.[0];
+            if (!arquivo || !arquivo.type.startsWith("image/")) {
+                preview.style.display = "none";
+                previewImg.src = "";
+                return;
+            }
+            previewImg.src = URL.createObjectURL(arquivo);
+            preview.style.display = "block";
+        });
+    }
+});
+
+
 async function salvarProduto() {
 
     const mensagem =
@@ -2582,6 +2605,23 @@ async function salvarProduto() {
         document.getElementById(
             "produtoAtivo"
         )?.checked !== false;
+
+    const arquivoImagem =
+        document.getElementById("produtoImagem")?.files?.[0] || null;
+
+    if (arquivoImagem) {
+        const tiposPermitidos = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+        if (!tiposPermitidos.includes(arquivoImagem.type)) {
+            mensagem.style.color = "red";
+            mensagem.textContent = "Escolha uma imagem JPG, PNG, WEBP ou GIF.";
+            return;
+        }
+        if (arquivoImagem.size > 5 * 1024 * 1024) {
+            mensagem.style.color = "red";
+            mensagem.textContent = "A foto deve ter no máximo 5 MB.";
+            return;
+        }
+    }
 
 
     if (!nome) {
@@ -2700,6 +2740,39 @@ async function salvarProduto() {
     }
 
 
+    let imagemUrl = null;
+    let caminhoImagem = null;
+
+    if (arquivoImagem) {
+        mensagem.textContent = "Enviando foto do produto...";
+
+        const extensao = arquivoImagem.name.split(".").pop()?.toLowerCase() || "jpg";
+        caminhoImagem = `${data.user.id}/${crypto.randomUUID()}.${extensao}`;
+
+        const { error: erroUpload } = await supabaseClient.storage
+            .from("produtos")
+            .upload(caminhoImagem, arquivoImagem, {
+                cacheControl: "3600",
+                upsert: false,
+                contentType: arquivoImagem.type
+            });
+
+        if (erroUpload) {
+            console.error("Erro ao enviar foto:", erroUpload);
+            mensagem.style.color = "red";
+            mensagem.textContent = "Não foi possível enviar a foto: " + erroUpload.message;
+            return;
+        }
+
+        const { data: urlPublica } = supabaseClient.storage
+            .from("produtos")
+            .getPublicUrl(caminhoImagem);
+
+        imagemUrl = urlPublica?.publicUrl || null;
+    }
+
+    mensagem.textContent = "Salvando produto...";
+
     const {
         data: produto,
         error: erroProduto
@@ -2727,7 +2800,10 @@ async function salvarProduto() {
                     estoque,
 
                 ativo:
-                    ativo
+                    ativo,
+
+                imagem_url:
+                    imagemUrl
 
             })
             .select()
@@ -2740,6 +2816,10 @@ async function salvarProduto() {
             "Erro ao cadastrar produto:",
             erroProduto
         );
+
+        if (caminhoImagem) {
+            await supabaseClient.storage.from("produtos").remove([caminhoImagem]);
+        }
 
         mensagem.style.color =
             "red";
@@ -2784,6 +2864,13 @@ async function salvarProduto() {
     document.getElementById(
         "produtoEstoque"
     ).value = "";
+
+    const produtoImagem = document.getElementById("produtoImagem");
+    if (produtoImagem) produtoImagem.value = "";
+    const produtoImagemPreview = document.getElementById("produtoImagemPreview");
+    if (produtoImagemPreview) produtoImagemPreview.style.display = "none";
+    const produtoImagemPreviewImg = document.getElementById("produtoImagemPreviewImg");
+    if (produtoImagemPreviewImg) produtoImagemPreviewImg.src = "";
 
     const produtoAtivo =
         document.getElementById("produtoAtivo");
@@ -3836,6 +3923,37 @@ document.addEventListener(
                     border-radius:8px;
                 "
             ></textarea>
+
+            <label style="
+                display:block;
+                margin-top:15px;
+                font-weight:bold;
+                color:#333;
+            ">
+                📸 Foto do produto
+            </label>
+
+            <input
+                id="produtoImagem"
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                style="
+                    width:100%;
+                    padding:12px;
+                    margin-top:8px;
+                    border:1px solid #ddd;
+                    border-radius:8px;
+                    background:#fff;
+                "
+            >
+
+            <div id="produtoImagemPreview" style="display:none;margin-top:12px;text-align:center;">
+                <img id="produtoImagemPreviewImg" src="" alt="Prévia do produto" style="width:180px;height:180px;object-fit:cover;border-radius:12px;border:1px solid #ddd;">
+            </div>
+
+            <small style="display:block;margin-top:7px;color:#777;">
+                JPG, PNG, WEBP ou GIF — máximo de 5 MB.
+            </small>
 
             <select
                 id="produtoCategoria"
