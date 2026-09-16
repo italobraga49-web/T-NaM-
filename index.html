@@ -1324,14 +1324,16 @@ async function finalizarCompra() {
             .eq("id", pedido.id)
             .maybeSingle();
 
+        const metodoPagamentoFinal = formaPagamentoCarrinho;
         alert(
-            "✅ Pedido realizado com sucesso!\n\nNúmero: " +
-            pedido.id +
-            "\nCódigo de rastreio: " +
-            (pedidoRastreio?.tracking_code || "gerando...") +
-            "\nForma de pagamento: " + formatarFormaPagamento(formaPagamentoCarrinho) +
-            "\nStatus do pagamento: Aguardando pagamento"
+            "✅ Pedido criado!\n\nNúmero: " + pedido.id +
+            "\nForma de pagamento: " + formatarFormaPagamento(metodoPagamentoFinal) +
+            "\n\nAgora você será encaminhado para o ambiente seguro do Mercado Pago para concluir o pagamento."
         );
+
+        // O pedido permanece pendente até o webhook confirmar o pagamento.
+        const pagamentoAberto = await iniciarPagamentoReal(pedido.id, metodoPagamentoFinal);
+        if (!pagamentoAberto) return;
 
         carrinho = [];
         cupomCarrinhoAtual = null;
@@ -4179,6 +4181,32 @@ function formatarFormaPagamento(metodo) {
         boleto: "Boleto bancário"
     })[metodo] || metodo || "Não informado";
 }
+
+async function iniciarPagamentoReal(pedidoId, metodo) {
+    const btn = document.getElementById("btnFinalizarCompra");
+    if (btn) { btn.disabled = true; btn.textContent = "⏳ Preparando pagamento..."; }
+
+    try {
+        const { data: sessao } = await supabaseClient.auth.getSession();
+        const token = sessao?.session?.access_token;
+        if (!token) throw new Error("Sessão expirada. Entre novamente.");
+
+        const { data, error } = await supabaseClient.functions.invoke("criar-pagamento", {
+            body: { order_id: pedidoId, payment_method: metodo }
+        });
+        if (error) throw error;
+        if (!data?.init_point) throw new Error(data?.error || "O gateway não retornou o endereço de pagamento.");
+
+        window.location.href = data.init_point;
+        return true;
+    } catch (err) {
+        console.error("Erro ao iniciar pagamento real:", err);
+        alert("❌ Não foi possível abrir o pagamento.\n\n" + (err?.message || err));
+        if (btn) { btn.disabled = false; btn.textContent = "Finalizar compra"; }
+        return false;
+    }
+}
+
 
 function formatarStatusPedido(status) {
     return ({pendente:'Pendente',confirmado:'Confirmado',em_preparo:'Em preparo',saiu_para_entrega:'Saiu para entrega',entregue:'Entregue',cancelado:'Cancelado'})[status] || status;
