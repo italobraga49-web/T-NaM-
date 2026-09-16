@@ -1050,7 +1050,8 @@ async function finalizarCompra() {
     }
 
     try {
-        const { data: pedido, error: erroPedido } = await supabaseClient
+        let pedido, erroPedido;
+        const completo = await supabaseClient
             .from("orders")
             .insert({
                 customer_id: data.user.id,
@@ -1061,6 +1062,34 @@ async function finalizarCompra() {
             })
             .select("id")
             .single();
+
+        pedido = completo.data;
+        erroPedido = completo.error;
+
+        // Fallback para schema cache antigo do PostgREST.
+        if (erroPedido && /endereco_entrega|observacoes|schema cache/i.test(erroPedido.message || "")) {
+            const basico = await supabaseClient
+                .from("orders")
+                .insert({
+                    customer_id: data.user.id,
+                    status: "pendente",
+                    total: total
+                })
+                .select("id")
+                .single();
+            pedido = basico.data;
+            erroPedido = basico.error;
+
+            if (!erroPedido && pedido?.id) {
+                await supabaseClient
+                    .from("orders")
+                    .update({
+                        endereco_entrega: endereco.trim(),
+                        observacoes: observacoes.trim()
+                    })
+                    .eq("id", pedido.id);
+            }
+        }
 
         if (erroPedido) throw erroPedido;
 
