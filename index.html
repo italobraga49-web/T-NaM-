@@ -445,6 +445,8 @@
 
         <button id="btnContaCliente" onclick="abrirContaCliente()" style="display:none;background:#2563eb;color:white;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:bold;">👤 Meu perfil</button>
 
+        <button id="btnSairPlataforma" onclick="sairDaConta()" style="display:none;background:#dc2626;color:white;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:bold;">🚪 Sair</button>
+
         <button
             class="btn-revendedor"
             onclick="abrirCadastroRevendedor()"
@@ -1466,12 +1468,15 @@ async function atualizarBotaoUsuario() {
     const { data } = await supabaseClient.auth.getUser();
     const botao = document.getElementById("btnLogin");
     const btnConta = document.getElementById("btnContaCliente");
+    const btnSair = document.getElementById("btnSairPlataforma");
     if (data.user) {
         if (botao) { botao.textContent = "Minha conta"; botao.onclick = abrirContaCliente; }
         if (btnConta) btnConta.style.display = "inline-block";
+        if (btnSair) btnSair.style.display = "inline-block";
     } else {
         if (botao) { botao.textContent = "Entrar"; botao.onclick = abrirLogin; }
         if (btnConta) btnConta.style.display = "none";
+        if (btnSair) btnSair.style.display = "none";
     }
 }
 
@@ -1687,9 +1692,23 @@ async function confirmarEnderecoCheckout(id) {
 
 async function sairDaConta() {
 
-    await supabaseClient.auth.signOut();
+    try {
+        const painel = document.getElementById("painelVendedor");
+        const conta = document.getElementById("modalContaCliente");
+        if (painel) painel.style.display = "none";
+        if (conta) conta.style.display = "none";
 
-    location.reload();
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) {
+            alert("Não foi possível sair da plataforma: " + error.message);
+            return;
+        }
+
+        location.reload();
+    } catch (erro) {
+        console.error("Erro ao sair:", erro);
+        alert("Não foi possível sair da plataforma.");
+    }
 
 }
 
@@ -3764,18 +3783,35 @@ atualizarBotaoUsuario();
 
             </div>
 
-            <button
-                onclick="fecharPainelVendedor()"
-                style="
-                    border:0;
-                    background:#ddd;
-                    padding:12px 18px;
-                    border-radius:10px;
-                    cursor:pointer;
-                "
-            >
-                Voltar
-            </button>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end;">
+                <button
+                    onclick="fecharPainelVendedor()"
+                    style="
+                        border:0;
+                        background:#ddd;
+                        padding:12px 18px;
+                        border-radius:10px;
+                        cursor:pointer;
+                    "
+                >
+                    Voltar
+                </button>
+
+                <button
+                    onclick="sairDaConta()"
+                    style="
+                        border:0;
+                        background:#dc2626;
+                        color:white;
+                        padding:12px 18px;
+                        border-radius:10px;
+                        cursor:pointer;
+                        font-weight:bold;
+                    "
+                >
+                    🚪 Sair da plataforma
+                </button>
+            </div>
 
         </div>
 
@@ -4380,6 +4416,7 @@ atualizarBotaoUsuario();
     <p class="login-subtitulo">Seus dados e histórico de pedidos</p>
     <div id="perfilClienteConteudo" style="text-align:left;">Carregando...</div>
     <button onclick="carregarPerfilCliente()" style="width:100%;margin-top:18px;background:#f3f4f6;color:#333;border:1px solid #ddd;padding:12px;border-radius:8px;cursor:pointer;font-weight:bold;">🔄 Atualizar</button>
+    <button onclick="sairDaConta()" style="width:100%;margin-top:10px;background:#dc2626;color:white;border:0;padding:12px;border-radius:8px;cursor:pointer;font-weight:bold;">🚪 Sair da plataforma</button>
   </div>
 </div>
 
