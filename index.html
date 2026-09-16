@@ -1061,6 +1061,7 @@ function limparCarrinho() {
 }
 
 let cupomCarrinhoAtual = null;
+let formaPagamentoCarrinho = null;
 let intervaloTimersOferta = null;
 
 function iniciarTimersOfertasCarrinho() {
@@ -1083,6 +1084,18 @@ function iniciarTimersOfertasCarrinho() {
     }, 1000);
 }
 
+function selecionarFormaPagamento(metodo) {
+    formaPagamentoCarrinho = metodo;
+    const textos = {
+        pix: 'PIX selecionado. O pagamento será concluído em ambiente seguro.',
+        cartao_debito: 'Cartão de débito selecionado. Não digite os dados do cartão nesta tela.',
+        cartao_credito: 'Cartão de crédito selecionado. Não digite os dados do cartão nesta tela.',
+        boleto: 'Boleto selecionado. A compensação pode levar algum tempo.'
+    };
+    const aviso = document.getElementById('avisoPagamentoCarrinho');
+    if (aviso) aviso.textContent = '✅ ' + (textos[metodo] || 'Forma de pagamento selecionada.');
+}
+
 async function finalizarCompra() {
     if (!carrinho.length) return;
 
@@ -1097,6 +1110,13 @@ async function finalizarCompra() {
 
     const endereco = await selecionarEnderecoParaCompra(data.user.id);
     if (!endereco) return;
+
+    if (!formaPagamentoCarrinho) {
+        alert("Selecione uma forma de pagamento: PIX, cartão de débito, cartão de crédito ou boleto.");
+        const area = document.getElementById("avisoPagamentoCarrinho");
+        if (area) area.scrollIntoView({behavior:"smooth", block:"center"});
+        return;
+    }
 
     const observacoes = prompt("Observações do pedido (opcional):") || "";
     const subtotalCarrinho = carrinho.reduce(
@@ -1205,7 +1225,9 @@ async function finalizarCompra() {
             status: "pendente",
             total: total,
             cupom_codigo: cupomCarrinhoAtual?.codigo || null,
-            desconto_cupom: Number(cupomCarrinhoAtual?.desconto || 0)
+            desconto_cupom: Number(cupomCarrinhoAtual?.desconto || 0),
+            payment_method: formaPagamentoCarrinho,
+            payment_status: formaPagamentoCarrinho === "boleto" ? "aguardando_pagamento" : "aguardando_pagamento"
         };
 
         console.log("DADOS ENVIADOS PARA orders:", dadosPedido);
@@ -1306,11 +1328,17 @@ async function finalizarCompra() {
             "✅ Pedido realizado com sucesso!\n\nNúmero: " +
             pedido.id +
             "\nCódigo de rastreio: " +
-            (pedidoRastreio?.tracking_code || "gerando...")
+            (pedidoRastreio?.tracking_code || "gerando...") +
+            "\nForma de pagamento: " + formatarFormaPagamento(formaPagamentoCarrinho) +
+            "\nStatus do pagamento: Aguardando pagamento"
         );
 
         carrinho = [];
         cupomCarrinhoAtual = null;
+        formaPagamentoCarrinho = null;
+        document.querySelectorAll('input[name="formaPagamento"]').forEach(el => el.checked = false);
+        const avisoPagamento = document.getElementById("avisoPagamentoCarrinho");
+        if (avisoPagamento) avisoPagamento.textContent = "Selecione uma forma de pagamento para continuar.";
         atualizarContadorCarrinho();
         renderizarCarrinho();
         fecharCarrinho();
@@ -1893,7 +1921,7 @@ async function carregarPerfilCliente() {
     const telefone = perfil?.telefone || user.user_metadata?.telefone || "Não informado";
     const tipo = perfil?.tipo || "cliente";
     const enderecos = await carregarEnderecosCliente();
-    const { data: pedidos, error: erroPedidos } = await supabaseClient.from("orders").select(`id,status,total,tracking_code,created_at,cancel_reason,cancelled_at,order_items(id,quantidade,preco_unitario,subtotal,products(id,nome))`).eq("customer_id", user.id).order("created_at", {ascending:false});
+    const { data: pedidos, error: erroPedidos } = await supabaseClient.from("orders").select(`id,status,total,tracking_code,created_at,cancel_reason,cancelled_at,payment_method,payment_status,order_items(id,quantidade,preco_unitario,subtotal,products(id,nome))`).eq("customer_id", user.id).order("created_at", {ascending:false});
     let html = `<div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:18px;margin-bottom:20px;"><h3 style="margin:0 0 14px;">Dados da conta</h3><div style="display:grid;gap:8px;color:#444;"><div><strong>Nome:</strong> ${escapeHtml(nome)}</div><div><strong>E-mail:</strong> ${escapeHtml(user.email || "Não informado")}</div><div><strong>Telefone:</strong> ${escapeHtml(telefone)}</div><div><strong>Tipo:</strong> ${escapeHtml(tipo === "cliente" ? "Cliente" : "Revendedor")}</div></div></div><div style="margin-bottom:22px;">
       <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
         <h3 style="margin:0;">📍 Meus endereços</h3>
@@ -1914,7 +1942,7 @@ async function carregarPerfilCliente() {
             const itens = pedido.order_items || [];
             const itensHtml = itens.map(item => `<div style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #eee;"><span>${item.quantidade}x ${escapeHtml(item.products?.nome || "Produto")}</span><strong>R$ ${Number(item.subtotal || 0).toFixed(2).replace('.', ',')}</strong></div>`).join("") || '<div style="color:#777;">Itens não disponíveis.</div>';
             return `<div style="background:white;border:1px solid #e5e7eb;border-radius:13px;padding:18px;margin-bottom:14px;"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;"><div><strong>Pedido #${escapeHtml(pedido.id)}</strong><div style="font-size:13px;color:#777;margin-top:4px;">${new Date(pedido.created_at).toLocaleString('pt-BR')}</div></div><span style="background:#eef2ff;color:#3730a3;padding:7px 10px;border-radius:20px;font-size:13px;font-weight:bold;">${formatarStatusPedido(pedido.status)}</span></div><div style="margin-top:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;"><div><div style="font-size:12px;color:#9a3412;font-weight:bold;">CÓDIGO DE RASTREIO</div><strong style="font-size:17px;letter-spacing:1px;">${escapeHtml(pedido.tracking_code || "Gerando...")}</strong></div><button onclick="abrirRastreamento('${escapeHtml(pedido.tracking_code || "")}')" ${pedido.tracking_code ? "" : "disabled"} style="border:0;background:#ff6a00;color:white;padding:10px 13px;border-radius:8px;cursor:pointer;font-weight:bold;">📍 Rastrear pedido</button>
-${["pendente","confirmado"].includes(pedido.status) ? `<button onclick="abrirCancelamentoPedido('${pedido.id}')" style="border:0;background:#fee2e2;color:#b91c1c;padding:10px 13px;border-radius:8px;cursor:pointer;font-weight:bold;">✖ Cancelar pedido</button>` : ""}</div><div style="margin-top:14px;">${itensHtml}</div><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px;"><span style="color:#555;"><strong>Entrega:</strong> ${escapeHtml(pedido.endereco_entrega || "Não informado")}</span><strong style="font-size:18px;">Total: R$ ${Number(pedido.total || 0).toFixed(2).replace('.', ',')}</strong></div>${pedido.cancel_reason ? `<div style="margin-top:8px;color:#b91c1c;font-size:14px;"><strong>Motivo do cancelamento:</strong> ${escapeHtml(pedido.cancel_reason)}</div>` : ""}${pedido.observacoes ? `<div style="margin-top:8px;color:#666;font-size:14px;"><strong>Obs.:</strong> ${escapeHtml(pedido.observacoes)}</div>` : ""}</div>`;
+${["pendente","confirmado"].includes(pedido.status) ? `<button onclick="abrirCancelamentoPedido('${pedido.id}')" style="border:0;background:#fee2e2;color:#b91c1c;padding:10px 13px;border-radius:8px;cursor:pointer;font-weight:bold;">✖ Cancelar pedido</button>` : ""}</div><div style="margin-top:14px;">${itensHtml}</div><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px;"><span style="color:#555;"><strong>Entrega:</strong> ${escapeHtml(pedido.endereco_entrega || "Não informado")}</span><div style="font-size:14px;color:#555;"><strong>💳 Pagamento:</strong> ${escapeHtml(formatarFormaPagamento(pedido.payment_method))} — ${escapeHtml(pedido.payment_status || 'aguardando_pagamento')}</div><strong style="font-size:18px;">Total: R$ ${Number(pedido.total || 0).toFixed(2).replace('.', ',')}</strong></div>${pedido.cancel_reason ? `<div style="margin-top:8px;color:#b91c1c;font-size:14px;"><strong>Motivo do cancelamento:</strong> ${escapeHtml(pedido.cancel_reason)}</div>` : ""}${pedido.observacoes ? `<div style="margin-top:8px;color:#666;font-size:14px;"><strong>Obs.:</strong> ${escapeHtml(pedido.observacoes)}</div>` : ""}</div>`;
         }).join("");
     }
     container.innerHTML = html;
@@ -4129,6 +4157,7 @@ async function abrirPedidosVendedor() {
                     </div>
                 </div>
                 <div style="margin-top:15px;color:#444;"><strong>📍 Entrega:</strong> ${escapeHtml(pedido.endereco_entrega || 'Não informado')}</div>
+                <div style="margin-top:8px;color:#444;"><strong>💳 Pagamento:</strong> ${escapeHtml(formatarFormaPagamento(pedido.payment_method))} — <span style="color:#b45309;">${escapeHtml(pedido.payment_status || 'aguardando_pagamento')}</span></div>
                 ${pedido.observacoes ? `<div style="margin-top:8px;color:#666;"><strong>📝 Observações:</strong> ${escapeHtml(pedido.observacoes)}</div>` : ''}
                 ${pedido.cancel_reason ? `<div style="margin-top:8px;color:#b91c1c;"><strong>Motivo do cancelamento:</strong> ${escapeHtml(pedido.cancel_reason)}</div>` : ''}
                 <div style="margin-top:14px;">${itensHtml}</div>
@@ -4140,6 +4169,15 @@ async function abrirPedidosVendedor() {
 
     html += `</div></div>`;
     document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function formatarFormaPagamento(metodo) {
+    return ({
+        pix: "PIX",
+        cartao_debito: "Cartão de débito",
+        cartao_credito: "Cartão de crédito",
+        boleto: "Boleto bancário"
+    })[metodo] || metodo || "Não informado";
 }
 
 function formatarStatusPedido(status) {
@@ -5092,6 +5130,29 @@ iniciarTimersOfertasCarrinho();
                 <button onclick="aplicarCupomCarrinho()" style="border:0;background:#2563eb;color:white;padding:0 15px;border-radius:8px;cursor:pointer;font-weight:bold;">Aplicar</button>
             </div>
             <div id="resultadoCupomCarrinho" style="font-size:13px;margin-top:8px;min-height:18px;"></div>
+        </div>
+
+        <div style="margin-top:15px;padding:14px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;">
+            <div style="font-weight:bold;margin-bottom:10px;">💳 Forma de pagamento</div>
+            <div style="display:grid;gap:9px;">
+                <label style="display:flex;align-items:center;gap:9px;padding:10px;border:1px solid #e5e7eb;border-radius:9px;background:white;cursor:pointer;">
+                    <input type="radio" name="formaPagamento" value="pix" onchange="selecionarFormaPagamento('pix')">
+                    <span>💠 <strong>PIX</strong><small style="display:block;color:#666;margin-left:24px;">Pagamento instantâneo</small></span>
+                </label>
+                <label style="display:flex;align-items:center;gap:9px;padding:10px;border:1px solid #e5e7eb;border-radius:9px;background:white;cursor:pointer;">
+                    <input type="radio" name="formaPagamento" value="cartao_debito" onchange="selecionarFormaPagamento('cartao_debito')">
+                    <span>💳 <strong>Cartão de débito</strong><small style="display:block;color:#666;margin-left:24px;">Você será direcionado ao pagamento seguro</small></span>
+                </label>
+                <label style="display:flex;align-items:center;gap:9px;padding:10px;border:1px solid #e5e7eb;border-radius:9px;background:white;cursor:pointer;">
+                    <input type="radio" name="formaPagamento" value="cartao_credito" onchange="selecionarFormaPagamento('cartao_credito')">
+                    <span>💳 <strong>Cartão de crédito</strong><small style="display:block;color:#666;margin-left:24px;">Você será direcionado ao pagamento seguro</small></span>
+                </label>
+                <label style="display:flex;align-items:center;gap:9px;padding:10px;border:1px solid #e5e7eb;border-radius:9px;background:white;cursor:pointer;">
+                    <input type="radio" name="formaPagamento" value="boleto" onchange="selecionarFormaPagamento('boleto')">
+                    <span>🧾 <strong>Boleto bancário</strong><small style="display:block;color:#666;margin-left:24px;">Pagamento sujeito à compensação</small></span>
+                </label>
+            </div>
+            <div id="avisoPagamentoCarrinho" style="margin-top:10px;font-size:13px;color:#666;">Selecione uma forma de pagamento para continuar.</div>
         </div>
 
         <div style="display:flex;justify-content:space-between;align-items:center;border-top:2px solid #eee;padding-top:18px;margin-top:10px;">
