@@ -321,20 +321,23 @@
             Entrar
         </button>
 <button
+<button
     id="btnPainelVendedor"
     onclick="abrirPainelVendedor()"
     style="
         display:none;
         background:#16a34a;
         color:white;
-        border:0;
+        border:none;
         padding:10px 16px;
         border-radius:8px;
         cursor:pointer;
         font-weight:bold;
+        margin-left:8px;
     "
 >
     🏪 Painel do Vendedor
+</button>
 </button>
         <button
             class="carrinho"
@@ -1696,6 +1699,75 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
         verificarTipoUsuario();
     }, 1000);
+
+});
+
+</script>
+    <script>
+
+async function verificarTipoUsuario() {
+
+    console.log("🔎 Verificando usuário vendedor...");
+
+    const botao = document.getElementById("btnPainelVendedor");
+
+    if (!botao) {
+        console.error("❌ Botão btnPainelVendedor não encontrado.");
+        return;
+    }
+
+    const resultado =
+        await window.supabaseClient.auth.getUser();
+
+    const user = resultado.data.user;
+
+    if (!user) {
+        console.log("❌ Nenhum usuário logado.");
+        botao.style.display = "none";
+        return;
+    }
+
+    console.log("👤 Usuário:", user.id);
+
+    const resultadoPerfil =
+        await window.supabaseClient
+            .from("profiles")
+            .select("nome, tipo")
+            .eq("id", user.id)
+            .single();
+
+    const perfil = resultadoPerfil.data;
+    const erro = resultadoPerfil.error;
+
+    console.log("👤 Perfil:", perfil);
+
+    if (erro) {
+        console.error("❌ Erro ao buscar perfil:", erro);
+        return;
+    }
+
+    if (perfil.tipo === "vendedor") {
+
+        console.log("🏪 Usuário é vendedor!");
+
+        botao.style.display = "inline-block";
+
+    } else {
+
+        console.log("👤 Usuário não é vendedor.");
+
+        botao.style.display = "none";
+    }
+}
+
+
+window.addEventListener("load", function() {
+
+    setTimeout(function() {
+
+        verificarTipoUsuario();
+
+    }, 1500);
 
 });
 
