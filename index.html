@@ -1772,5 +1772,388 @@ window.addEventListener("load", function() {
 });
 
 </script>
+    <div
+    id="areaProdutos"
+    style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:#f5f7fa;
+        z-index:10000;
+        overflow-y:auto;
+    "
+>
+
+    <div style="
+        max-width:800px;
+        margin:0 auto;
+        padding:30px 20px;
+    ">
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:25px;
+        ">
+
+            <div>
+                <h1>📦 Meus Produtos</h1>
+                <p style="color:#666;">
+                    Cadastre os produtos da sua loja.
+                </p>
+            </div>
+
+            <button
+                onclick="fecharProdutos()"
+                style="
+                    border:0;
+                    background:#ddd;
+                    padding:12px 18px;
+                    border-radius:8px;
+                    cursor:pointer;
+                "
+            >
+                Voltar
+            </button>
+
+        </div>
+
+
+        <div style="
+            background:white;
+            padding:25px;
+            border-radius:15px;
+            box-shadow:0 3px 15px rgba(0,0,0,.08);
+        ">
+
+            <h2>➕ Cadastrar produto</h2>
+
+            <input
+                id="produtoNome"
+                type="text"
+                placeholder="Nome do produto"
+                style="
+                    width:100%;
+                    box-sizing:border-box;
+                    padding:14px;
+                    margin-top:15px;
+                    border:1px solid #ddd;
+                    border-radius:8px;
+                "
+            >
+
+            <textarea
+                id="produtoDescricao"
+                placeholder="Descrição do produto"
+                style="
+                    width:100%;
+                    box-sizing:border-box;
+                    min-height:100px;
+                    padding:14px;
+                    margin-top:15px;
+                    border:1px solid #ddd;
+                    border-radius:8px;
+                "
+            ></textarea>
+
+            <select
+                id="produtoCategoria"
+                style="
+                    width:100%;
+                    padding:14px;
+                    margin-top:15px;
+                    border:1px solid #ddd;
+                    border-radius:8px;
+                "
+            >
+                <option value="">Selecione uma categoria</option>
+            </select>
+
+            <input
+                id="produtoPreco"
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="Preço (R$)"
+                style="
+                    width:100%;
+                    box-sizing:border-box;
+                    padding:14px;
+                    margin-top:15px;
+                    border:1px solid #ddd;
+                    border-radius:8px;
+                "
+            >
+
+            <input
+                id="produtoEstoque"
+                type="number"
+                min="0"
+                placeholder="Quantidade em estoque"
+                style="
+                    width:100%;
+                    box-sizing:border-box;
+                    padding:14px;
+                    margin-top:15px;
+                    border:1px solid #ddd;
+                    border-radius:8px;
+                "
+            >
+
+            <button
+                onclick="salvarProduto()"
+                style="
+                    width:100%;
+                    margin-top:20px;
+                    background:#16a34a;
+                    color:white;
+                    border:0;
+                    padding:15px;
+                    border-radius:8px;
+                    cursor:pointer;
+                    font-weight:bold;
+                    font-size:16px;
+                "
+            >
+                Cadastrar produto
+            </button>
+
+            <div
+                id="mensagemProduto"
+                style="
+                    margin-top:15px;
+                    font-weight:bold;
+                "
+            ></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+async function abrirProdutos() {
+
+    document.getElementById("areaProdutos").style.display = "block";
+
+    await carregarCategorias();
+
+}
+
+
+function fecharProdutos() {
+
+    document.getElementById("areaProdutos").style.display = "none";
+
+}
+
+
+async function carregarCategorias() {
+
+    const select =
+        document.getElementById("produtoCategoria");
+
+    select.innerHTML =
+        '<option value="">Selecione uma categoria</option>';
+
+
+    const { data, error } =
+        await window.supabaseClient
+            .from("categories")
+            .select("id, nome")
+            .eq("ativo", true)
+            .order("nome");
+
+
+    if (error) {
+
+        console.error("Erro ao carregar categorias:", error);
+
+        return;
+    }
+
+
+    data.forEach(categoria => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = categoria.id;
+
+        option.textContent = categoria.nome;
+
+        select.appendChild(option);
+
+    });
+
+}
+
+
+async function salvarProduto() {
+
+    const mensagem =
+        document.getElementById("mensagemProduto");
+
+
+    const nome =
+        document.getElementById("produtoNome").value.trim();
+
+    const descricao =
+        document.getElementById("produtoDescricao").value.trim();
+
+    const categoria =
+        document.getElementById("produtoCategoria").value;
+
+    const preco =
+        parseFloat(
+            document.getElementById("produtoPreco").value
+        );
+
+    const estoque =
+        parseInt(
+            document.getElementById("produtoEstoque").value
+        );
+
+
+    if (!nome) {
+
+        mensagem.style.color = "red";
+        mensagem.textContent =
+            "Digite o nome do produto.";
+
+        return;
+    }
+
+
+    if (!categoria) {
+
+        mensagem.style.color = "red";
+        mensagem.textContent =
+            "Selecione uma categoria.";
+
+        return;
+    }
+
+
+    if (isNaN(preco) || preco < 0) {
+
+        mensagem.style.color = "red";
+        mensagem.textContent =
+            "Digite um preço válido.";
+
+        return;
+    }
+
+
+    if (isNaN(estoque) || estoque < 0) {
+
+        mensagem.style.color = "red";
+        mensagem.textContent =
+            "Digite um estoque válido.";
+
+        return;
+    }
+
+
+    const {
+        data: { user }
+    } = await window.supabaseClient.auth.getUser();
+
+
+    if (!user) {
+
+        mensagem.style.color = "red";
+        mensagem.textContent =
+            "Você precisa estar logado.";
+
+        return;
+    }
+
+
+    mensagem.style.color = "#555";
+    mensagem.textContent =
+        "Salvando produto...";
+
+
+    const { data: loja, error: erroLoja } =
+        await window.supabaseClient
+            .from("stores")
+            .select("id")
+            .eq("owner_id", user.id)
+            .single();
+
+
+    if (erroLoja || !loja) {
+
+        mensagem.style.color = "red";
+        mensagem.textContent =
+            "Sua loja não foi encontrada.";
+
+        console.error(erroLoja);
+
+        return;
+    }
+
+
+    const { data, error } =
+        await window.supabaseClient
+            .from("products")
+            .insert({
+
+                store_id: loja.id,
+
+                category_id: categoria,
+
+                nome: nome,
+
+                descricao: descricao,
+
+                preco: preco,
+
+                estoque: estoque,
+
+                ativo: true
+
+            })
+            .select()
+            .single();
+
+
+    if (error) {
+
+        console.error("Erro ao cadastrar produto:", error);
+
+        mensagem.style.color = "red";
+
+        mensagem.textContent =
+            "Erro ao cadastrar produto: " +
+            error.message;
+
+        return;
+    }
+
+
+    mensagem.style.color = "green";
+
+    mensagem.textContent =
+        "✅ Produto cadastrado com sucesso!";
+
+
+    document.getElementById("produtoNome").value = "";
+    document.getElementById("produtoDescricao").value = "";
+    document.getElementById("produtoCategoria").value = "";
+    document.getElementById("produtoPreco").value = "";
+    document.getElementById("produtoEstoque").value = "";
+
+
+    console.log("Produto cadastrado:", data);
+
+}
+
+</script>
 </body>
 </html>
