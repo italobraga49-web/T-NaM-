@@ -1050,47 +1050,15 @@ async function finalizarCompra() {
     }
 
     try {
-        let pedido, erroPedido;
-        const completo = await supabaseClient
+        const { data: pedido, error: erroPedido } = await supabaseClient
             .from("orders")
             .insert({
                 customer_id: data.user.id,
                 status: "pendente",
-                total: total,
-                endereco_entrega: endereco.trim(),
-                observacoes: observacoes.trim()
+                total: total
             })
             .select("id")
             .single();
-
-        pedido = completo.data;
-        erroPedido = completo.error;
-
-        // Fallback para schema cache antigo do PostgREST.
-        if (erroPedido && /endereco_entrega|observacoes|schema cache/i.test(erroPedido.message || "")) {
-            const basico = await supabaseClient
-                .from("orders")
-                .insert({
-                    customer_id: data.user.id,
-                    status: "pendente",
-                    total: total
-                })
-                .select("id")
-                .single();
-            pedido = basico.data;
-            erroPedido = basico.error;
-
-            if (!erroPedido && pedido?.id) {
-                await supabaseClient
-                    .from("orders")
-                    .update({
-                        endereco_entrega: endereco.trim(),
-                        observacoes: observacoes.trim()
-                    })
-                    .eq("id", pedido.id);
-            }
-        }
-
         if (erroPedido) throw erroPedido;
 
         const itens = carrinho.map(item => ({
@@ -1534,7 +1502,7 @@ async function carregarPerfilCliente() {
     const telefone = perfil?.telefone || user.user_metadata?.telefone || "Não informado";
     const tipo = perfil?.tipo || "cliente";
     const enderecos = await carregarEnderecosCliente();
-    const { data: pedidos, error: erroPedidos } = await supabaseClient.from("orders").select(`id,status,total,endereco_entrega,observacoes,created_at,order_items(id,quantidade,preco_unitario,subtotal,products(id,nome))`).eq("customer_id", user.id).order("created_at", {ascending:false});
+    const { data: pedidos, error: erroPedidos } = await supabaseClient.from("orders").select(`id,status,total,created_at,order_items(id,quantidade,preco_unitario,subtotal,products(id,nome))`).eq("customer_id", user.id).order("created_at", {ascending:false});
     let html = `<div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:18px;margin-bottom:20px;"><h3 style="margin:0 0 14px;">Dados da conta</h3><div style="display:grid;gap:8px;color:#444;"><div><strong>Nome:</strong> ${escapeHtml(nome)}</div><div><strong>E-mail:</strong> ${escapeHtml(user.email || "Não informado")}</div><div><strong>Telefone:</strong> ${escapeHtml(telefone)}</div><div><strong>Tipo:</strong> ${escapeHtml(tipo === "cliente" ? "Cliente" : "Revendedor")}</div></div></div><div style="margin-bottom:22px;">
       <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
         <h3 style="margin:0;">📍 Meus endereços</h3>
@@ -3672,7 +3640,7 @@ async function abrirPedidosVendedor() {
         .from("order_items")
         .select(`
             id, quantidade, preco_unitario, subtotal,
-            orders (id, status, total, endereco_entrega, observacoes, created_at, customer_id),
+            orders (id, status, total, created_at, customer_id),
             products!inner (id, nome, store_id)
         `)
         .eq("products.store_id", loja.id)
