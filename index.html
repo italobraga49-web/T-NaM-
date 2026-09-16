@@ -755,37 +755,19 @@
 
     }
 
-
-    function buscar() {
-
-        const busca =
-            document.getElementById(
-                "search"
-            ).value.trim();
-
-        const cep =
-            document.getElementById(
-                "cep"
-            ).value.trim();
+    }
 
 
-        if (!busca && !cep) {
-
-            alert(
-                "Digite um produto ou seu CEP."
-            );
-
-            return;
-
-        }
-
+    function filtrarCategoria(categoria) {
 
         alert(
-            "Busca preparada! Os produtos reais serão carregados do banco na próxima etapa."
+            "Categoria selecionada: " + categoria
         );
 
     }
 
+
+    
 
     function abrirLogin() {
 
