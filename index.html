@@ -866,6 +866,7 @@ const supabaseClient =
     );
 
 console.log("✅ TáNaMão conectado ao Supabase");
+setTimeout(verificarRetornoMercadoPago, 300);
 
 
 /*
@@ -1082,6 +1083,71 @@ function iniciarTimersOfertasCarrinho() {
             el.textContent = `⏱️ Aproveite em ${String(min).padStart(2,'0')}:${String(seg).padStart(2,'0')}`;
         });
     }, 1000);
+}
+
+async function verificarConexaoMercadoPago() {
+    const statusEl = document.getElementById("statusMercadoPagoVendedor");
+    if (!statusEl) return;
+    try {
+        const { data: authData } = await supabaseClient.auth.getUser();
+        if (!authData?.user) return;
+        const { data: loja, error } = await supabaseClient.from("stores").select("id,nome,mp_connected,mp_user_id,mp_token_expires_at").eq("owner_id", authData.user.id).maybeSingle();
+        if (error) throw error;
+        if (!loja) { statusEl.textContent = "Cadastre sua loja primeiro."; return; }
+        if (loja.mp_connected && loja.mp_user_id) {
+            const expira = loja.mp_token_expires_at ? new Date(loja.mp_token_expires_at).toLocaleDateString("pt-BR") : "não informado";
+            statusEl.innerHTML = `🟢 <strong>Mercado Pago conectado.</strong><br><span style="font-size:13px;color:#666;">Conta vinculada: ${escapeHtml(String(loja.mp_user_id))} · validade da autorização: ${escapeHtml(expira)}</span>`;
+        } else { statusEl.textContent = "🔴 Mercado Pago ainda não conectado. Conecte a conta para receber suas vendas."; }
+    } catch (e) { console.error("Erro ao verificar conexão Mercado Pago:", e); statusEl.textContent = "Não foi possível consultar a conexão agora."; }
+}
+
+async function conectarMercadoPagoVendedor() {
+    try {
+        const { data: authData } = await supabaseClient.auth.getUser();
+        if (!authData?.user) { abrirLogin(); return; }
+        const { data: loja } = await supabaseClient.from("stores").select("id").eq("owner_id", authData.user.id).maybeSingle();
+        if (!loja) { alert("Cadastre sua loja antes de conectar o Mercado Pago."); return; }
+        const { data, error } = await supabaseClient.functions.invoke("mercadopago-oauth-iniciar", { body: { store_id: loja.id } });
+        if (error) throw error;
+        if (!data?.authorization_url) throw new Error(data?.error || "Não foi possível gerar o link de autorização.");
+        window.location.href = data.authorization_url;
+    } catch (e) { console.error("Erro ao iniciar OAuth Mercado Pago:", e); alert("❌ Não foi possível iniciar a conexão com o Mercado Pago.\n\n" + (e?.message || e)); }
+}
+
+function verificarRetornoMercadoPago() {
+    const params = new URLSearchParams(window.location.search);
+    const mp = params.get("mp");
+    if (mp === "connected") {
+        alert("✅ Conta Mercado Pago conectada ao TáNaMão com sucesso!");
+        window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+    } else if (mp === "error") {
+        alert("❌ Não foi possível conectar o Mercado Pago. Tente novamente.");
+        window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+    }
+}
+
+function abrirTelaPagamentoSplit(pedidoId, metodo, initPoint, comissao, valorVendedor) {
+    document.getElementById("telaPagamentoTanamao")?.remove();
+    const nomes={pix:"PIX",cartao_debito:"Cartão de débito",cartao_credito:"Cartão de crédito",boleto:"Boleto bancário"};
+    const tela=document.createElement("div"); tela.id="telaPagamentoTanamao";
+    tela.style.cssText="position:fixed;inset:0;background:#f5f7fa;z-index:20000;overflow:auto;font-family:inherit;";
+    tela.innerHTML=`<div style="max-width:620px;margin:0 auto;padding:28px 18px 45px;"><button onclick="document.getElementById('telaPagamentoTanamao')?.remove()" style="border:0;background:#e5e7eb;padding:10px 15px;border-radius:9px;cursor:pointer;font-weight:bold;">← Voltar</button><div style="background:white;border-radius:18px;padding:25px;margin-top:18px;box-shadow:0 8px 30px rgba(0,0,0,.08);"><div style="text-align:center;"><div style="font-size:42px;">💳</div><h1 style="margin:8px 0 5px;">Pagamento do pedido</h1><p style="color:#666;margin:0;">Pagamento processado com segurança pelo Mercado Pago.</p></div><div style="margin-top:25px;background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:16px;"><div style="font-size:12px;color:#9a3412;font-weight:bold;">PEDIDO</div><div style="font-size:20px;font-weight:800;margin-top:4px;">#${escapeHtml(String(pedidoId))}</div><div style="margin-top:10px;color:#444;"><strong>Forma escolhida:</strong> ${escapeHtml(nomes[metodo]||metodo)}</div></div><div style="margin-top:18px;padding:17px;border:1px solid #e5e7eb;border-radius:12px;"><h3 style="margin:0 0 10px;">🔒 Split do marketplace</h3><p style="margin:0;color:#666;line-height:1.5;">O Mercado Pago processará o pagamento e fará a divisão automática entre o vendedor e o TáNaMão.</p></div><div style="margin-top:14px;background:#f8fafc;border-radius:12px;padding:15px;color:#444;"><div><strong>Comissão do TáNaMão:</strong> R$ ${Number(comissao||0).toFixed(2).replace('.',',')}</div><div style="margin-top:6px;"><strong>Valor do vendedor:</strong> R$ ${Number(valorVendedor||0).toFixed(2).replace('.',',')}</div></div><div style="margin-top:20px;"><button id="btnContinuarPagamentoTanamao" style="width:100%;border:0;background:#009ee3;color:white;padding:15px;border-radius:11px;cursor:pointer;font-size:16px;font-weight:800;">Continuar para pagamento seguro</button></div></div></div>`;
+    document.body.appendChild(tela);
+    document.getElementById("btnContinuarPagamentoTanamao").onclick=()=>{ window.location.href=initPoint; };
+}
+
+async function iniciarPagamentoReal(pedidoId, metodo) {
+    try {
+        const {data,error}=await supabaseClient.functions.invoke("criar-pagamento",{body:{order_id:pedidoId,payment_method:metodo}});
+        if(error) throw error;
+        if(!data?.init_point) throw new Error(data?.error||"O gateway não retornou o endereço de pagamento.");
+        abrirTelaPagamentoSplit(pedidoId,metodo,data.init_point,data.marketplace_fee,data.seller_amount);
+        return true;
+    } catch(err) {
+        console.error("Erro ao iniciar pagamento real:",err);
+        alert("❌ Não foi possível preparar o pagamento.\n\n"+(err?.message||err));
+        return false;
+    }
 }
 
 function selecionarFormaPagamento(metodo) {
@@ -1324,16 +1390,17 @@ async function finalizarCompra() {
             .eq("id", pedido.id)
             .maybeSingle();
 
-        const metodoPagamentoFinal = formaPagamentoCarrinho;
-        alert(
-            "✅ Pedido criado!\n\nNúmero: " + pedido.id +
-            "\nForma de pagamento: " + formatarFormaPagamento(metodoPagamentoFinal) +
-            "\n\nAgora você será encaminhado para o ambiente seguro do Mercado Pago para concluir o pagamento."
-        );
+        const pagamentoPreparado = await iniciarPagamentoReal(pedido.id, formaPagamentoCarrinho);
+        if (!pagamentoPreparado) throw new Error("O pedido foi criado, mas o pagamento não pôde ser preparado.");
 
-        // O pedido permanece pendente até o webhook confirmar o pagamento.
-        const pagamentoAberto = await iniciarPagamentoReal(pedido.id, metodoPagamentoFinal);
-        if (!pagamentoAberto) return;
+        alert(
+            "✅ Pedido realizado com sucesso!\n\nNúmero: " +
+            pedido.id +
+            "\nCódigo de rastreio: " +
+            (pedidoRastreio?.tracking_code || "gerando...") +
+            "\nForma de pagamento: " + formatarFormaPagamento(formaPagamentoCarrinho) +
+            "\nStatus do pagamento: Aguardando pagamento"
+        );
 
         carrinho = [];
         cupomCarrinhoAtual = null;
@@ -2837,6 +2904,7 @@ async function abrirPainelVendedor() {
 
 
     await verificarMinhaLoja();
+    await verificarConexaoMercadoPago();
 
 }
 
@@ -4182,32 +4250,6 @@ function formatarFormaPagamento(metodo) {
     })[metodo] || metodo || "Não informado";
 }
 
-async function iniciarPagamentoReal(pedidoId, metodo) {
-    const btn = document.getElementById("btnFinalizarCompra");
-    if (btn) { btn.disabled = true; btn.textContent = "⏳ Preparando pagamento..."; }
-
-    try {
-        const { data: sessao } = await supabaseClient.auth.getSession();
-        const token = sessao?.session?.access_token;
-        if (!token) throw new Error("Sessão expirada. Entre novamente.");
-
-        const { data, error } = await supabaseClient.functions.invoke("criar-pagamento", {
-            body: { order_id: pedidoId, payment_method: metodo }
-        });
-        if (error) throw error;
-        if (!data?.init_point) throw new Error(data?.error || "O gateway não retornou o endereço de pagamento.");
-
-        window.location.href = data.init_point;
-        return true;
-    } catch (err) {
-        console.error("Erro ao iniciar pagamento real:", err);
-        alert("❌ Não foi possível abrir o pagamento.\n\n" + (err?.message || err));
-        if (btn) { btn.disabled = false; btn.textContent = "Finalizar compra"; }
-        return false;
-    }
-}
-
-
 function formatarStatusPedido(status) {
     return ({pendente:'Pendente',confirmado:'Confirmado',em_preparo:'Em preparo',saiu_para_entrega:'Saiu para entrega',entregue:'Entregue',cancelado:'Cancelado'})[status] || status;
 }
@@ -4686,6 +4728,13 @@ iniciarTimersOfertasCarrinho();
                 <h3>Cupons de desconto</h3>
                 <p style="color:#666;">Crie, altere, ative ou desative cupons e limite-os a produtos específicos.</p>
                 <button onclick="abrirCuponsVendedor()" style="background:#7c3aed;color:white;border:0;padding:12px 18px;border-radius:8px;cursor:pointer;font-weight:bold;">🎟️ Gerenciar cupons</button>
+            </div>
+            <div style="background:white;padding:25px;border-radius:15px;box-shadow:0 3px 15px rgba(0,0,0,.08);">
+                <div style="font-size:32px;">💳</div>
+                <h3>Recebimentos</h3>
+                <p id="statusMercadoPagoVendedor" style="color:#666;">Conecte sua conta Mercado Pago para receber automaticamente suas vendas.</p>
+                <button onclick="conectarMercadoPagoVendedor()" style="background:#009ee3;color:white;border:0;padding:12px 18px;border-radius:8px;cursor:pointer;font-weight:bold;">🔗 Conectar Mercado Pago</button>
+                <button onclick="verificarConexaoMercadoPago()" style="background:#e5e7eb;color:#222;border:0;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:bold;margin-left:6px;margin-top:8px;">🔄 Atualizar</button>
             </div>
             <div style="background:white;padding:25px;border-radius:15px;box-shadow:0 3px 15px rgba(0,0,0,.08);">
                 <div style="font-size:32px;">🛒</div>
