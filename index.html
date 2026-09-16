@@ -4121,9 +4121,12 @@ async function abrirPedidosVendedor() {
                         <div style="color:#666;margin-top:5px;">${new Date(pedido.created_at).toLocaleString('pt-BR')}</div>
                         ${pedido.tracking_code ? `<div style="margin-top:7px;background:#fff7ed;border:1px solid #fed7aa;padding:7px 10px;border-radius:8px;display:inline-block;"><strong>📍 ${escapeHtml(pedido.tracking_code)}</strong></div>` : ''}
                     </div>
-                    <select onchange="atualizarStatusPedido('${pedido.id}', this.value)" style="padding:9px;border:1px solid #ddd;border-radius:8px;">
-                        ${['pendente','confirmado','em_preparo','saiu_para_entrega','entregue','cancelado'].map(st => `<option value="${st}" ${pedido.status === st ? 'selected' : ''}>${formatarStatusPedido(st)}</option>`).join('')}
-                    </select>
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                        <select id="statusPedido_${pedido.id}" onchange="atualizarStatusPedido('${pedido.id}', this.value)" style="padding:9px;border:1px solid #ddd;border-radius:8px;background:white;cursor:pointer;">
+                            ${['pendente','confirmado','em_preparo','saiu_para_entrega','entregue','cancelado'].map(st => `<option value="${st}" ${pedido.status === st ? 'selected' : ''}>${formatarStatusPedido(st)}</option>`).join('')}
+                        </select>
+                        ${['pendente','confirmado','em_preparo'].includes(pedido.status) ? `<button type="button" onclick="marcarPedidoPreparado('${pedido.id}')" style="border:0;background:#f97316;color:white;padding:10px 13px;border-radius:8px;cursor:pointer;font-weight:bold;white-space:nowrap;">👨‍🍳 Marcar como preparado</button>` : ''}
+                    </div>
                 </div>
                 <div style="margin-top:15px;color:#444;"><strong>📍 Entrega:</strong> ${escapeHtml(pedido.endereco_entrega || 'Não informado')}</div>
                 ${pedido.observacoes ? `<div style="margin-top:8px;color:#666;"><strong>📝 Observações:</strong> ${escapeHtml(pedido.observacoes)}</div>` : ''}
@@ -4144,12 +4147,26 @@ function formatarStatusPedido(status) {
 }
 
 async function atualizarStatusPedido(id, status) {
+    const statusPermitidos = [
+        "pendente",
+        "confirmado",
+        "em_preparo",
+        "saiu_para_entrega",
+        "entregue",
+        "cancelado"
+    ];
+
+    if (!statusPermitidos.includes(status)) {
+        alert("Status de pedido inválido.");
+        return false;
+    }
+
     const { data: authData, error: authError } =
         await supabaseClient.auth.getUser();
 
     if (authError || !authData.user) {
         abrirLogin();
-        return;
+        return false;
     }
 
     const { data: loja, error: erroLoja } = await supabaseClient
@@ -4160,18 +4177,44 @@ async function atualizarStatusPedido(id, status) {
 
     if (erroLoja || !loja) {
         alert("Sua loja não foi encontrada.");
-        return;
+        return false;
+    }
+
+    const select = document.getElementById("statusPedido_" + id);
+    if (select) select.disabled = true;
+
+    const { data: pedidoAtual, error: erroConsulta } = await supabaseClient
+        .from("orders")
+        .select("id,status,store_id")
+        .eq("id", id)
+        .eq("store_id", loja.id)
+        .maybeSingle();
+
+    if (erroConsulta || !pedidoAtual) {
+        if (select) select.disabled = false;
+        alert("❌ Não foi possível localizar este pedido na sua loja.");
+        return false;
+    }
+
+    const statusAnterior = pedidoAtual.status;
+
+    if (statusAnterior === status) {
+        if (select) select.disabled = false;
+        return true;
     }
 
     const { error } = await supabaseClient
         .from("orders")
-        .update({ status })
+        .update({ status: status })
         .eq("id", id)
         .eq("store_id", loja.id);
 
     if (error) {
         console.error("Erro ao atualizar status:", error);
-
+        if (select) {
+            select.value = statusAnterior || "pendente";
+            select.disabled = false;
+        }
         alert(
             "❌ NÃO FOI POSSÍVEL ATUALIZAR O PEDIDO.\n\n" +
             "Código: " + (error.code || "não informado") + "\n" +
@@ -4179,11 +4222,45 @@ async function atualizarStatusPedido(id, status) {
             "Detalhes: " + (error.details || "não informado") + "\n" +
             "Sugestão: " + (error.hint || "não informada")
         );
-        return;
+        return false;
     }
 
-    alert("✅ Status do pedido atualizado.");
+    // Registra a movimentação sem impedir a atualização do pedido caso
+    // a tabela de histórico tenha uma política RLS diferente.
+    const { error: erroHistorico } = await supabaseClient
+        .from("order_status_history")
+        .insert({
+            order_id: id,
+            status: status,
+            observacao: "Status alterado pela loja"
+        });
+
+    if (erroHistorico) {
+        console.warn("Status atualizado, mas histórico não foi registrado:", erroHistorico);
+    }
+
+    if (select) select.disabled = false;
+
+    alert("✅ Pedido #" + id + " atualizado para: " + formatarStatusPedido(status));
+
+    // Recarrega o painel para refletir imediatamente o novo status.
+    document.getElementById("painelPedidosVendedor")?.remove();
+    setTimeout(() => abrirPedidosVendedor(), 150);
+
+    return true;
 }
+
+async function marcarPedidoPreparado(id) {
+    const confirmar = confirm(
+        "Marcar o pedido #" + id + " como EM PREPARO?\n\n" +
+        "O cliente verá essa atualização no acompanhamento do pedido."
+    );
+
+    if (!confirmar) return;
+
+    await atualizarStatusPedido(id, "em_preparo");
+}
+
 
 /* ==================================================
    RASTREAMENTO PRÓPRIO TÁNAMÃO
