@@ -1463,5 +1463,175 @@
     </div>
 
 </div>
+    <script>
+
+async function abrirPainelVendedor() {
+
+    const { data: { user }, error } =
+        await window.supabaseClient.auth.getUser();
+
+    if (error || !user) {
+        alert("Você precisa estar logado.");
+        return;
+    }
+
+    const { data: perfil, error: erroPerfil } =
+        await window.supabaseClient
+            .from("profiles")
+            .select("nome, telefone, tipo")
+            .eq("id", user.id)
+            .single();
+
+    if (erroPerfil) {
+        console.error(erroPerfil);
+        alert("Não foi possível carregar seu perfil.");
+        return;
+    }
+
+    if (perfil.tipo !== "vendedor") {
+        alert("Esta área é exclusiva para vendedores.");
+        return;
+    }
+
+    document.getElementById("painelVendedor").style.display = "block";
+
+    await verificarMinhaLoja();
+}
+
+
+function fecharPainelVendedor() {
+
+    document.getElementById("painelVendedor").style.display = "none";
+
+}
+
+
+function abrirCadastroLoja() {
+
+    document.getElementById("cadastroLoja").style.display = "block";
+
+}
+
+
+async function verificarMinhaLoja() {
+
+    const { data: { user } } =
+        await window.supabaseClient.auth.getUser();
+
+    if (!user) return;
+
+    const { data, error } =
+        await window.supabaseClient
+            .from("stores")
+            .select("*")
+            .eq("owner_id", user.id)
+            .maybeSingle();
+
+    if (error) {
+        console.error("Erro ao verificar loja:", error);
+        return;
+    }
+
+    if (data) {
+
+        document.getElementById("cadastroLoja").style.display = "none";
+
+        console.log("Minha loja:", data);
+
+    }
+
+}
+
+
+async function salvarLoja() {
+
+    const nome =
+        document.getElementById("lojaNome").value.trim();
+
+    const descricao =
+        document.getElementById("lojaDescricao").value.trim();
+
+    const telefone =
+        document.getElementById("lojaTelefone").value.trim();
+
+    const cidade =
+        document.getElementById("lojaCidade").value.trim();
+
+    const estado =
+        document.getElementById("lojaEstado").value.trim().toUpperCase();
+
+    const cep =
+        document.getElementById("lojaCep").value.trim();
+
+
+    const mensagem =
+        document.getElementById("mensagemLoja");
+
+
+    if (!nome) {
+
+        mensagem.style.color = "red";
+        mensagem.textContent = "Digite o nome da loja.";
+
+        return;
+    }
+
+
+    const { data: { user }, error: erroUsuario } =
+        await window.supabaseClient.auth.getUser();
+
+
+    if (erroUsuario || !user) {
+
+        mensagem.style.color = "red";
+        mensagem.textContent = "Você precisa estar logado.";
+
+        return;
+    }
+
+
+    mensagem.style.color = "#555";
+    mensagem.textContent = "Criando sua loja...";
+
+
+    const { data, error } =
+        await window.supabaseClient
+            .from("stores")
+            .insert({
+                owner_id: user.id,
+                nome: nome,
+                descricao: descricao,
+                telefone: telefone,
+                cidade: cidade,
+                estado: estado,
+                cep: cep,
+                ativo: true
+            })
+            .select()
+            .single();
+
+
+    if (error) {
+
+        console.error("Erro ao criar loja:", error);
+
+        mensagem.style.color = "red";
+        mensagem.textContent =
+            "Erro ao criar loja: " + error.message;
+
+        return;
+    }
+
+
+    mensagem.style.color = "green";
+    mensagem.textContent =
+        "✅ Loja criada com sucesso!";
+
+
+    console.log("Loja criada:", data);
+
+}
+
+</script>
 </body>
 </html>
