@@ -320,7 +320,22 @@
             onclick="abrirLogin()">
             Entrar
         </button>
-
+<button
+    id="btnPainelVendedor"
+    onclick="abrirPainelVendedor()"
+    style="
+        display:none;
+        background:#16a34a;
+        color:white;
+        border:0;
+        padding:10px 16px;
+        border-radius:8px;
+        cursor:pointer;
+        font-weight:bold;
+    "
+>
+    🏪 Painel do Vendedor
+</button>
         <button
             class="carrinho"
             onclick="mostrarCarrinho()">
@@ -1631,6 +1646,58 @@ async function salvarLoja() {
     console.log("Loja criada:", data);
 
 }
+
+</script>
+    <script>
+
+async function verificarTipoUsuario() {
+
+    const botaoVendedor =
+        document.getElementById("btnPainelVendedor");
+
+    if (!botaoVendedor) return;
+
+    const {
+        data: { user }
+    } = await window.supabaseClient.auth.getUser();
+
+    if (!user) {
+        botaoVendedor.style.display = "none";
+        return;
+    }
+
+    const { data: perfil, error } =
+        await window.supabaseClient
+            .from("profiles")
+            .select("tipo")
+            .eq("id", user.id)
+            .single();
+
+    if (error) {
+        console.error("Erro ao verificar tipo:", error);
+        botaoVendedor.style.display = "none";
+        return;
+    }
+
+    if (perfil.tipo === "vendedor") {
+
+        botaoVendedor.style.display = "inline-block";
+
+    } else {
+
+        botaoVendedor.style.display = "none";
+
+    }
+
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    setTimeout(() => {
+        verificarTipoUsuario();
+    }, 1000);
+
+});
 
 </script>
 </body>
