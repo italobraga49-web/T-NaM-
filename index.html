@@ -930,7 +930,8 @@ function adicionarProdutoCarrinho(id) {
             id: produto.id,
             nome: produto.nome,
             preco: Number(produto.preco),
-            quantidade: 1
+            quantidade: 1,
+            store_id: produto.store_id || produto.stores?.id || null
         });
 
     }
@@ -1050,31 +1051,102 @@ async function finalizarCompra() {
     }
 
     try {
+        // Busca novamente no banco os produtos do carrinho para obter o store_id
+        // correto e evitar confiar em dados antigos do navegador.
+        const idsProdutos = [...new Set(carrinho.map(item => item.id))];
+
+        const { data: produtosBanco, error: erroProdutos } = await supabaseClient
+            .from("products")
+            .select("id, preco, store_id, ativo, estoque")
+            .in("id", idsProdutos);
+
+        if (erroProdutos) throw erroProdutos;
+
+        if (!produtosBanco || produtosBanco.length !== idsProdutos.length) {
+            throw new Error("Um ou mais produtos do carrinho não estão mais disponíveis.");
+        }
+
+        const mapaProdutos = new Map(
+            produtosBanco.map(produto => [String(produto.id), produto])
+        );
+
+        const lojas = [...new Set(
+            carrinho
+                .map(item => mapaProdutos.get(String(item.id))?.store_id)
+                .filter(Boolean)
+                .map(String)
+        )];
+
+        if (lojas.length === 0) {
+            throw new Error("Não foi possível identificar a loja dos produtos do carrinho.");
+        }
+
+        // A tabela orders possui um único store_id, portanto um pedido deve
+        // pertencer a uma única loja.
+        if (lojas.length > 1) {
+            throw new Error("Seu carrinho possui produtos de lojas diferentes. Finalize uma loja por vez.");
+        }
+
+        const storeId = lojas[0];
+
+        // Usa o preço atual do banco para impedir alteração de preço no navegador.
+        let totalFinal = 0;
+        const itens = carrinho.map(item => {
+            const produtoBanco = mapaProdutos.get(String(item.id));
+            if (!produtoBanco) {
+                throw new Error("Produto não encontrado: " + item.nome);
+            }
+
+            if (!produtoBanco.ativo) {
+                throw new Error("O produto "" + item.nome + "" não está mais disponível.");
+            }
+
+            const quantidade = Number(item.quantidade) || 0;
+            const preco = Number(produtoBanco.preco);
+            const estoque = Number(produtoBanco.estoque);
+
+            if (quantidade <= 0) {
+                throw new Error("Quantidade inválida para o produto "" + item.nome + "".");
+            }
+
+            if (estoque < quantidade) {
+                throw new Error("Estoque insuficiente para o produto "" + item.nome + "".");
+            }
+
+            const subtotal = preco * quantidade;
+            totalFinal += subtotal;
+
+            return {
+                order_id: null,
+                product_id: produtoBanco.id,
+                quantidade: quantidade,
+                preco_unitario: preco,
+                subtotal: subtotal
+            };
+        });
+
         const { data: pedido, error: erroPedido } = await supabaseClient
             .from("orders")
             .insert({
                 customer_id: data.user.id,
+                store_id: storeId,
                 status: "pendente",
-                total: total
+                total: totalFinal,
+                endereco_entrega: endereco,
+                observacoes: observacoes
             })
             .select("id")
             .single();
+
         if (erroPedido) throw erroPedido;
 
-        const itens = carrinho.map(item => ({
-            order_id: pedido.id,
-            product_id: item.id,
-            quantidade: item.quantidade,
-            preco_unitario: item.preco,
-            subtotal: item.preco * item.quantidade
-        }));
+        itens.forEach(item => { item.order_id = pedido.id; });
 
         const { error: erroItens } = await supabaseClient
             .from("order_items")
             .insert(itens);
 
         if (erroItens) {
-            // Tenta evitar um pedido sem itens caso a tabela permita exclusão.
             await supabaseClient.from("orders").delete().eq("id", pedido.id);
             throw erroItens;
         }
@@ -1087,7 +1159,7 @@ async function finalizarCompra() {
 
     } catch (erro) {
         console.error("Erro ao finalizar pedido:", erro);
-        alert("❌ Não foi possível finalizar o pedido. Verifique se as tabelas de pedidos foram configuradas no Supabase.\n\n" + (erro.message || "Erro desconhecido."));
+        alert("❌ Não foi possível finalizar o pedido.\n\n" + (erro.message || "Erro desconhecido."));
     } finally {
         if (btn) {
             btn.disabled = carrinho.length === 0;
@@ -1502,7 +1574,7 @@ async function carregarPerfilCliente() {
     const telefone = perfil?.telefone || user.user_metadata?.telefone || "Não informado";
     const tipo = perfil?.tipo || "cliente";
     const enderecos = await carregarEnderecosCliente();
-    const { data: pedidos, error: erroPedidos } = await supabaseClient.from("orders").select(`id,status,total,created_at,order_items(id,quantidade,preco_unitario,subtotal,products(id,nome))`).eq("customer_id", user.id).order("created_at", {ascending:false});
+    const { data: pedidos, error: erroPedidos } = await supabaseClient.from("orders").select(`id,status,total,created_at,endereco_entrega,observacoes,order_items(id,quantidade,preco_unitario,subtotal,products(id,nome))`).eq("customer_id", user.id).order("created_at", {ascending:false});
     let html = `<div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:18px;margin-bottom:20px;"><h3 style="margin:0 0 14px;">Dados da conta</h3><div style="display:grid;gap:8px;color:#444;"><div><strong>Nome:</strong> ${escapeHtml(nome)}</div><div><strong>E-mail:</strong> ${escapeHtml(user.email || "Não informado")}</div><div><strong>Telefone:</strong> ${escapeHtml(telefone)}</div><div><strong>Tipo:</strong> ${escapeHtml(tipo === "cliente" ? "Cliente" : "Revendedor")}</div></div></div><div style="margin-bottom:22px;">
       <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
         <h3 style="margin:0;">📍 Meus endereços</h3>
@@ -2009,6 +2081,7 @@ async function carregarProdutosMarketplace() {
                 .from("products")
                 .select(`
                     id,
+                    store_id,
                     nome,
                     descricao,
                     preco,
@@ -3640,7 +3713,7 @@ async function abrirPedidosVendedor() {
         .from("order_items")
         .select(`
             id, quantidade, preco_unitario, subtotal,
-            orders (id, status, total, created_at, customer_id),
+            orders (id, status, total, created_at, customer_id, endereco_entrega, observacoes),
             products!inner (id, nome, store_id)
         `)
         .eq("products.store_id", loja.id)
