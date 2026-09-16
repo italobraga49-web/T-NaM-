@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -444,6 +444,13 @@
         </button>
 
         <button
+            class="btn-revendedor"
+            onclick="abrirCadastroRevendedor()"
+        >
+            🏪 Quero ser Revendedor
+        </button>
+
+        <button
             id="btnPainelVendedor"
             onclick="abrirPainelVendedor()"
             style="
@@ -457,7 +464,7 @@
                 font-weight:bold;
             "
         >
-            🏪 Painel do Vendedor
+            🏪 Painel do Revendedor
         </button>
 
         <button
@@ -772,7 +779,7 @@
                 </option>
 
                 <option value="vendedor">
-                    Sou vendedor
+                    Sou revendedor
                 </option>
 
             </select>
@@ -1093,6 +1100,27 @@ async function finalizarCompra() {
 LOGIN
 ==================================================
 */
+
+function abrirCadastroRevendedor() {
+
+    const modal = document.getElementById("modalLogin");
+    if (!modal) return;
+
+    modal.style.display = "flex";
+
+    if (!modoCadastro) {
+        alternarLoginCadastro();
+    }
+
+    const tipo = document.getElementById("cadTipo");
+    if (tipo) tipo.value = "vendedor";
+
+    const titulo = document.getElementById("tituloLogin");
+    const subtitulo = document.getElementById("subtituloLogin");
+    if (titulo) titulo.textContent = "Cadastro de Revendedor";
+    if (subtitulo) subtitulo.textContent = "Cadastre sua loja e comece a vender no TáNaMão";
+}
+
 
 function abrirLogin() {
 
@@ -2070,7 +2098,7 @@ async function verificarTipoUsuario() {
 
         if (
             perfil &&
-            perfil.tipo === "vendedor"
+            (perfil && (perfil.tipo === "vendedor" || perfil.tipo === "revendedor"))
         ) {
 
             botao.style.display =
@@ -2153,11 +2181,11 @@ async function abrirPainelVendedor() {
 
     if (
         !perfil ||
-        perfil.tipo !== "vendedor"
+        (perfil.tipo !== "vendedor" && perfil.tipo !== "revendedor")
     ) {
 
         alert(
-            "Esta área é exclusiva para vendedores."
+            "Esta área é exclusiva para revendedores."
         );
 
         return;
@@ -3285,8 +3313,8 @@ async function abrirPedidosVendedor() {
         .eq("id", data.user.id)
         .single();
 
-    if (!perfil || perfil.tipo !== "vendedor") {
-        alert("Esta área é exclusiva para vendedores.");
+    if (!perfil || (perfil.tipo !== "vendedor" && perfil.tipo !== "revendedor")) {
+        alert("Esta área é exclusiva para revendedores.");
         return;
     }
 
@@ -3433,7 +3461,7 @@ document.addEventListener(
             <div>
 
                 <h1 style="margin:0;color:#222;">
-                    🏪 Painel do Vendedor
+                    🏪 Painel do Revendedor
                 </h1>
 
                 <p style="margin-top:8px;color:#666;">
