@@ -1098,7 +1098,7 @@ async function finalizarCompra() {
             }
 
             if (!produtoBanco.ativo) {
-                throw new Error("O produto "" + item.nome + "" não está mais disponível.");
+                throw new Error("O produto \"" + item.nome + "\" não está mais disponível.");
             }
 
             const quantidade = Number(item.quantidade) || 0;
@@ -1106,11 +1106,11 @@ async function finalizarCompra() {
             const estoque = Number(produtoBanco.estoque);
 
             if (quantidade <= 0) {
-                throw new Error("Quantidade inválida para o produto "" + item.nome + "".");
+                throw new Error("Quantidade inválida para o produto \"" + item.nome + "\".");
             }
 
             if (estoque < quantidade) {
-                throw new Error("Estoque insuficiente para o produto "" + item.nome + "".");
+                throw new Error("Estoque insuficiente para o produto \"" + item.nome + "\".");
             }
 
             const subtotal = preco * quantidade;
@@ -4488,8 +4488,6 @@ atualizarBotaoUsuario();
     <button onclick="carregarPerfilCliente()" style="width:100%;margin-top:18px;background:#f3f4f6;color:#333;border:1px solid #ddd;padding:12px;border-radius:8px;cursor:pointer;font-weight:bold;">🔄 Atualizar</button>
     <button onclick="sairDaConta()" style="width:100%;margin-top:10px;background:#dc2626;color:white;border:0;padding:12px;border-radius:8px;cursor:pointer;font-weight:bold;">🚪 Sair da plataforma</button>
   </div>
-</div>
-
 </div>
 
 <!-- CADASTRO DE ENDEREÇO -->
