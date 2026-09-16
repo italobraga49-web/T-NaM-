@@ -321,7 +321,6 @@
             Entrar
         </button>
 <button
-<button
     id="btnPainelVendedor"
     onclick="abrirPainelVendedor()"
     style="
@@ -338,8 +337,6 @@
 >
     🏪 Painel do Vendedor
 </button>
-</button>
-        <button
             class="carrinho"
             onclick="mostrarCarrinho()">
             🛒 Carrinho
@@ -2155,7 +2152,10 @@ async function salvarProduto() {
 }
 
 </script>
-    <!-- ÁREA: MEUS PRODUTOS -->
+ <!-- ==============================
+     ÁREA: MEUS PRODUTOS
+================================ -->
+
 <div
     id="listaMeusProdutos"
     style="
@@ -2167,6 +2167,7 @@ async function salvarProduto() {
         overflow-y:auto;
     "
 >
+
     <div style="
         max-width:1000px;
         margin:0 auto;
@@ -2181,10 +2182,13 @@ async function salvarProduto() {
         ">
 
             <div>
+
                 <h1>📦 Meus Produtos</h1>
+
                 <p style="color:#666;">
                     Produtos cadastrados na sua loja
                 </p>
+
             </div>
 
             <button
@@ -2202,6 +2206,7 @@ async function salvarProduto() {
 
         </div>
 
+
         <div
             id="produtosContainer"
             style="
@@ -2213,57 +2218,88 @@ async function salvarProduto() {
         >
         </div>
 
+
         <div
             id="mensagemListaProdutos"
             style="
                 margin-top:20px;
                 font-weight:bold;
             "
-        ></div>
+        >
+        </div>
 
     </div>
+
 </div>
+
 
 <script>
 
+/* =========================================
+   ABRIR LISTA DE PRODUTOS
+========================================= */
+
 async function abrirListaProdutos() {
 
-    document.getElementById("listaMeusProdutos").style.display = "block";
+    document.getElementById(
+        "listaMeusProdutos"
+    ).style.display = "block";
 
     await carregarMeusProdutos();
 
 }
 
 
+/* =========================================
+   FECHAR LISTA
+========================================= */
+
 function fecharListaProdutos() {
 
-    document.getElementById("listaMeusProdutos").style.display = "none";
+    document.getElementById(
+        "listaMeusProdutos"
+    ).style.display = "none";
 
 }
 
 
+/* =========================================
+   CARREGAR PRODUTOS DO VENDEDOR
+========================================= */
+
 async function carregarMeusProdutos() {
 
     const container =
-        document.getElementById("produtosContainer");
+        document.getElementById(
+            "produtosContainer"
+        );
 
     const mensagem =
-        document.getElementById("mensagemListaProdutos");
+        document.getElementById(
+            "mensagemListaProdutos"
+        );
+
 
     container.innerHTML = "";
 
     mensagem.style.color = "#555";
-    mensagem.textContent = "Carregando produtos...";
 
+    mensagem.textContent =
+        "Carregando produtos...";
+
+
+    /* USUÁRIO LOGADO */
 
     const {
         data: { user }
-    } = await window.supabaseClient.auth.getUser();
+    } =
+        await window.supabaseClient.auth.getUser();
 
 
     if (!user) {
 
         mensagem.style.color = "red";
+
         mensagem.textContent =
             "Você precisa estar logado.";
 
@@ -2272,7 +2308,12 @@ async function carregarMeusProdutos() {
     }
 
 
-    const { data: loja, error: erroLoja } =
+    /* LOCALIZAR LOJA */
+
+    const {
+        data: loja,
+        error: erroLoja
+    } =
         await window.supabaseClient
             .from("stores")
             .select("id")
@@ -2282,18 +2323,27 @@ async function carregarMeusProdutos() {
 
     if (erroLoja || !loja) {
 
+        console.error(
+            "Erro ao localizar loja:",
+            erroLoja
+        );
+
         mensagem.style.color = "red";
+
         mensagem.textContent =
             "Sua loja não foi encontrada.";
-
-        console.error(erroLoja);
 
         return;
 
     }
 
 
-    const { data: produtos, error } =
+    /* BUSCAR PRODUTOS */
+
+    const {
+        data: produtos,
+        error
+    } =
         await window.supabaseClient
             .from("products")
             .select(`
@@ -2308,9 +2358,12 @@ async function carregarMeusProdutos() {
                 )
             `)
             .eq("store_id", loja.id)
-            .order("created_at", {
-                ascending: false
-            });
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
 
 
     if (error) {
@@ -2321,6 +2374,7 @@ async function carregarMeusProdutos() {
         );
 
         mensagem.style.color = "red";
+
         mensagem.textContent =
             "Erro ao carregar produtos: " +
             error.message;
@@ -2336,6 +2390,7 @@ async function carregarMeusProdutos() {
     if (!produtos || produtos.length === 0) {
 
         mensagem.style.color = "#666";
+
         mensagem.textContent =
             "Sua loja ainda não possui produtos cadastrados.";
 
@@ -2344,10 +2399,13 @@ async function carregarMeusProdutos() {
     }
 
 
+    /* CRIAR CARDS */
+
     produtos.forEach(produto => {
 
         const card =
             document.createElement("div");
+
 
         card.style.cssText = `
             background:white;
@@ -2378,6 +2436,7 @@ async function carregarMeusProdutos() {
                 ${produto.nome}
             </h3>
 
+
             <div style="
                 color:#666;
                 font-size:14px;
@@ -2386,12 +2445,17 @@ async function carregarMeusProdutos() {
                 ${categoria}
             </div>
 
+
             <p style="
                 min-height:45px;
                 color:#555;
             ">
-                ${produto.descricao || "Sem descrição"}
+                ${
+                    produto.descricao ||
+                    "Sem descrição"
+                }
             </p>
+
 
             <div style="
                 font-size:20px;
@@ -2399,17 +2463,23 @@ async function carregarMeusProdutos() {
                 color:#16a34a;
                 margin:15px 0;
             ">
-                R$ ${Number(produto.preco)
-                    .toFixed(2)
-                    .replace(".", ",")}
+                R$ ${
+                    Number(produto.preco)
+                        .toFixed(2)
+                        .replace(".", ",")
+                }
             </div>
+
 
             <div style="
                 margin-bottom:10px;
             ">
                 📦 Estoque:
-                <strong>${produto.estoque}</strong>
+                <strong>
+                    ${produto.estoque}
+                </strong>
             </div>
+
 
             <div style="
                 margin-bottom:15px;
@@ -2417,94 +2487,28 @@ async function carregarMeusProdutos() {
                 ${status}
             </div>
 
+
             <div style="
                 display:flex;
                 gap:8px;
             ">
 
                 <button
-                   async function editarProduto(id) {
-
-    const novoNome = prompt(
-        "Digite o novo nome do produto:"
-    );
-
-    if (novoNome === null) return;
-
-    if (!novoNome.trim()) {
-        alert("O nome não pode ficar vazio.");
-        return;
-    }
-
-    const novaDescricao = prompt(
-        "Digite a nova descrição do produto:"
-    );
-
-    if (novaDescricao === null) return;
-
-    const novoPreco = prompt(
-        "Digite o novo preço do produto:"
-    );
-
-    if (novoPreco === null) return;
-
-    const preco = parseFloat(
-        novoPreco.replace(",", ".")
-    );
-
-    if (isNaN(preco) || preco < 0) {
-        alert("Digite um preço válido.");
-        return;
-    }
-
-    const novoEstoque = prompt(
-        "Digite a nova quantidade em estoque:"
-    );
-
-    if (novoEstoque === null) return;
-
-    const estoque = parseInt(novoEstoque);
-
-    if (isNaN(estoque) || estoque < 0) {
-        alert("Digite um estoque válido.");
-        return;
-    }
-
-    const { error } =
-        await window.supabaseClient
-            .from("products")
-            .update({
-                nome: novoNome.trim(),
-                descricao: novaDescricao.trim(),
-                preco: preco,
-                estoque: estoque
-            })
-            .eq("id", id);
-
-    if (error) {
-
-        console.error(
-            "Erro ao atualizar produto:",
-            error
-        );
-
-        alert(
-            "❌ Erro ao atualizar: " +
-            error.message
-        );
-
-        return;
-    }
-
-    alert(
-        "✅ Produto atualizado com sucesso!"
-    );
-
-    await carregarMeusProdutos();
-
-}
+                    onclick="editarProduto('${produto.id}')"
+                    style="
+                        flex:1;
+                        border:0;
+                        background:#2563eb;
+                        color:white;
+                        padding:10px;
+                        border-radius:8px;
+                        cursor:pointer;
+                        font-weight:bold;
+                    "
+                >
                     ✏️ Editar
                 </button>
+
 
                 <button
                     onclick="excluirProduto('${produto.id}')"
@@ -2516,6 +2520,7 @@ async function carregarMeusProdutos() {
                         padding:10px;
                         border-radius:8px;
                         cursor:pointer;
+                        font-weight:bold;
                     "
                 >
                     🗑️ Excluir
@@ -2533,68 +2538,131 @@ async function carregarMeusProdutos() {
 }
 
 
+/* =========================================
+   EDITAR PRODUTO
+========================================= */
+
 async function editarProduto(id) {
 
-    alert("1 - FUNÇÃO INICIOU");
+    const novoNome =
+        prompt(
+            "Digite o novo nome do produto:"
+        );
 
-    const novoNome = prompt("2 - DIGITE O NOVO NOME:");
 
     if (novoNome === null) {
-        alert("3 - VOCÊ CANCELOU");
-        return;
-    }
-
-    alert("4 - NOME RECEBIDO: " + novoNome);
-
-}
-
-    const novaDescricao = prompt(
-        "Digite a nova descrição do produto:"
-    );
-
-    if (novaDescricao === null) return;
-
-
-    const novoPreco = prompt(
-        "Digite o novo preço do produto:"
-    );
-
-    if (novoPreco === null) return;
-
-    const preco = parseFloat(
-        novoPreco.replace(",", ".")
-    );
-
-    if (isNaN(preco) || preco < 0) {
-        alert("Digite um preço válido.");
         return;
     }
 
 
-    const novoEstoque = prompt(
-        "Digite a nova quantidade em estoque:"
-    );
+    if (!novoNome.trim()) {
 
-    if (novoEstoque === null) return;
+        alert(
+            "O nome do produto não pode ficar vazio."
+        );
 
-    const estoque = parseInt(novoEstoque);
+        return;
 
-    if (isNaN(estoque) || estoque < 0) {
-        alert("Digite um estoque válido.");
+    }
+
+
+    const novaDescricao =
+        prompt(
+            "Digite a nova descrição do produto:"
+        );
+
+
+    if (novaDescricao === null) {
         return;
     }
 
 
-    const { error } =
+    const novoPreco =
+        prompt(
+            "Digite o novo preço do produto:"
+        );
+
+
+    if (novoPreco === null) {
+        return;
+    }
+
+
+    const preco =
+        parseFloat(
+            novoPreco.replace(",", ".")
+        );
+
+
+    if (
+        isNaN(preco) ||
+        preco < 0
+    ) {
+
+        alert(
+            "Digite um preço válido."
+        );
+
+        return;
+
+    }
+
+
+    const novoEstoque =
+        prompt(
+            "Digite a nova quantidade em estoque:"
+        );
+
+
+    if (novoEstoque === null) {
+        return;
+    }
+
+
+    const estoque =
+        parseInt(novoEstoque);
+
+
+    if (
+        isNaN(estoque) ||
+        estoque < 0
+    ) {
+
+        alert(
+            "Digite um estoque válido."
+        );
+
+        return;
+
+    }
+
+
+    /* ATUALIZAR NO SUPABASE */
+
+    const {
+        error
+    } =
         await window.supabaseClient
             .from("products")
             .update({
-                nome: novoNome.trim(),
-                descricao: novaDescricao.trim(),
-                preco: preco,
-                estoque: estoque
+
+                nome:
+                    novoNome.trim(),
+
+                descricao:
+                    novaDescricao.trim(),
+
+                preco:
+                    preco,
+
+                estoque:
+                    estoque
+
             })
-            .eq("id", id);
+            .eq(
+                "id",
+                id
+            );
 
 
     if (error) {
@@ -2605,11 +2673,12 @@ async function editarProduto(id) {
         );
 
         alert(
-            "❌ Erro ao atualizar: " +
+            "❌ Erro ao atualizar produto:\n\n" +
             error.message
         );
 
         return;
+
     }
 
 
@@ -2618,96 +2687,16 @@ async function editarProduto(id) {
     );
 
 
-    await carregarMeusProdutos();
-
-}
-   async function editarProduto(id) {
-async function editarProduto(id) {
-
-    alert("1 - FUNÇÃO INICIOU");
-
-    const novoNome = prompt("2 - DIGITE O NOVO NOME:");
-
-    if (novoNome === null) {
-        alert("3 - VOCÊ CANCELOU");
-        return;
-    }
-
-    alert("4 - NOME RECEBIDO: " + novoNome);
-
-}
-    const novoNome = prompt("Digite o novo nome do produto:");
-
-    if (novoNome === null) return;
-
-    if (!novoNome.trim()) {
-        alert("O nome do produto não pode ficar vazio.");
-        return;
-    }
-
-    const novaDescricao = prompt("Digite a nova descrição do produto:");
-
-    if (novaDescricao === null) return;
-
-    const novoPreco = prompt("Digite o novo preço do produto:");
-
-    if (novoPreco === null) return;
-
-    const preco = parseFloat(
-        novoPreco.replace(",", ".")
-    );
-
-    if (isNaN(preco) || preco < 0) {
-        alert("Digite um preço válido.");
-        return;
-    }
-
-    const novoEstoque = prompt(
-        "Digite a nova quantidade em estoque:"
-    );
-
-    if (novoEstoque === null) return;
-
-    const estoque = parseInt(novoEstoque);
-
-    if (isNaN(estoque) || estoque < 0) {
-        alert("Digite um estoque válido.");
-        return;
-    }
-
-    const { error } =
-        await window.supabaseClient
-            .from("products")
-            .update({
-                nome: novoNome.trim(),
-                descricao: novaDescricao.trim(),
-                preco: preco,
-                estoque: estoque
-            })
-            .eq("id", id);
-
-    if (error) {
-
-        console.error(
-            "Erro ao editar produto:",
-            error
-        );
-
-        alert(
-            "Erro ao atualizar produto: " +
-            error.message
-        );
-
-        return;
-    }
-
-    alert("✅ Produto atualizado com sucesso!");
+    /* RECARREGAR LISTA */
 
     await carregarMeusProdutos();
 
 }
-}
 
+
+/* =========================================
+   EXCLUIR PRODUTO
+========================================= */
 
 async function excluirProduto(id) {
 
@@ -2717,14 +2706,21 @@ async function excluirProduto(id) {
         );
 
 
-    if (!confirmar) return;
+    if (!confirmar) {
+        return;
+    }
 
 
-    const { error } =
+    const {
+        error
+    } =
         await window.supabaseClient
             .from("products")
             .delete()
-            .eq("id", id);
+            .eq(
+                "id",
+                id
+            );
 
 
     if (error) {
@@ -2735,7 +2731,7 @@ async function excluirProduto(id) {
         );
 
         alert(
-            "Erro ao excluir produto: " +
+            "❌ Erro ao excluir produto:\n\n" +
             error.message
         );
 
@@ -2744,7 +2740,9 @@ async function excluirProduto(id) {
     }
 
 
-    alert("✅ Produto excluído com sucesso!");
+    alert(
+        "✅ Produto excluído com sucesso!"
+    );
 
 
     await carregarMeusProdutos();
@@ -2752,5 +2750,607 @@ async function excluirProduto(id) {
 }
 
 </script>
+<!-- ==============================
+     ÁREA: MEUS PRODUTOS
+================================ -->
+
+<div
+    id="listaMeusProdutos"
+    style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:#f5f7fa;
+        z-index:10001;
+        overflow-y:auto;
+    "
+>
+
+    <div style="
+        max-width:1000px;
+        margin:0 auto;
+        padding:30px 20px;
+    ">
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:25px;
+        ">
+
+            <div>
+
+                <h1>📦 Meus Produtos</h1>
+
+                <p style="color:#666;">
+                    Produtos cadastrados na sua loja
+                </p>
+
+            </div>
+
+            <button
+                onclick="fecharListaProdutos()"
+                style="
+                    border:0;
+                    background:#ddd;
+                    padding:12px 18px;
+                    border-radius:8px;
+                    cursor:pointer;
+                "
+            >
+                Voltar
+            </button>
+
+        </div>
+
+
+        <div
+            id="produtosContainer"
+            style="
+                display:grid;
+                grid-template-columns:
+                    repeat(auto-fit,minmax(250px,1fr));
+                gap:20px;
+            "
+        >
+        </div>
+
+
+        <div
+            id="mensagemListaProdutos"
+            style="
+                margin-top:20px;
+                font-weight:bold;
+            "
+        >
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================
+   ABRIR LISTA DE PRODUTOS
+========================================= */
+
+async function abrirListaProdutos() {
+
+    document.getElementById(
+        "listaMeusProdutos"
+    ).style.display = "block";
+
+    await carregarMeusProdutos();
+
+}
+
+
+/* =========================================
+   FECHAR LISTA
+========================================= */
+
+function fecharListaProdutos() {
+
+    document.getElementById(
+        "listaMeusProdutos"
+    ).style.display = "none";
+
+}
+
+
+/* =========================================
+   CARREGAR PRODUTOS DO VENDEDOR
+========================================= */
+
+async function carregarMeusProdutos() {
+
+    const container =
+        document.getElementById(
+            "produtosContainer"
+        );
+
+    const mensagem =
+        document.getElementById(
+            "mensagemListaProdutos"
+        );
+
+
+    container.innerHTML = "";
+
+    mensagem.style.color = "#555";
+
+    mensagem.textContent =
+        "Carregando produtos...";
+
+
+    /* USUÁRIO LOGADO */
+
+    const {
+        data: { user }
+    } =
+        await window.supabaseClient.auth.getUser();
+
+
+    if (!user) {
+
+        mensagem.style.color = "red";
+
+        mensagem.textContent =
+            "Você precisa estar logado.";
+
+        return;
+
+    }
+
+
+    /* LOCALIZAR LOJA */
+
+    const {
+        data: loja,
+        error: erroLoja
+    } =
+        await window.supabaseClient
+            .from("stores")
+            .select("id")
+            .eq("owner_id", user.id)
+            .single();
+
+
+    if (erroLoja || !loja) {
+
+        console.error(
+            "Erro ao localizar loja:",
+            erroLoja
+        );
+
+        mensagem.style.color = "red";
+
+        mensagem.textContent =
+            "Sua loja não foi encontrada.";
+
+        return;
+
+    }
+
+
+    /* BUSCAR PRODUTOS */
+
+    const {
+        data: produtos,
+        error
+    } =
+        await window.supabaseClient
+            .from("products")
+            .select(`
+                id,
+                nome,
+                descricao,
+                preco,
+                estoque,
+                ativo,
+                categories (
+                    nome
+                )
+            `)
+            .eq("store_id", loja.id)
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao carregar produtos:",
+            error
+        );
+
+        mensagem.style.color = "red";
+
+        mensagem.textContent =
+            "Erro ao carregar produtos: " +
+            error.message;
+
+        return;
+
+    }
+
+
+    mensagem.textContent = "";
+
+
+    if (!produtos || produtos.length === 0) {
+
+        mensagem.style.color = "#666";
+
+        mensagem.textContent =
+            "Sua loja ainda não possui produtos cadastrados.";
+
+        return;
+
+    }
+
+
+    /* CRIAR CARDS */
+
+    produtos.forEach(produto => {
+
+        const card =
+            document.createElement("div");
+
+
+        card.style.cssText = `
+            background:white;
+            border-radius:15px;
+            padding:20px;
+            box-shadow:0 3px 15px rgba(0,0,0,.08);
+        `;
+
+
+        const categoria =
+            produto.categories
+                ? produto.categories.nome
+                : "Sem categoria";
+
+
+        const status =
+            produto.ativo
+                ? "🟢 Ativo"
+                : "🔴 Inativo";
+
+
+        card.innerHTML = `
+
+            <h3 style="
+                margin-top:0;
+                margin-bottom:8px;
+            ">
+                ${produto.nome}
+            </h3>
+
+
+            <div style="
+                color:#666;
+                font-size:14px;
+                margin-bottom:12px;
+            ">
+                ${categoria}
+            </div>
+
+
+            <p style="
+                min-height:45px;
+                color:#555;
+            ">
+                ${
+                    produto.descricao ||
+                    "Sem descrição"
+                }
+            </p>
+
+
+            <div style="
+                font-size:20px;
+                font-weight:bold;
+                color:#16a34a;
+                margin:15px 0;
+            ">
+                R$ ${
+                    Number(produto.preco)
+                        .toFixed(2)
+                        .replace(".", ",")
+                }
+            </div>
+
+
+            <div style="
+                margin-bottom:10px;
+            ">
+                📦 Estoque:
+                <strong>
+                    ${produto.estoque}
+                </strong>
+            </div>
+
+
+            <div style="
+                margin-bottom:15px;
+            ">
+                ${status}
+            </div>
+
+
+            <div style="
+                display:flex;
+                gap:8px;
+            ">
+
+                <button
+                    onclick="editarProduto('${produto.id}')"
+                    style="
+                        flex:1;
+                        border:0;
+                        background:#2563eb;
+                        color:white;
+                        padding:10px;
+                        border-radius:8px;
+                        cursor:pointer;
+                        font-weight:bold;
+                    "
+                >
+                    ✏️ Editar
+                </button>
+
+
+                <button
+                    onclick="excluirProduto('${produto.id}')"
+                    style="
+                        flex:1;
+                        border:0;
+                        background:#dc2626;
+                        color:white;
+                        padding:10px;
+                        border-radius:8px;
+                        cursor:pointer;
+                        font-weight:bold;
+                    "
+                >
+                    🗑️ Excluir
+                </button>
+
+            </div>
+
+        `;
+
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================================
+   EDITAR PRODUTO
+========================================= */
+
+async function editarProduto(id) {
+
+    const novoNome =
+        prompt(
+            "Digite o novo nome do produto:"
+        );
+
+
+    if (novoNome === null) {
+        return;
+    }
+
+
+    if (!novoNome.trim()) {
+
+        alert(
+            "O nome do produto não pode ficar vazio."
+        );
+
+        return;
+
+    }
+
+
+    const novaDescricao =
+        prompt(
+            "Digite a nova descrição do produto:"
+        );
+
+
+    if (novaDescricao === null) {
+        return;
+    }
+
+
+    const novoPreco =
+        prompt(
+            "Digite o novo preço do produto:"
+        );
+
+
+    if (novoPreco === null) {
+        return;
+    }
+
+
+    const preco =
+        parseFloat(
+            novoPreco.replace(",", ".")
+        );
+
+
+    if (
+        isNaN(preco) ||
+        preco < 0
+    ) {
+
+        alert(
+            "Digite um preço válido."
+        );
+
+        return;
+
+    }
+
+
+    const novoEstoque =
+        prompt(
+            "Digite a nova quantidade em estoque:"
+        );
+
+
+    if (novoEstoque === null) {
+        return;
+    }
+
+
+    const estoque =
+        parseInt(novoEstoque);
+
+
+    if (
+        isNaN(estoque) ||
+        estoque < 0
+    ) {
+
+        alert(
+            "Digite um estoque válido."
+        );
+
+        return;
+
+    }
+
+
+    /* ATUALIZAR NO SUPABASE */
+
+    const {
+        error
+    } =
+        await window.supabaseClient
+            .from("products")
+            .update({
+
+                nome:
+                    novoNome.trim(),
+
+                descricao:
+                    novaDescricao.trim(),
+
+                preco:
+                    preco,
+
+                estoque:
+                    estoque
+
+            })
+            .eq(
+                "id",
+                id
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao atualizar produto:",
+            error
+        );
+
+        alert(
+            "❌ Erro ao atualizar produto:\n\n" +
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    alert(
+        "✅ Produto atualizado com sucesso!"
+    );
+
+
+    /* RECARREGAR LISTA */
+
+    await carregarMeusProdutos();
+
+}
+
+
+/* =========================================
+   EXCLUIR PRODUTO
+========================================= */
+
+async function excluirProduto(id) {
+
+    const confirmar =
+        confirm(
+            "Tem certeza que deseja excluir este produto?"
+        );
+
+
+    if (!confirmar) {
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await window.supabaseClient
+            .from("products")
+            .delete()
+            .eq(
+                "id",
+                id
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao excluir produto:",
+            error
+        );
+
+        alert(
+            "❌ Erro ao excluir produto:\n\n" +
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    alert(
+        "✅ Produto excluído com sucesso!"
+    );
+
+
+    await carregarMeusProdutos();
+
+}
+
+</script>
+
 </body>
+</html>
+</body>
+
 </html>
