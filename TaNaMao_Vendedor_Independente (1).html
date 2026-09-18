@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TáNaMão — Área do Vendedor</title>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=15Y0OWBtC4hr1KuMNIgxgmRkEgmopkEGiea98MgOPNqp8fkqb4UgfJMrek4YL86EzZ-hxleU2VKnBFE0Y2Gg4AI2efg3crhAH-fBOiw3AWQFYoJaQn7bL3RsywlVK-CjfJuHwlYXGvmOQvSvZVQTrEmTMxELbdc9Hgmo4l4oeG0qzbOMLeLJrFu9F6eKxNoKy0AwignuK3FxYIxln3Zk_U2U9t6fp4XYrvWOinP64-xogJ-0m6R-AdsQLzH0SdixpW0E_VeLJBhNKlUN9oqe1dkaHIisVG_yiaEmqbBIVSiTPjSQhIrEvQZPstwLHeWyV3jhf5IPwaSM6QlfknprBA" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f6f8;color:#202124}
+button,input,select,textarea{font:inherit}.hidden{display:none!important}
+.top{height:64px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;padding:0 28px;justify-content:space-between}
+.logo{font-size:25px;font-weight:800;color:#111}.logo span{font-weight:500}
+.userbox{display:flex;align-items:center;gap:12px;font-size:14px}
+.layout{display:flex;min-height:calc(100vh - 64px)}
+.side{width:235px;background:#fff;border-right:1px solid #e5e7eb;padding:20px 14px}
+.side h3{font-size:12px;color:#8a8f98;text-transform:uppercase;margin:0 12px 12px}
+.nav{width:100%;padding:12px;border:0;background:transparent;text-align:left;border-radius:8px;cursor:pointer;color:#34373d;margin-bottom:4px}
+.nav:hover,.nav.active{background:#f1f3f5;font-weight:700}
+.main{flex:1;padding:28px;max-width:1400px;margin:auto;width:100%}
+h1{margin:0 0 7px;font-size:26px}.subtitle{color:#70757d;margin-bottom:25px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:20px}
+.card small{color:#777}.number{font-size:28px;font-weight:800;margin-top:8px}
+.panel{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:22px;margin-bottom:20px}
+.panel h2{font-size:18px;margin:0 0 18px}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:13px 10px;border-bottom:1px solid #eee;font-size:14px}th{color:#777;font-size:12px;text-transform:uppercase}
+.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#f1f3f5;font-size:12px}
+.primary{background:#111;color:#fff;border:0;border-radius:7px;padding:10px 16px;cursor:pointer}
+.secondary{background:#fff;color:#222;border:1px solid #d7dbe0;border-radius:7px;padding:10px 16px;cursor:pointer}
+.danger{background:#b42318;color:#fff;border:0;border-radius:7px;padding:10px 16px;cursor:pointer}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid #d7dbe0;border-radius:7px;background:#fff}.field textarea{min-height:90px;resize:vertical}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}
+.modalbox{background:#fff;width:min(680px,100%);max-height:90vh;overflow:auto;border-radius:12px;padding:25px}
+.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.close{border:0;background:none;font-size:25px;cursor:pointer}
+.auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:25px;background:#f5f6f8}
+.authbox{width:min(460px,100%);background:#fff;border:1px solid #e2e5e9;border-radius:12px;padding:30px}
+.authbox h1{margin-bottom:5px}.authbox p{color:#73777f}.tabs{display:flex;border-bottom:1px solid #ddd;margin:22px 0}.tab{flex:1;padding:12px;border:0;background:none;cursor:pointer}.tab.active{font-weight:700;border-bottom:2px solid #111}
+.msg{padding:11px;border-radius:7px;background:#f1f3f5;margin:12px 0;font-size:13px}.error{background:#fdecec;color:#a61b1b}.success{background:#edf8f0;color:#176b2c}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.side{width:190px}.formgrid{grid-template-columns:1fr}}
+@media(max-width:650px){.layout{display:block}.side{width:100%;border-right:0;border-bottom:1px solid #e5e7eb;display:flex;overflow:auto}.side h3{display:none}.nav{min-width:max-content}.main{padding:18px}.cards{grid-template-columns:1fr}.top{padding:0 16px}}
+</style>
+</head>
+<body>
+
+<div id="auth" class="auth">
+  <div class="authbox">
+    <div class="logo">TáNaMão <span>• Vendedor</span></div>
+    <p>Área exclusiva para gestão da sua loja.</p>
+    <div class="tabs">
+      <button id="tabLogin" class="tab active" onclick="showAuth('login')">Entrar</button>
+      <button id="tabRegister" class="tab" onclick="showAuth('register')">Criar conta</button>
+    </div>
+
+    <div id="authMessage" class="msg hidden"></div>
+
+    <form id="loginForm" onsubmit="login(event)">
+      <div class="field"><label>E-mail</label><input id="loginEmail" type="email" required></div><br>
+      <div class="field"><label>Senha</label><input id="loginPassword" type="password" required></div><br>
+      <button class="primary" style="width:100%">Entrar</button>
+    </form>
+
+    <form id="registerForm" class="hidden" onsubmit="register(event)">
+      <div class="formgrid">
+        <div class="field"><label>Nome do responsável</label><input id="regName" required></div>
+        <div class="field"><label>Telefone</label><input id="regPhone" required></div>
+        <div class="field"><label>Nome da loja</label><input id="regStore" required></div>
+        <div class="field"><label>Cidade</label><input id="regCity" required></div>
+        <div class="field"><label>Estado</label><input id="regState" maxlength="2" required></div>
+        <div class="field"><label>CEP</label><input id="regCep" required></div>
+        <div class="field"><label>E-mail</label><input id="regEmail" type="email" required></div>
+        <div class="field"><label>Senha</label><input id="regPassword" type="password" minlength="6" required></div>
+      </div><br>
+      <button class="primary" style="width:100%">Criar conta de vendedor</button>
+    </form>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <header class="top">
+    <div class="logo">TáNaMão <span>• Vendedor</span></div>
+    <div class="userbox"><span id="storeNameTop"></span><button class="secondary" onclick="logout()">Sair</button></div>
+  </header>
+  <div class="layout">
+    <aside class="side">
+      <h3>Minha loja</h3>
+      <button class="nav active" onclick="openSection('overview',this)">Visão geral</button>
+      <button class="nav" onclick="openSection('orders',this)">Pedidos</button>
+      <button class="nav" onclick="openSection('products',this)">Produtos</button>
+      <button class="nav" onclick="openSection('payments',this)">Pagamentos</button>
+      <button class="nav" onclick="openSection('store',this)">Dados da loja</button>
+    </aside>
+
+    <main class="main">
+      <section id="overview">
+        <h1>Visão geral</h1>
+        <div class="subtitle">Acompanhe sua operação no TáNaMão.</div>
+        <div class="cards">
+          <div class="card"><small>Pedidos</small><div id="statOrders" class="number">0</div></div>
+          <div class="card"><small>Produtos ativos</small><div id="statProducts" class="number">0</div></div>
+          <div class="card"><small>Vendas pagas</small><div id="statSales" class="number">R$ 0,00</div></div>
+          <div class="card"><small>Pedidos em andamento</small><div id="statPending" class="number">0</div></div>
+        </div>
+        <div class="panel"><h2>Últimos pedidos</h2><div id="latestOrders">Carregando...</div></div>
+      </section>
+
+      <section id="orders" class="hidden">
+        <h1>Pedidos</h1><div class="subtitle">Consulte e acompanhe os pedidos da sua loja.</div>
+        <div class="panel"><div id="ordersTable">Carregando...</div></div>
+      </section>
+
+      <section id="products" class="hidden">
+        <h1>Produtos</h1><div class="subtitle">Cadastre e gerencie os produtos da sua loja.</div>
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
+            <h2 style="margin:0">Catálogo</h2><button class="primary" onclick="openProductModal()">Novo produto</button>
+          </div>
+          <div id="productsTable">Carregando...</div>
+        </div>
+      </section>
+
+      <section id="payments" class="hidden">
+        <h1>Pagamentos</h1><div class="subtitle">Acompanhe os pagamentos relacionados aos seus pedidos.</div>
+        <div class="panel"><div id="paymentsTable">Carregando...</div></div>
+      </section>
+
+      <section id="store" class="hidden">
+        <h1>Dados da loja</h1><div class="subtitle">Informações cadastradas da sua loja.</div>
+        <div class="panel"><div id="storeData">Carregando...</div></div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div id="productModal" class="modal hidden">
+  <div class="modalbox">
+    <div class="modalhead"><h2 style="margin:0">Novo produto</h2><button class="close" onclick="closeProductModal()">×</button></div>
+    <div id="productMsg" class="msg hidden"></div>
+    <form onsubmit="saveProduct(event)">
+      <div class="formgrid">
+        <div class="field"><label>Nome</label><input id="pName" required></div>
+        <div class="field"><label>Preço</label><input id="pPrice" type="number" min="0" step="0.01" required></div>
+        <div class="field"><label>Estoque</label><input id="pStock" type="number" min="0" step="1" value="0"></div>
+        <div class="field"><label>Categoria</label><select id="pCategory"><option value="">Sem categoria</option></select></div>
+      </div><br>
+      <div class="field"><label>Descrição</label><textarea id="pDescription"></textarea></div><br>
+      <div class="actions"><button type="button" class="secondary" onclick="closeProductModal()">Cancelar</button><button class="primary">Salvar produto</button></div>
+    </form>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://sfzfoavesiintdyoxkca.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_wM4A1etSRHTcUpE4qUXb-A_suN-jnep';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let currentStore = null;
+
+function money(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+function showMsg(text,type=''){const el=document.getElementById('authMessage');el.textContent=text;el.className='msg '+(type||'');}
+function showAuth(mode){
+  const login=mode==='login';
+  document.getElementById('loginForm').classList.toggle('hidden',!login);
+  document.getElementById('registerForm').classList.toggle('hidden',login);
+  document.getElementById('tabLogin').classList.toggle('active',login);
+  document.getElementById('tabRegister').classList.toggle('active',!login);
+  document.getElementById('authMessage').classList.add('hidden');
+}
+async function login(e){
+  e.preventDefault(); showMsg('Entrando...');
+  const {data,error}=await supabaseClient.auth.signInWithPassword({email:loginEmail.value,password:loginPassword.value});
+  if(error){showMsg(error.message,'error');return;}
+  currentUser=data.user; await startApp();
+}
+async function register(e){
+  e.preventDefault(); showMsg('Criando conta...');
+  const {data,error}=await supabaseClient.auth.signUp({email:regEmail.value,password:regPassword.value,options:{data:{nome:regName.value,telefone:regPhone.value,role:'vendedor'}}});
+  if(error){showMsg(error.message,'error');return;}
+  if(!data.user){showMsg('Conta criada. Confirme seu e-mail para continuar.','success');return;}
+  currentUser=data.user;
+  try{
+    await supabaseClient.from('profiles').upsert({id:data.user.id,nome:regName.value,telefone:regPhone.value},{onConflict:'id'});
+  }catch(_){}
+  const payload={owner_id:data.user.id,nome:regStore.value,cidade:regCity.value,estado:regState.value.toUpperCase(),cep:regCep.value};
+  const {error:storeError}=await supabaseClient.from('stores').insert(payload);
+  if(storeError){showMsg('Conta criada, mas não foi possível criar a loja automaticamente: '+storeError.message,'error');return;}
+  showMsg('Conta e loja criadas com sucesso.','success'); await startApp();
+}
+async function startApp(){
+  document.getElementById('auth').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  await loadStore();
+  await loadDashboard();
+}
+async function loadStore(){
+  if(!currentUser)return;
+  const {data,error}=await supabaseClient.from('stores').select('*').eq('owner_id',currentUser.id).limit(1).maybeSingle();
+  if(error){document.getElementById('storeNameTop').textContent='Minha loja';return;}
+  currentStore=data;
+  document.getElementById('storeNameTop').textContent=data?.nome||'Minha loja';
+  renderStore();
+}
+async function loadDashboard(){
+  if(!currentStore){return;}
+  const [ordersRes,productsRes]=await Promise.all([
+    supabaseClient.from('orders').select('*').eq('store_id',currentStore.id).order('created_at',{ascending:false}).limit(100),
+    supabaseClient.from('products').select('*').eq('store_id',currentStore.id).limit(500)
+  ]);
+  const orders=ordersRes.data||[], products=productsRes.data||[];
+  document.getElementById('statOrders').textContent=orders.length;
+  document.getElementById('statProducts').textContent=products.filter(p=>p.ativo!==false).length;
+  const paid=orders.filter(o=>o.payment_status==='pago');
+  document.getElementById('statSales').textContent=money(paid.reduce((s,o)=>s+Number(o.total||0),0));
+  document.getElementById('statPending').textContent=orders.filter(o=>!['entregue','cancelado'].includes(o.status)).length;
+  renderOrders(orders);
+  renderProducts(products);
+  renderPayments(orders);
+}
+function renderOrders(orders){
+  const html=orders.length?`<table><thead><tr><th>Pedido</th><th>Data</th><th>Status</th><th>Pagamento</th><th>Total</th></tr></thead><tbody>`+
+    orders.slice(0,20).map(o=>`<tr><td>#${o.id}</td><td>${new Date(o.created_at).toLocaleString('pt-BR')}</td><td><span class="badge">${o.status||'-'}</span></td><td>${o.payment_status||'-'}</td><td>${money(o.total)}</td></tr>`).join('')+
+    `</tbody></table>`:'Nenhum pedido encontrado.';
+  document.getElementById('latestOrders').innerHTML=html;
+  document.getElementById('ordersTable').innerHTML=html;
+}
+function renderProducts(products){
+  document.getElementById('productsTable').innerHTML=products.length?`<table><thead><tr><th>Produto</th><th>Preço</th><th>Estoque</th><th>Status</th></tr></thead><tbody>`+
+    products.map(p=>`<tr><td>${escapeHtml(p.nome||p.name||'-')}</td><td>${money(p.preco??p.price)}</td><td>${p.estoque??p.stock??0}</td><td><span class="badge">${p.ativo===false?'Inativo':'Ativo'}</span></td></tr>`).join('')+
+    `</tbody></table>`:'Nenhum produto cadastrado.';
+}
+function renderPayments(orders){
+  document.getElementById('paymentsTable').innerHTML=orders.length?`<table><thead><tr><th>Pedido</th><th>Pagamento</th><th>Total</th><th>Data</th></tr></thead><tbody>`+
+    orders.map(o=>`<tr><td>#${o.id}</td><td>${o.payment_status||'aguardando_pagamento'}</td><td>${money(o.total)}</td><td>${new Date(o.created_at).toLocaleDateString('pt-BR')}</td></tr>`).join('')+
+    `</tbody></table>`:'Nenhum pagamento encontrado.';
+}
+function renderStore(){
+  const s=currentStore||{};
+  document.getElementById('storeData').innerHTML=`<div class="formgrid">
+    <div><b>Loja</b><br>${escapeHtml(s.nome||'-')}</div>
+    <div><b>Responsável</b><br>${escapeHtml(s.owner_id||'-')}</div>
+    <div><b>Cidade</b><br>${escapeHtml(s.cidade||'-')}</div>
+    <div><b>Estado</b><br>${escapeHtml(s.estado||'-')}</div>
+    <div><b>CEP</b><br>${escapeHtml(s.cep||'-')}</div>
+    <div><b>ID da loja</b><br>${s.id||'-'}</div>
+  </div>`;
+}
+async function loadCategories(){
+  const {data}=await supabaseClient.from('categories').select('*').limit(200);
+  document.getElementById('pCategory').innerHTML='<option value="">Sem categoria</option>'+(data||[]).map(c=>`<option value="${c.id}">${escapeHtml(c.nome||c.name||'-')}</option>`).join('');
+}
+function openProductModal(){document.getElementById('productModal').classList.remove('hidden');loadCategories();}
+function closeProductModal(){document.getElementById('productModal').classList.add('hidden');}
+async function saveProduct(e){
+  e.preventDefault();
+  const payload={store_id:currentStore.id,nome:pName.value,descricao:pDescription.value,preco:Number(pPrice.value),estoque:Number(pStock.value||0),ativo:true};
+  if(pCategory.value)payload.category_id=pCategory.value;
+  const {error}=await supabaseClient.from('products').insert(payload);
+  if(error){const m=document.getElementById('productMsg');m.textContent=error.message;m.className='msg error';return;}
+  closeProductModal(); await loadDashboard();
+}
+function openSection(id,btn){
+  ['overview','orders','products','payments','store'].forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==id));
+  document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+}
+async function logout(){await supabaseClient.auth.signOut();location.reload();}
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+supabaseClient.auth.onAuthStateChange(async(event,session)=>{if(session&&!currentUser){currentUser=session.user;await startApp();}});
+(async()=>{const {data}=await supabaseClient.auth.getSession();if(data.session){currentUser=data.session.user;await startApp();}})();
+</script>
+</body>
+</html>
