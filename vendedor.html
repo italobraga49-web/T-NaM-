@@ -48,7 +48,7 @@ button,input,select{font:inherit}.hidden{display:none!important}
     <div class="field"><label>Senha</label><input id="authPassword" type="password" placeholder="Sua senha"></div>
     <div id="authMsg" class="msg hidden"></div>
     <button id="authBtn" class="btn primary" style="width:100%" onclick="submitAuth()">Entrar</button>
-    <button id="forgotBtn" type="button" class="btn secondary" style="width:100%;margin-top:10px" onclick="showRecovery()">Esqueci minha senha</button>
+    <button id="forgotBtn" type="button" class="btn secondary" style="width:100%;margin-top:10px" onclick="showRecovery()">Esqueci minha senha</button> 
     <form id="recoveryForm" class="hidden" onsubmit="sendRecovery(event)" style="margin-top:14px">
       <div class="field"><label>E-mail cadastrado</label><input id="recoveryEmail" type="email" autocomplete="email" required></div>
       <button type="submit" class="btn primary" style="width:100%">Enviar link para redefinir senha</button>
