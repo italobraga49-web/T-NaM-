@@ -1143,6 +1143,37 @@ footer{margin-top:25px!important;background:#202326!important;color:#dfe3e7!impo
   .product-image{height:140px!important}
 }
 
+
+/* Ajustes marketplace profissional e módulo de entregas */
+.products-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))!important;gap:12px!important}
+.product-card{border:1px solid #e5e7eb!important;border-radius:4px!important;box-shadow:none!important;background:#fff!important;overflow:hidden!important;transition:box-shadow .15s,border-color .15s!important}
+.product-card:hover{box-shadow:0 3px 12px rgba(0,0,0,.08)!important;border-color:#d5d9de!important}
+.product-image{height:210px!important;background:#f7f8fa!important}
+.product-info{padding:12px!important}
+.product-description{font-size:12px!important;color:#777!important;line-height:1.35!important;min-height:32px!important}
+.product-bottom{margin-top:10px!important}
+.btn-add-cart{border-radius:4px!important;padding:8px 10px!important}
+.tnm-delivery-btn{border:0;background:#ff6a00;color:#fff;padding:8px 11px;border-radius:6px;cursor:pointer;font-weight:700}
+@media(max-width:700px){.products-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.product-image{height:170px!important}}
+</style>
+
+<style>
+.footer-empresarial{background:#f6f6f6;border-top:1px solid #ddd;margin-top:50px;color:#555;font-family:Arial,sans-serif}
+.footer-empresarial-grid{max-width:1200px;margin:0 auto;padding:42px 28px 34px;display:grid;grid-template-columns:repeat(4,1fr);gap:42px}
+.footer-col h3{font-size:13px;font-weight:700;color:#333;margin:0 0 18px;letter-spacing:.2px}
+.footer-col a{display:block;color:#666;text-decoration:none;font-size:12px;line-height:2.05;cursor:pointer}
+.footer-col a:hover{text-decoration:underline;color:#222}
+.footer-pagamentos{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.footer-pagamentos span{background:#fff;border:1px solid #d8d8d8;border-radius:3px;padding:7px 10px;font-size:11px;color:#444}
+.footer-texto{font-size:11px;line-height:1.6;color:#777;margin:0;max-width:220px}
+.footer-redes a{display:inline-block;margin-right:16px;font-size:12px}
+.footer-app-titulo{margin-top:25px!important;margin-bottom:12px!important}
+.footer-cnpj{font-size:12px!important;color:#444!important;margin:0 0 5px!important;line-height:1.5!important}
+.footer-endereco{font-size:11px!important;color:#777!important;margin:0!important;line-height:1.55!important}
+.footer-rodape-linha{border-top:1px solid #ddd}
+.footer-final{max-width:1200px;margin:0 auto;padding:18px 28px;display:flex;justify-content:space-between;gap:20px;font-size:11px;color:#888}
+@media(max-width:800px){.footer-empresarial-grid{grid-template-columns:repeat(2,1fr);gap:30px 20px}.footer-final{flex-direction:column}}
+@media(max-width:480px){.footer-empresarial-grid{grid-template-columns:1fr;padding:30px 20px}.footer-final{padding:16px 20px}}
 </style>
 </head>
 
@@ -1238,6 +1269,7 @@ footer{margin-top:25px!important;background:#202326!important;color:#dfe3e7!impo
     <button id="btnContaCliente" onclick="abrirContaCliente()" style="display:none">Minha conta</button>
     <button id="btnSairPlataforma" onclick="sairDaConta()" style="display:none">Sair</button>
     <button class="header-seller" onclick="abrirCadastroRevendedor()">Vender</button>
+    <button class="header-link" onclick="abrirPainelEntregas()">Entregas</button>
     <button id="btnPainelVendedor" onclick="abrirPainelVendedor()" style="display:none">Painel</button>
     <button class="carrinho" onclick="mostrarCarrinho()">
       <span class="cart-symbol" aria-hidden="true"></span>
@@ -1469,33 +1501,51 @@ footer{margin-top:25px!important;background:#202326!important;color:#dfe3e7!impo
 </section>
 
 
-<footer>
-  <div class="footer-conteudo">
-    <div class="footer-marca">
-      <img
-        src="1001111814.png"
-        alt="TáNaMão Marketplace"
-        class="footer-logo-img"
-      >
-      <p class="footer-descricao">
-        Marketplace local para conectar clientes, lojas e entregadores.
-      </p>
+<footer class="footer-empresarial">
+  <div class="footer-empresarial-grid">
+    <div class="footer-col">
+      <h3>ATENDIMENTO AO CLIENTE</h3>
+      <a href="javascript:void(0)" onclick="alert('Central de Ajuda')">Central de Ajuda</a>
+      <a href="javascript:void(0)" onclick="alert('Consulte as informações de como realizar uma compra no TáNaMão.')">Como Comprar</a>
+      <a href="javascript:void(0)" onclick="alert('Consulte os métodos de pagamento disponíveis no checkout.')">Métodos de Pagamento</a>
+      <a href="javascript:void(0)" onclick="alert('As informações de devolução e reembolso serão apresentadas conforme a política da plataforma.')">Devolução e Reembolso</a>
+      <a href="javascript:void(0)" onclick="alert('Entre em contato com o suporte do TáNaMão.')">Fale Conosco</a>
     </div>
 
-    <div class="footer-dados">
-      <p class="footer-dados-titulo">Dados da empresa</p>
+    <div class="footer-col">
+      <h3>SOBRE O TÁNAMÃO</h3>
+      <a href="javascript:void(0)" onclick="alert('TáNaMão é um marketplace para conectar clientes, lojas e entregadores.')">Sobre Nós</a>
+      <a href="javascript:void(0)" onclick="alert('Consulte os termos e políticas da plataforma.')">Políticas</a>
+      <a href="javascript:void(0)" onclick="alert('Consulte a Política de Privacidade do TáNaMão.')">Política de Privacidade</a>
+      <a href="javascript:void(0)" onclick="alert('Informações institucionais do TáNaMão.')">Informações da Empresa</a>
+      <a href="javascript:void(0)" onclick="abrirLogin()">Seja um Parceiro</a>
+    </div>
+
+    <div class="footer-col">
+      <h3>PAGAMENTO</h3>
+      <div class="footer-pagamentos">
+        <span>PIX</span><span>Cartão</span><span>Boleto</span>
+      </div>
+      <p class="footer-texto">Pagamentos processados de forma segura por parceiros de pagamento.</p>
+    </div>
+
+    <div class="footer-col">
+      <h3>SIGA-NOS</h3>
+      <div class="footer-redes">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a>
+        <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer">TikTok</a>
+      </div>
+      <h3 class="footer-app-titulo">DADOS DA EMPRESA</h3>
       <p class="footer-cnpj">CNPJ 43.755.975/0001-32</p>
-      <p class="footer-endereco">
-        Magalhães de Almeida - MA, s/n<br>
-        CEP: 65565000
-      </p>
+      <p class="footer-endereco">Magalhães de Almeida - MA, s/n<br>CEP: 65565000</p>
     </div>
   </div>
 
-  <div class="footer-linha"></div>
-
-  <div class="footer-direitos">
-    © 2026 TáNaMão. Todos os direitos reservados.
+  <div class="footer-rodape-linha"></div>
+  <div class="footer-final">
+    <span>© 2026 TáNaMão. Todos os direitos reservados.</span>
+    <span>Magalhães de Almeida - MA</span>
   </div>
 </footer>
 
@@ -1610,177 +1660,7 @@ footer{margin-top:25px!important;background:#202326!important;color:#dfe3e7!impo
 
 <!-- SUPABASE -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-/* =========================================================
-  MENU LATERAL E MINHAS COMPRAS
-  ========================================================= */
-function toggleMenuLateral() {
-    const sidebar = document.getElementById('tnmSidebar');
-    const overlay = document.getElementById('tnmSidebarOverlay');
-    if (!sidebar) return;
-    sidebar.classList.toggle('menu-visible');
-    if (overlay) overlay.classList.toggle('active', sidebar.classList.contains('menu-visible'));
-}
-
-function fecharMenuLateralMobile() {
-    const sidebar = document.getElementById('tnmSidebar');
-    const overlay = document.getElementById('tnmSidebarOverlay');
-    if (sidebar) sidebar.classList.remove('menu-visible', 'mobile-open');
-    if (overlay) overlay.classList.remove('active');
-}
-
-function atualizarUsuarioMenuLateral() {
-  const area = document.getElementById("tnmSidebarUser");
-  if (!area) return;
-
-  supabaseClient.auth.getUser().then(({data}) => {
-    if (data?.user) {
-      const nome = data.user.user_metadata?.nome || data.user.email?.split("@")[0] || "Cliente";
-      area.innerHTML = `
-        <strong>Olá, ${escapeHtml(nome)} </strong>
-        <span>Conta conectada • TáNaMão</span>
-      `;
-    } else {
-      area.innerHTML = `
-        <strong>Olá! </strong>
-        <span>Entre para acessar sua conta</span>
-      `;
-    }
-  }).catch(() => {});
-}
-
-async function abrirMinhasCompras() {
-  const {data, error} = await supabaseClient.auth.getUser();
-
-  if (error || !data?.user) {
-    alert("Entre na sua conta para visualizar suas compras.");
-    abrirLogin();
-    return;
-  }
-
-  const modal = document.getElementById("modalMinhasCompras");
-  if (modal) modal.style.display = "flex";
-
-  await carregarMinhasCompras();
-}
-
-function fecharMinhasCompras() {
-  const modal = document.getElementById("modalMinhasCompras");
-  if (modal) modal.style.display = "none";
-}
-
-async function carregarMinhasCompras() {
-  const container = document.getElementById("minhasComprasConteudo");
-  if (!container) return;
-
-  container.innerHTML = '<div style="text-align:center;padding:35px;color:#777;">⏳ Carregando seus pedidos...</div>';
-
-  const {data: authData, error: authError} = await supabaseClient.auth.getUser();
-
-  if (authError || !authData?.user) {
-    container.innerHTML = '<div style="text-align:center;padding:30px;color:#b91c1c;">Você precisa entrar na sua conta.</div>';
-    return;
-  }
-
-  const {data: pedidos, error} = await supabaseClient
-    .from("orders")
-    .select(`
-      id,
-      status,
-      total,
-      tracking_code,
-      created_at,
-      payment_method,
-      payment_status,
-      endereco_entrega,
-      order_items(
-        id,
-        quantidade,
-        preco_unitario,
-        subtotal,
-        products(id,nome)
-      )
-    `)
-    .eq("customer_id", authData.user.id)
-    .order("created_at", {ascending:false});
-
-  if (error) {
-    console.error("Erro ao carregar minhas compras:", error);
-    container.innerHTML = `
-      <div style="background:#fef2f2;color:#b91c1c;padding:16px;border-radius:12px;">
-        Não foi possível carregar suas compras.
-      </div>`;
-    return;
-  }
-
-  if (!pedidos?.length) {
-    container.innerHTML = `
-      <div style="text-align:center;padding:45px 20px;color:#666;">
-        <div style="font-size:55px;"></div>
-        <h3 style="margin-top:8px;">Você ainda não fez nenhuma compra</h3>
-        <p style="margin-top:7px;">Quando fizer seu primeiro pedido, ele aparecerá aqui.</p>
-      </div>`;
-    return;
-  }
-
-  container.innerHTML = pedidos.map(pedido => {
-    const itens = pedido.order_items || [];
-    const itensHtml = itens.map(item => `
-      <div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #f0f0f0;">
-        <span>${Number(item.quantidade || 0)}x ${escapeHtml(item.products?.nome || "Produto")}</span>
-        <strong>R$ ${Number(item.subtotal || 0).toFixed(2).replace(".", ",")}</strong>
-      </div>
-    `).join("");
-
-    const rastreio = pedido.tracking_code
-      ? `<button onclick="abrirRastreamento('${escapeHtml(pedido.tracking_code)}')" style="border:0;background:#ff6a00;color:white;padding:9px 12px;border-radius:8px;cursor:pointer;font-weight:bold;"> Rastrear</button>`
-      : `<span style="color:#888;font-size:13px;">Rastreio sendo gerado...</span>`;
-
-    return `
-      <div class="tnm-purchase-card">
-        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;">
-          <div>
-            <strong style="font-size:17px;">Pedido #${escapeHtml(String(pedido.id))}</strong>
-            <div style="font-size:12px;color:#888;margin-top:4px;">
-              ${new Date(pedido.created_at).toLocaleString("pt-BR")}
-            </div>
-          </div>
-          <span class="tnm-status-chip">${escapeHtml(formatarStatusPedido(pedido.status))}</span>
-        </div>
-
-        <div style="margin-top:14px;">
-          ${itensHtml || '<div style="color:#777;">Itens não disponíveis.</div>'}
-        </div>
-
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid #eee;">
-          <div style="font-size:13px;color:#555;">
-            <div><strong>Pagamento:</strong> ${escapeHtml(formatarFormaPagamento(pedido.payment_method))}</div>
-            <div style="margin-top:4px;"><strong>Status:</strong> ${escapeHtml(pedido.payment_status || "aguardando_pagamento")}</div>
-          </div>
-          <strong style="font-size:19px;">R$ ${Number(pedido.total || 0).toFixed(2).replace(".", ",")}</strong>
-        </div>
-
-        ${pedido.endereco_entrega ? `
-          <div style="margin-top:11px;background:#f8fafc;padding:10px;border-radius:9px;font-size:13px;color:#555;">
-             ${escapeHtml(pedido.endereco_entrega)}
-          </div>` : ""}
-
-        <div style="margin-top:12px;display:flex;justify-content:flex-end;">
-          ${rastreio}
-        </div>
-      </div>`;
-  }).join("");
-}
-
-/* Atualiza o menu sempre que o estado de login mudar */
-if (typeof supabaseClient !== "undefined") {
-  atualizarUsuarioMenuLateral();
-  supabaseClient.auth.onAuthStateChange(() => {
-    setTimeout(atualizarUsuarioMenuLateral, 0);
-  });
-}
-
-  </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
@@ -1806,6 +1686,51 @@ const supabaseClient =
 console.log(" TáNaMão conectado ao Supabase");
 setTimeout(verificarRetornoMercadoPago, 300);
 
+function toggleMenuLateral() {
+  const sidebar = document.getElementById("tnmSidebar");
+  const overlay = document.getElementById("tnmSidebarOverlay");
+  if (!sidebar) return;
+  sidebar.classList.toggle("menu-visible");
+  if (overlay) overlay.classList.toggle("active", sidebar.classList.contains("menu-visible"));
+}
+function fecharMenuLateralMobile() {
+  const sidebar = document.getElementById("tnmSidebar");
+  const overlay = document.getElementById("tnmSidebarOverlay");
+  if (sidebar) sidebar.classList.remove("menu-visible", "mobile-open");
+  if (overlay) overlay.classList.remove("active");
+}
+function atualizarUsuarioMenuLateral() {
+  const area = document.getElementById("tnmSidebarUser");
+  if (!area) return;
+  supabaseClient.auth.getUser().then(({data}) => {
+    if (data?.user) {
+      const nome = data.user.user_metadata?.nome || data.user.email?.split("@")[0] || "Cliente";
+      area.innerHTML = `<strong>Olá, ${escapeHtml(nome)}</strong><span>Conta conectada ao TáNaMão</span>`;
+    } else {
+      area.innerHTML = `<strong>Olá</strong><span>Entre para acessar sua conta</span>`;
+    }
+  }).catch(() => {});
+}
+async function abrirMinhasCompras() {
+  const {data,error} = await supabaseClient.auth.getUser();
+  if (error || !data?.user) { alert("Entre na sua conta para visualizar suas compras."); abrirLogin(); return; }
+  document.getElementById("modalMinhasCompras")?.style && (document.getElementById("modalMinhasCompras").style.display = "flex");
+  await carregarMinhasCompras();
+}
+function fecharMinhasCompras() { document.getElementById("modalMinhasCompras")?.style && (document.getElementById("modalMinhasCompras").style.display = "none"); }
+async function carregarMinhasCompras() {
+  const container = document.getElementById("minhasComprasConteudo");
+  if (!container) return;
+  container.innerHTML = '<div style="text-align:center;padding:30px;color:#777;">Carregando seus pedidos...</div>';
+  const {data,error:authError} = await supabaseClient.auth.getUser();
+  if (authError || !data?.user) { container.innerHTML = '<div style="padding:20px;color:#b91c1c;">Você precisa entrar na sua conta.</div>'; return; }
+  const {data:pedidos,error} = await supabaseClient.from("orders").select(`id,status,total,tracking_code,created_at,payment_method,payment_status,endereco_entrega,order_items(id,quantidade,preco_unitario,subtotal,products(id,nome))`).eq("customer_id",data.user.id).order("created_at",{ascending:false});
+  if (error) { console.error(error); container.innerHTML = '<div style="padding:20px;color:#b91c1c;">Não foi possível carregar suas compras.</div>'; return; }
+  if (!pedidos?.length) { container.innerHTML = '<div style="padding:35px;text-align:center;color:#777;">Você ainda não fez nenhuma compra.</div>'; return; }
+  container.innerHTML = pedidos.map(p => `<div class="tnm-purchase-card"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;"><strong>Pedido #${escapeHtml(String(p.id))}</strong><span class="tnm-status-chip">${escapeHtml(formatarStatusPedido(p.status))}</span></div><div style="font-size:12px;color:#888;margin-top:5px;">${new Date(p.created_at).toLocaleString("pt-BR")}</div><div style="margin-top:12px;">${(p.order_items||[]).map(i=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eee;"><span>${Number(i.quantidade||0)}x ${escapeHtml(i.products?.nome||"Produto")}</span><strong>R$ ${Number(i.subtotal||0).toFixed(2).replace(".",",")}</strong></div>`).join("")}</div><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;"><span style="font-size:13px;color:#666;">Pagamento: ${escapeHtml(formatarFormaPagamento(p.payment_method))}</span><strong>R$ ${Number(p.total||0).toFixed(2).replace(".",",")}</strong></div>${p.endereco_entrega?`<div style="margin-top:10px;font-size:13px;color:#666;">${escapeHtml(p.endereco_entrega)}</div>`:""}</div>`).join("");
+}
+
+
 
 /*
 ==================================================
@@ -1822,6 +1747,10 @@ let carrinho = [];
 let marketplaceProdutos = [];
 
 let categoriaAtual = null;
+let tipoEntregaCarrinho = "retirada";
+let freteCarrinhoAtual = 0;
+let enderecoCheckoutAtual = "";
+let lojaCarrinhoAtual = null;
 
 
 /*
@@ -1885,6 +1814,10 @@ function adicionarProdutoCarrinho(id) {
       oferta_especial_ativa: !!produto.oferta_especial_ativa,
       oferta_expira_em: produto.oferta_expira_em || null,
       oferta_carrinho_expira_em: (produto.oferta_especial_ativa && produto.preco_oferta != null) ? Date.now() + 10 * 60 * 1000 : null,
+      store_id: produto.store_id || produto.stores?.id || null,
+      store_nome: produto.stores?.nome || "",
+      store_cidade: produto.stores?.cidade || "",
+      store_estado: produto.stores?.estado || "",
       quantidade: 1
     });
 
@@ -1936,6 +1869,7 @@ function renderizarCarrinho() {
         <p>Adicione produtos para continuar.</p>
       </div>`;
     totalEl.textContent = "R$ 0,00";
+    freteCarrinhoAtual = 0;
     if (btnFinalizar) btnFinalizar.disabled = true;
     return;
   }
@@ -1966,7 +1900,8 @@ function renderizarCarrinho() {
   }).join('');
 
   const descontoCupom = Number(cupomCarrinhoAtual?.desconto || 0);
-  const totalFinal = Math.max(0, total - descontoCupom);
+  atualizarResumoFrete();
+  const totalFinal = Math.max(0, total + Number(freteCarrinhoAtual || 0) - descontoCupom);
   totalEl.textContent = "R$ " + totalFinal.toFixed(2).replace('.', ',');
   if (btnFinalizar) btnFinalizar.disabled = false;
 }
@@ -2114,6 +2049,64 @@ function selecionarFormaPagamento(metodo) {
   if (aviso) aviso.textContent = ' ' + (textos[metodo] || 'Forma de pagamento selecionada.');
 }
 
+function obterLojaDoCarrinho() {
+  const item = carrinho[0];
+  if (!item) return null;
+  const produto = marketplaceProdutos.find(p => String(p.id) === String(item.id));
+  return produto?.stores || { id: item.store_id, nome: item.store_nome, cidade: item.store_cidade, estado: item.store_estado, cep: "" };
+}
+
+function calcularFreteEstimado(tipo) {
+  if (tipo === "retirada") return 0;
+  const loja = obterLojaDoCarrinho();
+  const textoEndereco = String(enderecoCheckoutAtual || "").toLowerCase();
+  const cidadeLoja = String(loja?.cidade || "").toLowerCase();
+  const estadoLoja = String(loja?.estado || "").toLowerCase();
+  const mesmaCidade = cidadeLoja && textoEndereco.includes(cidadeLoja);
+  const mesmoEstado = estadoLoja && textoEndereco.includes(estadoLoja);
+  if (tipo === "entrega_loja") return mesmaCidade ? 8 : (mesmoEstado ? 15 : 25);
+  if (tipo === "frete_proprio") return mesmaCidade ? 10 : (mesmoEstado ? 18 : 30);
+  if (tipo === "correios") return mesmaCidade ? 18 : (mesmoEstado ? 25 : 35);
+  return 0;
+}
+
+function atualizarResumoFrete() {
+  const resumo = document.getElementById("resumoFreteCarrinho");
+  const select = document.getElementById("tipoEntregaCarrinho");
+  if (select) select.value = tipoEntregaCarrinho;
+  freteCarrinhoAtual = calcularFreteEstimado(tipoEntregaCarrinho);
+  if (resumo) {
+    const nomes = {
+      retirada: "Retirada no local.",
+      entrega_loja: "Entrega pela loja. Valor estimado conforme a região.",
+      frete_proprio: "Frete próprio. Valor estimado conforme a região.",
+      correios: "Correios. Valor estimado; a cotação oficial pode variar."
+    };
+    resumo.innerHTML = `${nomes[tipoEntregaCarrinho] || ""} <strong>R$ ${Number(freteCarrinhoAtual).toFixed(2).replace(".", ",")}</strong>`;
+  }
+}
+
+async function selecionarTipoEntregaCarrinho(tipo) {
+  tipoEntregaCarrinho = ["retirada","entrega_loja","frete_proprio","correios"].includes(tipo) ? tipo : "retirada";
+  if (tipoEntregaCarrinho !== "retirada" && !enderecoCheckoutAtual) {
+    const { data } = await supabaseClient.auth.getUser();
+    if (!data?.user) {
+      alert("Entre na sua conta para escolher uma forma de entrega.");
+      tipoEntregaCarrinho = "retirada";
+    } else {
+      const endereco = await selecionarEnderecoParaCompra(data.user.id);
+      if (!endereco) {
+        tipoEntregaCarrinho = "retirada";
+      } else {
+        enderecoCheckoutAtual = endereco;
+      }
+    }
+  }
+  atualizarResumoFrete();
+  renderizarCarrinho();
+}
+
+
 async function finalizarCompra() {
   if (!carrinho.length) return;
 
@@ -2126,8 +2119,11 @@ async function finalizarCompra() {
     return;
   }
 
-  const endereco = await selecionarEnderecoParaCompra(data.user.id);
-  if (!endereco) return;
+  let endereco = "Retirada no local";
+  if (tipoEntregaCarrinho !== "retirada") {
+    endereco = await selecionarEnderecoParaCompra(data.user.id);
+    if (!endereco) return;
+  }
 
   if (!formaPagamentoCarrinho) {
     alert("Selecione uma forma de pagamento: PIX, cartão de débito, cartão de crédito ou boleto.");
@@ -2141,7 +2137,8 @@ async function finalizarCompra() {
     (soma, item) => soma + obterPrecoCarrinhoAtual(item, item) * Number(item.quantidade || 0),
     0
   );
-  const total = Math.max(0, subtotalCarrinho - Number(cupomCarrinhoAtual?.desconto || 0));
+  const descontoAtual = Number(cupomCarrinhoAtual?.desconto || 0);
+  const total = Math.max(0, subtotalCarrinho + Number(freteCarrinhoAtual || 0) - descontoAtual);
 
   const btn = document.getElementById("btnFinalizarCompra");
   if (btn) {
@@ -2241,7 +2238,11 @@ async function finalizarCompra() {
       customer_id: data.user.id,
       store_id: storeId,
       status: "pendente",
+      subtotal: subtotalCarrinho,
+      frete: Number(freteCarrinhoAtual || 0),
       total: total,
+      endereco_entrega: endereco,
+      tipo_entrega: tipoEntregaCarrinho,
       cupom_codigo: cupomCarrinhoAtual?.codigo || null,
       desconto_cupom: Number(cupomCarrinhoAtual?.desconto || 0),
       payment_method: formaPagamentoCarrinho,
@@ -2357,6 +2358,10 @@ async function finalizarCompra() {
     carrinho = [];
     cupomCarrinhoAtual = null;
     formaPagamentoCarrinho = null;
+    tipoEntregaCarrinho = "retirada";
+    freteCarrinhoAtual = 0;
+    enderecoCheckoutAtual = "";
+    lojaCarrinhoAtual = null;
     document.querySelectorAll('input[name="formaPagamento"]').forEach(el => el.checked = false);
     const avisoPagamento = document.getElementById("avisoPagamentoCarrinho");
     if (avisoPagamento) avisoPagamento.textContent = "Selecione uma forma de pagamento para continuar.";
@@ -3126,7 +3131,8 @@ async function confirmarEnderecoCheckout(id) {
   if (!e) return;
   fecharEscolhaEndereco();
   if (window._resolverEnderecoCheckout) {
-    window._resolverEnderecoCheckout(montarEnderecoTexto(e));
+    enderecoCheckoutAtual = montarEnderecoTexto(e);
+    window._resolverEnderecoCheckout(enderecoCheckoutAtual);
     window._resolverEnderecoCheckout = null;
   }
 }
@@ -3426,112 +3432,69 @@ PRODUTOS DO MARKETPLACE
 */
 
 async function carregarProdutosMarketplace() {
-
-  const container =
-    document.getElementById(
-      "produtosMarketplace"
-    );
-
-
+  const container = document.getElementById("produtosMarketplace");
   if (!container) return;
 
-
-  container.innerHTML = `
-    <div class="loading-produtos">
-      <div class="loading-line"></div>
-      <p>Carregando produtos...</p>
-    </div>
-  `;
-
+  container.innerHTML = `<div class="loading-produtos"><div class="loading-line"></div><p>Carregando produtos...</p></div>`;
 
   try {
+    // Consulta simples primeiro. Isso evita que um relacionamento do PostgREST impeça
+    // toda a vitrine de abrir. Os dados de categoria e loja são enriquecidos depois.
+    let { data: produtos, error } = await supabaseClient
+      .from("products")
+      .select("id,nome,descricao,preco,estoque,ativo,imagem_url,category_id,store_id,preco_oferta,oferta_especial_ativa,oferta_expira_em,created_at")
+      .eq("ativo", true)
+      .gt("estoque", 0)
+      .order("created_at", { ascending: false });
 
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
+    // Fallback para instalações onde as colunas de oferta ainda não foram criadas.
+    if (error) {
+      console.warn("Consulta completa de produtos falhou; tentando consulta compatível:", error);
+      const fallback = await supabaseClient
         .from("products")
-        .select(`
-          id,
-          nome,
-          descricao,
-          preco,
-          estoque,
-          ativo,
-          preco_oferta,
-          oferta_especial_ativa,
-          oferta_expira_em,
-          created_at,
-          category_id,
-          categories (
-            id,
-            nome
-          ),
-          stores (
-            id,
-            nome,
-            cidade,
-            estado,
-            cep
-          )
-        `)
+        .select("id,nome,descricao,preco,estoque,ativo,imagem_url,category_id,store_id,created_at")
         .eq("ativo", true)
         .gt("estoque", 0)
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        );
-
-
-    if (error) {
-
-      console.error(
-        "Erro ao carregar produtos:",
-        error
-      );
-
-
-      container.innerHTML = `
-        <div class="empty-products">
-          <span></span>
-          <h3>Erro ao carregar produtos</h3>
-          <p>${error.message}</p>
-        </div>
-      `;
-
-      return;
+        .order("created_at", { ascending: false });
+      produtos = fallback.data || [];
+      error = fallback.error;
     }
 
+    if (error) throw error;
 
-    marketplaceProdutos =
-      data || [];
+    produtos = produtos || [];
 
+    const categoryIds = [...new Set(produtos.map(p => p.category_id).filter(Boolean))];
+    const storeIds = [...new Set(produtos.map(p => p.store_id).filter(Boolean))];
 
-    mostrarProdutos(
-      marketplaceProdutos
-    );
+    const [catResp, storeResp] = await Promise.all([
+      categoryIds.length
+        ? supabaseClient.from("categories").select("id,nome").in("id", categoryIds)
+        : Promise.resolve({data:[],error:null}),
+      storeIds.length
+        ? supabaseClient.from("stores").select("id,nome,cidade,estado,cep").in("id", storeIds)
+        : Promise.resolve({data:[],error:null})
+    ]);
 
+    const categorias = Object.fromEntries((catResp.data || []).map(c => [String(c.id), c]));
+    const lojas = Object.fromEntries((storeResp.data || []).map(l => [String(l.id), l]));
 
+    marketplaceProdutos = produtos.map(p => ({
+      ...p,
+      categories: categorias[String(p.category_id)] || null,
+      stores: lojas[String(p.store_id)] || null
+    }));
+
+    mostrarProdutos(marketplaceProdutos);
   } catch (erro) {
-
-    console.error(
-      "Erro inesperado:",
-      erro
-    );
-
-
+    console.error("Erro ao carregar produtos:", erro);
     container.innerHTML = `
       <div class="empty-products">
-        <span></span>
-        <p>Erro ao carregar os produtos.</p>
-      </div>
-    `;
-
+        <h3>Não foi possível carregar os produtos</h3>
+        <p>Verifique a conexão com o banco de dados e as permissões da tabela products.</p>
+        <button type="button" onclick="carregarProdutosMarketplace()" style="margin-top:12px;border:1px solid #ddd;background:#fff;padding:9px 14px;border-radius:6px;cursor:pointer;">Tentar novamente</button>
+      </div>`;
   }
-
 }
 
 
@@ -5422,6 +5385,96 @@ async function consultarRastreamento() {
   `;
 }
 
+/* =========================================================
+   ENTREGAS / MOTOBOYS
+========================================================= */
+async function abrirPainelEntregas() {
+  const { data, error } = await supabaseClient.auth.getUser();
+  if (error || !data?.user) { abrirLogin(); return; }
+  const { data: driver, error: driverError } = await supabaseClient
+    .from("delivery_drivers")
+    .select("id,disponivel,ativo,veiculo,placa")
+    .eq("user_id", data.user.id)
+    .maybeSingle();
+  if (driverError || !driver) {
+    alert("Esta área é exclusiva para entregadores cadastrados.");
+    return;
+  }
+  if (!driver.ativo) { alert("Seu cadastro de entregador está inativo."); return; }
+
+  let modal = document.getElementById("modalEntregasMotoboy");
+  if (!modal) {
+    document.body.insertAdjacentHTML("beforeend", `
+      <div id="modalEntregasMotoboy" class="modal-login" style="display:none;z-index:15000;">
+        <div style="background:#fff;width:min(980px,94vw);max-height:92vh;overflow:auto;border-radius:10px;padding:22px;box-shadow:0 12px 45px rgba(0,0,0,.18);">
+          <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;padding-bottom:14px;margin-bottom:16px;">
+            <div><h2 style="margin:0;">Entregas</h2><p style="margin:5px 0 0;color:#777;font-size:13px;">Painel do entregador</p></div>
+            <button type="button" onclick="fecharPainelEntregas()" style="border:0;background:#f1f2f4;width:36px;height:36px;border-radius:6px;cursor:pointer;font-size:20px;">×</button>
+          </div>
+          <div id="entregasMotoboyConteudo"></div>
+        </div>
+      </div>`);
+    modal = document.getElementById("modalEntregasMotoboy");
+  }
+  modal.style.display = "flex";
+  await carregarPainelEntregas(driver);
+}
+
+function fecharPainelEntregas() { document.getElementById("modalEntregasMotoboy")?.remove(); }
+
+async function carregarPainelEntregas(driver) {
+  const box = document.getElementById("entregasMotoboyConteudo");
+  if (!box) return;
+  box.innerHTML = '<div style="padding:25px;text-align:center;color:#777;">Carregando entregas...</div>';
+  const { data: disponiveis, error } = await supabaseClient
+    .from("deliveries")
+    .select("id,order_id,status,distancia_km,valor_entrega,created_at")
+    .eq("status", "aguardando_entregador")
+    .order("created_at", { ascending: true });
+  if (error) {
+    box.innerHTML = `<div style="color:#b91c1c;padding:14px;border:1px solid #fecaca;background:#fff5f5;border-radius:7px;">Não foi possível carregar as entregas.<br><small>${escapeHtml(error.message || "Erro")}</small></div>`;
+    return;
+  }
+  const { data: minhas, error: minhasError } = await supabaseClient
+    .from("deliveries")
+    .select("id,order_id,status,distancia_km,valor_entrega,created_at")
+    .eq("driver_id", driver.id)
+    .in("status", ["aceita","a_caminho_loja","pedido_coletado","saiu_para_entrega"])
+    .order("created_at", { ascending: false });
+  if (minhasError) console.warn(minhasError);
+
+  const statusLabel = {aceita:"Aceita",a_caminho_loja:"A caminho da loja",pedido_coletado:"Pedido coletado",saiu_para_entrega:"Saiu para entrega"};
+  const card = d => `<div style="border-bottom:1px solid #eee;padding:14px 0;display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap;">
+    <div><strong>Pedido #${escapeHtml(String(d.order_id))}</strong><div style="font-size:13px;color:#777;margin-top:5px;">Status: ${escapeHtml(statusLabel[d.status] || "Aguardando")}</div><div style="font-size:13px;color:#555;margin-top:4px;">Valor da entrega: R$ ${Number(d.valor_entrega||0).toFixed(2).replace(".",",")}${d.distancia_km ? " · "+Number(d.distancia_km).toFixed(1).replace(".",",")+" km" : ""}</div></div>
+    <button type="button" onclick="aceitarEntregaMotoboy('${d.id}')" style="border:0;background:#ff6a00;color:#fff;padding:9px 14px;border-radius:6px;cursor:pointer;font-weight:700;">Aceitar entrega</button></div>`;
+  const minhaCard = d => `<div style="border:1px solid #e4e7eb;padding:15px;border-radius:7px;margin-bottom:10px;"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;"><strong>Pedido #${escapeHtml(String(d.order_id))}</strong><span style="font-size:12px;color:#555;">${escapeHtml(statusLabel[d.status] || d.status)}</span></div><div style="margin-top:8px;color:#555;">Valor: R$ ${Number(d.valor_entrega||0).toFixed(2).replace(".",",")}</div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;">${d.status==="aceita"?`<button onclick="atualizarEntregaMotoboy('${d.id}','a_caminho_loja')" class="tnm-delivery-btn">A caminho da loja</button>`:""}${d.status==="a_caminho_loja"?`<button onclick="atualizarEntregaMotoboy('${d.id}','pedido_coletado')" class="tnm-delivery-btn">Pedido coletado</button>`:""}${d.status==="pedido_coletado"?`<button onclick="atualizarEntregaMotoboy('${d.id}','saiu_para_entrega')" class="tnm-delivery-btn">Saiu para entrega</button>`:""}${d.status==="saiu_para_entrega"?`<button onclick="atualizarEntregaMotoboy('${d.id}','entregue')" class="tnm-delivery-btn">Marcar entregue</button>`:""}<button onclick="atualizarEntregaMotoboy('${d.id}','cancelada')" style="border:1px solid #ddd;background:#fff;padding:8px 11px;border-radius:6px;cursor:pointer;">Cancelar</button></div></div>`;
+  box.innerHTML = `<div style="margin-bottom:24px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><h3 style="margin:0;">Minhas entregas</h3><button onclick="abrirPainelEntregas()" style="border:1px solid #ddd;background:#fff;padding:7px 11px;border-radius:6px;cursor:pointer;">Atualizar</button></div>${minhas?.length ? minhas.map(minhaCard).join("") : '<div style="padding:18px 0;color:#777;">Nenhuma entrega em andamento.</div>'}</div><div><h3 style="margin:0 0 8px;">Entregas disponíveis</h3>${disponiveis?.length ? disponiveis.map(card).join("") : '<div style="padding:18px 0;color:#777;">Nenhuma entrega disponível no momento.</div>'}</div>`;
+}
+
+async function aceitarEntregaMotoboy(deliveryId) {
+  const { data, error } = await supabaseClient.auth.getUser();
+  if (error || !data?.user) { abrirLogin(); return; }
+  const { data: driver } = await supabaseClient.from("delivery_drivers").select("id,ativo,disponivel,veiculo,placa").eq("user_id", data.user.id).maybeSingle();
+  if (!driver?.id || !driver.ativo) { alert("Cadastro de entregador não encontrado ou inativo."); return; }
+  const { data: resultado, error: rpcError } = await supabaseClient.rpc("aceitar_entrega", { p_delivery_id: deliveryId, p_driver_id: driver.id });
+  if (rpcError) { alert("Não foi possível aceitar a entrega.\n\n" + rpcError.message); return; }
+  const r = Array.isArray(resultado) ? resultado[0] : resultado;
+  alert(r?.mensagem || "Entrega processada.");
+  if (r?.ok) await carregarPainelEntregas(driver);
+}
+
+async function atualizarEntregaMotoboy(deliveryId, novoStatus) {
+  const { data, error } = await supabaseClient.auth.getUser();
+  if (error || !data?.user) { abrirLogin(); return; }
+  const { data: driver } = await supabaseClient.from("delivery_drivers").select("id,ativo,disponivel,veiculo,placa").eq("user_id", data.user.id).maybeSingle();
+  if (!driver?.id) return;
+  const { data: resultado, error: rpcError } = await supabaseClient.rpc("atualizar_status_entrega", { p_delivery_id: deliveryId, p_driver_id: driver.id, p_novo_status: novoStatus });
+  if (rpcError) { alert("Não foi possível atualizar a entrega.\n\n" + rpcError.message); return; }
+  const r = Array.isArray(resultado) ? resultado[0] : resultado;
+  if (!r?.ok) { alert(r?.mensagem || "Não foi possível atualizar a entrega."); return; }
+  await carregarPainelEntregas(driver);
+}
+
 /*
 ==================================================
 INICIALIZAÇÃO
@@ -6160,6 +6213,17 @@ iniciarTimersOfertasCarrinho();
         <button onclick="aplicarCupomCarrinho()" style="border:0;background:#2563eb;color:white;padding:0 15px;border-radius:8px;cursor:pointer;font-weight:bold;">Aplicar</button>
       </div>
       <div id="resultadoCupomCarrinho" style="font-size:13px;margin-top:8px;min-height:18px;"></div>
+    </div>
+
+    <div style="margin-top:15px;padding:14px;background:#fff;border:1px solid #e5e7eb;border-radius:8px;">
+      <div style="font-weight:700;margin-bottom:10px;">Entrega</div>
+      <select id="tipoEntregaCarrinho" onchange="selecionarTipoEntregaCarrinho(this.value)" style="width:100%;padding:11px;border:1px solid #d8dce1;border-radius:6px;background:#fff;cursor:pointer;">
+        <option value="retirada">Retirada no local — R$ 0,00</option>
+        <option value="entrega_loja">Entrega pela loja</option>
+        <option value="frete_proprio">Frete próprio</option>
+        <option value="correios">Correios</option>
+      </select>
+      <div id="resumoFreteCarrinho" style="margin-top:8px;font-size:13px;color:#666;">Retirada no local.</div>
     </div>
 
     <div style="margin-top:15px;padding:14px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;">
