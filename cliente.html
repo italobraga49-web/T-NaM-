@@ -101,18 +101,54 @@ function closeAuth(){$("authModal").classList.add("hidden")}
 function showAuth(mode){["loginForm","registerForm","recoveryForm","passwordForm"].forEach(x=>$(x).classList.add("hidden"));$(mode==="register"?"registerForm":mode==="recovery"?"recoveryForm":mode==="password"?"passwordForm":"loginForm").classList.remove("hidden");$("authTitle").textContent=mode==="register"?"Criar conta":mode==="recovery"?"Recuperar senha":mode==="password"?"Nova senha":"Entrar";setMsg("authMsg","")}
 async function login(e){e.preventDefault();const {error}=await sb.auth.signInWithPassword({email:$("loginEmail").value.trim(),password:$("loginPassword").value});if(error)return setMsg("authMsg",error.message);closeAuth();await session()}
 async function register(e){
- e.preventDefault();const nome=$("regName").value.trim(),telefone=$("regPhone").value.trim(),email=$("regEmail").value.trim(),password=$("regPassword").value;
- const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:"https://t-na-m-inky.vercel.app/cliente.html",data:{nome,telefone,tipo:"cliente"}}});if(error)return setMsg("authMsg",error.message);
- if(data.user){
-  const {error:pe}=await sb.from("profiles").upsert({id:data.user.id,nome,telefone},{onConflict:"id"});
-  if(pe)return setMsg("authMsg","Conta criada, mas o perfil precisa ser concluído: "+pe.message);
+ e.preventDefault();
+ const nome=$("regName").value.trim(),telefone=$("regPhone").value.trim(),email=$("regEmail").value.trim(),password=$("regPassword").value;
+ const {data,error}=await sb.auth.signUp({
+  email,
+  password,
+  options:{
+   emailRedirectTo:"https://t-na-m-inky.vercel.app/cliente.html",
+   data:{nome,telefone,tipo:"cliente"}
+  }
+ });
+ if(error)return setMsg("authMsg",error.message);
+ if(!data?.user)return setMsg("authMsg","Não foi possível criar a conta.");
+ // With e-mail confirmation enabled there is no authenticated session yet.
+ // Do not write to profiles here, because RLS correctly blocks anonymous writes.
+ if(!data.session){
+  setMsg("authMsg","Cadastro criado. Verifique seu e-mail para confirmar a conta.");
+  return;
  }
- if(!data.session)return setMsg("authMsg","Cadastro criado. Verifique seu e-mail para confirmar a conta.");
- closeAuth();await session()
+ const ok=await garantirPerfilCliente(data.user);
+ if(!ok)return;
+ closeAuth();
+ await session();
 }
 async function recover(e){e.preventDefault();const {error}=await sb.auth.resetPasswordForEmail($("recoveryEmail").value.trim(),{redirectTo:location.origin+location.pathname});setMsg("authMsg",error?error.message:"Se o e-mail estiver cadastrado, o link foi enviado.")}
 async function updatePassword(e){e.preventDefault();if($("newPassword").value!==$("newPassword2").value)return setMsg("authMsg","As senhas não conferem.");const {error}=await sb.auth.updateUser({password:$("newPassword").value});if(error)return setMsg("authMsg",error.message);setMsg("authMsg","Senha alterada com sucesso.");setTimeout(()=>{closeAuth()},900)}
 async function logout(){await sb.auth.signOut();await session()}
+
+async function garantirPerfilCliente(user){
+ if(!user)return false;
+ const meta=user.user_metadata||{};
+ const {data:perfil,error:consulta}=await sb.from("profiles").select("id").eq("id",user.id).maybeSingle();
+ if(consulta){
+  setMsg("authMsg","Não foi possível verificar o perfil: "+consulta.message);
+  return false;
+ }
+ if(perfil)return true;
+ const {error}=await sb.from("profiles").insert({
+  id:user.id,
+  nome:meta.nome||"",
+  telefone:meta.telefone||""
+ });
+ if(error){
+  setMsg("authMsg","Conta confirmada, mas não foi possível concluir o perfil: "+error.message);
+  return false;
+ }
+ return true;
+}
+
 async function session(){const {data}=await sb.auth.getUser();user=data.user||null;$("accountBtn").textContent=user?(user.user_metadata?.nome||"Minha conta"):"Entrar"}
 sb.auth.onAuthStateChange(event=>{if(event==="PASSWORD_RECOVERY"){$("authModal").classList.remove("hidden");showAuth("password")}});
 
