@@ -242,7 +242,7 @@ async function submitAuth(){
  }else{
    const nome=document.getElementById("regNome").value.trim(), telefone=document.getElementById("regTelefone").value.trim(), loja=document.getElementById("regLoja").value.trim(), cidade=document.getElementById("regCidade").value.trim(), estado=document.getElementById("regEstado").value.trim().toUpperCase(), cep=document.getElementById("regCep").value.trim();
    if(!nome||!loja||!cidade||!estado){setMsg("authMsg","Preencha nome, loja, cidade e estado.","error");return;}
-   const {data,error}=await supabaseClient.auth.signUp({email,password,options:{emailRedirectTo:"https://t-na-m-inky.vercel.app/vendedor.html",data:{tipo:"vendedor",nome,telefone}}});
+   const {data,error}=await supabaseClient.auth.signUp({email,password,options:{emailRedirectTo:"https://t-na-m-inky.vercel.app/vendedor.html",data:{tipo:"vendedor",nome,telefone,loja,cidade,estado,cep}}});
    if(error){setMsg("authMsg",error.message,"error");return;}
    if(!data.user){setMsg("authMsg","Conta criada. Verifique seu e-mail para continuar.","ok");return;}
    const {error:storeError}=await supabaseClient.from("stores").insert({owner_id:data.user.id,nome:loja,telefone,cidade,estado,cep,ativo:true});
@@ -250,6 +250,34 @@ async function submitAuth(){
    await boot();
  }
 }
+
+async function garantirLojaVendedor(user){
+ if(!user)return false;
+ const meta=user.user_metadata||{};
+ const {data:existente,error:consulta}=await supabaseClient
+  .from("stores").select("id").eq("owner_id",user.id).maybeSingle();
+ if(consulta){
+  console.error("Erro ao verificar loja:",consulta);
+  return false;
+ }
+ if(existente)return true;
+
+ const payload={
+  owner_id:user.id,
+  nome:meta.loja||meta.nome||"Minha loja",
+  telefone:meta.telefone||"",
+  cidade:meta.cidade||"",
+  estado:meta.estado||"",
+  cep:meta.cep||""
+ };
+ const {error}=await supabaseClient.from("stores").insert(payload);
+ if(error){
+  console.error("Erro ao concluir cadastro da loja:",error);
+  return false;
+ }
+ return true;
+}
+
 async function boot(){
  const {data}=await supabaseClient.auth.getUser();
  if(!data.user){showAuth();return;}
