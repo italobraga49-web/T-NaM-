@@ -1,3 +1,4 @@
+```
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -184,7 +185,7 @@ async function cadastrar(event){
  const placa=document.getElementById("registerPlate").value.trim().toUpperCase();
  const email=document.getElementById("registerEmail").value.trim();
  const password=document.getElementById("registerPassword").value;
- const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{nome,tipo:"entregador",telefone}}});
+ const {data,error}=await supabaseClient.auth.signUp({email,password,options:{emailRedirectTo:"https://t-na-m-inky.vercel.app/entregador.html",data:{nome,tipo:"entregador",telefone}}});
  if(error){authMsg("Não foi possível criar a conta: "+error.message);return}
  if(!data?.user){authMsg("Conta criada. Verifique seu e-mail para confirmar o cadastro.");return}
  const {error:profileError}=await supabaseClient.from("delivery_drivers").insert({user_id:data.user.id,ativo:true,disponivel:true,veiculo,placa});
@@ -342,3 +343,4 @@ document.addEventListener("DOMContentLoaded",init);
 </script>
 </body><!-- atualização entregador -->
 </html>
+```
