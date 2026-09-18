@@ -4,2173 +4,363 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TáNaMão — Área do Vendedor</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#f5f6f8;
-  color:#202124
-}
-button,input,select,textarea{font:inherit}
-.hidden{display:none!important}
-
-.top{
-  height:64px;
-  background:#fff;
-  border-bottom:1px solid #e5e7eb;
-  display:flex;
-  align-items:center;
-  padding:0 28px;
-  justify-content:space-between
-}
-
-.logo{
-  font-size:25px;
-  font-weight:800;
-  color:#111
-}
-.logo span{font-weight:500}
-
-.userbox{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  font-size:14px
-}
-
-.layout{
-  display:flex;
-  min-height:calc(100vh - 64px)
-}
-
-.side{
-  width:235px;
-  background:#fff;
-  border-right:1px solid #e5e7eb;
-  padding:20px 14px
-}
-
-.side h3{
-  font-size:12px;
-  color:#8a8f98;
-  text-transform:uppercase;
-  margin:0 12px 12px
-}
-
-.nav{
-  width:100%;
-  padding:12px;
-  border:0;
-  background:transparent;
-  text-align:left;
-  border-radius:8px;
-  cursor:pointer;
-  color:#34373d;
-  margin-bottom:4px
-}
-
-.nav:hover,
-.nav.active{
-  background:#f1f3f5;
-  font-weight:700
-}
-
-.main{
-  flex:1;
-  padding:28px;
-  max-width:1400px;
-  margin:auto;
-  width:100%
-}
-
-h1{
-  margin:0 0 7px;
-  font-size:26px
-}
-
-.subtitle{
-  color:#70757d;
-  margin-bottom:25px
-}
-
-.cards{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:16px;
-  margin-bottom:24px
-}
-
-.card{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:10px;
-  padding:20px
-}
-
-.card small{color:#777}
-
-.number{
-  font-size:28px;
-  font-weight:800;
-  margin-top:8px
-}
-
-.panel{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:10px;
-  padding:22px;
-  margin-bottom:20px
-}
-
-.panel h2{
-  font-size:18px;
-  margin:0 0 18px
-}
-
-table{
-  width:100%;
-  border-collapse:collapse
-}
-
-th,td{
-  text-align:left;
-  padding:13px 10px;
-  border-bottom:1px solid #eee;
-  font-size:14px
-}
-
-th{
-  color:#777;
-  font-size:12px;
-  text-transform:uppercase
-}
-
-.badge{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:20px;
-  background:#f1f3f5;
-  font-size:12px
-}
-
-.primary{
-  background:#111;
-  color:#fff;
-  border:0;
-  border-radius:7px;
-  padding:10px 16px;
-  cursor:pointer
-}
-
-.secondary{
-  background:#fff;
-  color:#222;
-  border:1px solid #d7dbe0;
-  border-radius:7px;
-  padding:10px 16px;
-  cursor:pointer
-}
-
-.danger{
-  background:#b42318;
-  color:#fff;
-  border:0;
-  border-radius:7px;
-  padding:10px 16px;
-  cursor:pointer
-}
-
-.actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap
-}
-
-.formgrid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:15px
-}
-
-.field label{
-  display:block;
-  font-size:13px;
-  font-weight:700;
-  margin-bottom:6px
-}
-
-.field input,
-.field select,
-.field textarea{
-  width:100%;
-  padding:11px;
-  border:1px solid #d7dbe0;
-  border-radius:7px;
-  background:#fff
-}
-
-.field textarea{
-  min-height:90px;
-  resize:vertical
-}
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.45);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  z-index:10
-}
-
-.modalbox{
-  background:#fff;
-  width:min(680px,100%);
-  max-height:90vh;
-  overflow:auto;
-  border-radius:12px;
-  padding:25px
-}
-
-.modalhead{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:18px
-}
-
-.close{
-  border:0;
-  background:none;
-  font-size:25px;
-  cursor:pointer
-}
-
-.auth{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:25px;
-  background:#f5f6f8
-}
-
-.authbox{
-  width:min(460px,100%);
-  background:#fff;
-  border:1px solid #e2e5e9;
-  border-radius:12px;
-  padding:30px
-}
-
-.authbox h1{margin-bottom:5px}
-.authbox p{color:#73777f}
-
-.tabs{
-  display:flex;
-  border-bottom:1px solid #ddd;
-  margin:22px 0
-}
-
-.tab{
-  flex:1;
-  padding:12px;
-  border:0;
-  background:none;
-  cursor:pointer
-}
-
-.tab.active{
-  font-weight:700;
-  border-bottom:2px solid #111
-}
-
-.msg{
-  padding:11px;
-  border-radius:7px;
-  background:#f1f3f5;
-  margin:12px 0;
-  font-size:13px
-}
-
-.error{
-  background:#fdecec;
-  color:#a61b1b
-}
-
-.success{
-  background:#edf8f0;
-  color:#176b2c
-}
-
-@media(max-width:900px){
-  .cards{grid-template-columns:repeat(2,1fr)}
-  .side{width:190px}
-  .formgrid{grid-template-columns:1fr}
-}
-
-@media(max-width:650px){
-  .layout{display:block}
-  .side{
-    width:100%;
-    border-right:0;
-    border-bottom:1px solid #e5e7eb;
-    display:flex;
-    overflow:auto
-  }
-  .side h3{display:none}
-  .nav{min-width:max-content}
-  .main{padding:18px}
-  .cards{grid-template-columns:1fr}
-  .top{padding:0 16px}
-}
+:root{--primary:#ff4b2b;--primary2:#ff5a36;--dark:#17191d;--muted:#70757d;--line:#e7e9ed;--bg:#f5f6f8;--white:#fff;--green:#138a4b}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--dark)}
+button,input,select{font:inherit}.hidden{display:none!important}
+.top{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:20}
+.brand{font-size:25px;font-weight:800;color:var(--primary)}.brand span{color:#222}
+.userbox{display:flex;align-items:center;gap:12px;color:#555;font-size:14px}.avatar{width:36px;height:36px;border-radius:50%;background:#eef0f3;display:grid;place-items:center;font-weight:700}
+.layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 64px)}
+.side{background:#fff;border-right:1px solid var(--line);padding:18px 12px}.side h4{font-size:11px;color:#999;text-transform:uppercase;margin:8px 12px 12px}
+.nav{width:100%;border:0;background:#fff;text-align:left;padding:12px;border-radius:8px;cursor:pointer;color:#444;font-weight:600;margin-bottom:4px}.nav:hover,.nav.active{background:#fff1ed;color:var(--primary)}
+.main{padding:28px;max-width:1400px;width:100%;margin:auto}.title{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.title h1{font-size:27px;margin:0}.title p{margin:6px 0 0;color:var(--muted)}
+.btn{border:0;border-radius:8px;padding:11px 16px;font-weight:700;cursor:pointer}.btn.primary{background:var(--primary);color:#fff}.btn.secondary{background:#fff;border:1px solid var(--line);color:#333}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}.stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px}.stat small{color:var(--muted)}.stat b{display:block;font-size:25px;margin-top:8px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px}.card h2{font-size:18px;margin:0 0 16px}.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--line);font-size:14px}.table th{font-size:12px;color:#777;text-transform:uppercase}
+.badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:700;background:#f0f2f5}.badge.green{background:#e9f8ef;color:var(--green)}.badge.orange{background:#fff3e8;color:#b75a00}.badge.red{background:#ffecec;color:#b42318}
+.empty{text-align:center;padding:38px;color:var(--muted);border:1px dashed #d8dce2;border-radius:9px}
+.auth{min-height:100vh;display:grid;place-items:center;padding:25px;background:#f6f7f9}.authbox{width:min(460px,100%);background:#fff;border:1px solid var(--line);border-radius:14px;padding:30px;box-shadow:0 12px 35px rgba(0,0,0,.06)}.authbox h1{text-align:center;margin:0 0 7px;font-size:28px}.authbox .sub{text-align:center;color:var(--muted);margin:0 0 24px}.field{margin-bottom:14px}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:#555}.field input,.field select{width:100%;padding:12px;border:1px solid #d8dbe0;border-radius:8px;outline:none;background:#fff}.field input:focus,.field select:focus{border-color:var(--primary)}.authswitch{text-align:center;margin-top:18px;font-size:13px}.link{color:#d94023;font-weight:700;cursor:pointer}.msg{margin:12px 0;padding:10px;border-radius:8px;font-size:13px;background:#f3f4f6;color:#555}.msg.error{background:#fff0f0;color:#a61b1b}.msg.ok{background:#eaf8ef;color:#176b3d}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.42);display:grid;place-items:center;padding:20px;z-index:50}.modalbox{width:min(650px,100%);background:#fff;border-radius:13px;padding:24px;max-height:90vh;overflow:auto}.modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead h2{margin:0}.close{border:0;background:#f0f1f3;width:34px;height:34px;border-radius:50%;cursor:pointer}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.money{font-size:30px;font-weight:800}.subtle{color:var(--muted);font-size:13px}.row{display:flex;justify-content:space-between;gap:12px;align-items:center}.notice{background:#fff7ed;border:1px solid #fed7aa;border-radius:9px;padding:14px;color:#8a4b08;font-size:13px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.side{display:none}.stats{grid-template-columns:1fr 1fr}.main{padding:18px}.top{padding:0 16px}.grid2{grid-template-columns:1fr}}
 </style>
 </head>
-
 <body>
 
-<!-- =========================
-     AUTENTICAÇÃO DO VENDEDOR
-========================= -->
-
-<div id="auth" class="auth">
-
+<div id="authScreen" class="auth">
   <div class="authbox">
+    <div class="brand" style="text-align:center;margin-bottom:18px">TáNaMão</div>
+    <h1 id="authTitle">Área do Vendedor</h1>
+    <p class="sub" id="authSub">Entre para administrar sua loja e suas vendas.</p>
 
-    <div class="logo">
-      TáNaMão <span>• Vendedor</span>
+    <div id="registerFields" class="hidden">
+      <div class="field"><label>Nome completo</label><input id="regNome" placeholder="Seu nome"></div>
+      <div class="field"><label>Telefone</label><input id="regTelefone" placeholder="(00) 00000-0000"></div>
+      <div class="field"><label>Nome da loja</label><input id="regLoja" placeholder="Nome comercial da loja"></div>
+      <div class="field"><label>Cidade</label><input id="regCidade" placeholder="Cidade"></div>
+      <div class="field"><label>Estado</label><input id="regEstado" maxlength="2" placeholder="MA"></div>
+      <div class="field"><label>CEP</label><input id="regCep" placeholder="00000-000"></div>
     </div>
 
-    <p>
-      Área exclusiva para gestão da sua loja.
-    </p>
-
-    <div class="tabs">
-      <button
-        id="tabLogin"
-        class="tab active"
-        onclick="showAuth('login')">
-        Entrar
-      </button>
-
-      <button
-        id="tabRegister"
-        class="tab"
-        onclick="showAuth('register')">
-        Criar conta
-      </button>
-    </div>
-
-    <div id="authMessage" class="msg hidden"></div>
-
-
-    <!-- LOGIN -->
-
-    <form id="loginForm" onsubmit="login(event)">
-
-      <div class="field">
-        <label>E-mail</label>
-        <input
-          id="loginEmail"
-          type="email"
-          autocomplete="email"
-          required>
-      </div>
-
-      <br>
-
-      <div class="field">
-        <label>Senha</label>
-        <input
-          id="loginPassword"
-          type="password"
-          autocomplete="current-password"
-          required>
-      </div>
-
-      <br>
-
-      <button
-        type="submit"
-        class="primary"
-        style="width:100%">
-        Entrar
-      </button>
-
+    <div class="field"><label>E-mail</label><input id="authEmail" type="email" placeholder="seuemail@exemplo.com"></div>
+    <div class="field"><label>Senha</label><input id="authPassword" type="password" placeholder="Sua senha"></div>
+    <div id="authMsg" class="msg hidden"></div>
+    <button id="authBtn" class="btn primary" style="width:100%" onclick="submitAuth()">Entrar</button>
+    <button id="forgotBtn" type="button" class="btn secondary" style="width:100%;margin-top:10px" onclick="showRecovery()">Esqueci minha senha</button>
+    <form id="recoveryForm" class="hidden" onsubmit="sendRecovery(event)" style="margin-top:14px">
+      <div class="field"><label>E-mail cadastrado</label><input id="recoveryEmail" type="email" autocomplete="email" required></div>
+      <button type="submit" class="btn primary" style="width:100%">Enviar link para redefinir senha</button>
+      <button type="button" class="btn secondary" style="width:100%;margin-top:10px" onclick="backToLogin()">Voltar para entrar</button>
     </form>
-
-
-    <!-- CADASTRO -->
-
-    <form id="registerForm"
-          class="hidden"
-          onsubmit="register(event)">
-
-      <div class="formgrid">
-
-        <div class="field">
-          <label>Nome do responsável</label>
-          <input id="regName" required>
-        </div>
-
-        <div class="field">
-          <label>Telefone</label>
-          <input id="regPhone" required>
-        </div>
-
-        <div class="field">
-          <label>Nome da loja</label>
-          <input id="regStore" required>
-        </div>
-
-        <div class="field">
-          <label>Cidade</label>
-          <input id="regCity" required>
-        </div>
-
-        <div class="field">
-          <label>Estado</label>
-          <input
-            id="regState"
-            maxlength="2"
-            required>
-        </div>
-
-        <div class="field">
-          <label>CEP</label>
-          <input id="regCep" required>
-        </div>
-
-        <div class="field">
-          <label>E-mail</label>
-          <input
-            id="regEmail"
-            type="email"
-            autocomplete="email"
-            required>
-        </div>
-
-        <div class="field">
-          <label>Senha</label>
-          <input
-            id="regPassword"
-            type="password"
-            minlength="6"
-            autocomplete="new-password"
-            required>
-        </div>
-
-      </div>
-
-      <br>
-
-      <button
-        type="submit"
-        class="primary"
-        style="width:100%">
-        Criar conta de vendedor
-      </button>
-
+    <form id="updatePasswordForm" class="hidden" onsubmit="updatePassword(event)" style="margin-top:14px">
+      <div class="field"><label>Nova senha</label><input id="newPassword" type="password" minlength="6" autocomplete="new-password" required></div>
+      <div class="field"><label>Confirmar nova senha</label><input id="newPasswordConfirm" type="password" minlength="6" autocomplete="new-password" required></div>
+      <button type="submit" class="btn primary" style="width:100%">Salvar nova senha</button>
+      <button type="button" class="btn secondary" style="width:100%;margin-top:10px" onclick="backToLogin()">Voltar para entrar</button>
     </form>
-
+    <div class="authswitch" id="authSwitch"><span id="switchText">Ainda não vende no TáNaMão?</span> <span class="link" onclick="toggleAuth()" id="switchLink">Criar conta de vendedor</span></div>
   </div>
-
 </div>
 
-
-<!-- =========================
-     SISTEMA DO VENDEDOR
-========================= -->
-
-<div id="app" class="hidden">
-
+<div id="appScreen" class="hidden">
   <header class="top">
-
-    <div class="logo">
-      TáNaMão <span>• Vendedor</span>
-    </div>
-
-    <div class="userbox">
-
-      <span id="storeNameTop">
-        Minha loja
-      </span>
-
-      <button
-        class="secondary"
-        onclick="logout()">
-        Sair
-      </button>
-
-    </div>
-
+    <div class="brand">TáNaMão <span>• Vendedor</span></div>
+    <div class="userbox"><span id="userEmail"></span><div class="avatar" id="avatar">V</div><button class="btn secondary" onclick="logout()">Sair</button></div>
   </header>
 
-
   <div class="layout">
-
     <aside class="side">
-
-      <h3>Minha loja</h3>
-
-      <button
-        class="nav active"
-        onclick="openSection('overview',this)">
-        Visão geral
-      </button>
-
-      <button
-        class="nav"
-        onclick="openSection('orders',this)">
-        Pedidos
-      </button>
-
-      <button
-        class="nav"
-        onclick="openSection('products',this)">
-        Produtos
-      </button>
-
-      <button
-        class="nav"
-        onclick="openSection('payments',this)">
-        Pagamentos
-      </button>
-
-      <button
-        class="nav"
-        onclick="openSection('store',this)">
-        Dados da loja
-      </button>
-
+      <h4>Minha loja</h4>
+      <button class="nav active" onclick="showSection('dashboard',this)">Visão geral</button>
+      <button class="nav" onclick="showSection('orders',this)">Pedidos</button>
+      <button class="nav" onclick="showSection('products',this)">Produtos</button>
+      <button class="nav" onclick="showSection('payments',this)">Pagamentos</button>
+      <button class="nav" onclick="showSection('wallet',this)">Carteira</button>
+      <button class="nav" onclick="showSection('store',this)">Dados da loja</button>
+      <h4 style="margin-top:24px">Integrações</h4>
+      <button class="nav" onclick="connectMercadoPago()">Mercado Pago</button>
     </aside>
 
-
     <main class="main">
-
-
-      <!-- VISÃO GERAL -->
-
-      <section id="overview">
-
-        <h1>Visão geral</h1>
-
-        <div class="subtitle">
-          Acompanhe sua operação no TáNaMão.
+      <section id="dashboard">
+        <div class="title"><div><h1>Visão geral</h1><p id="storeWelcome">Carregando sua loja...</p></div></div>
+        <div class="stats">
+          <div class="stat"><small>Pedidos hoje</small><b id="stToday">0</b></div>
+          <div class="stat"><small>Pedidos pendentes</small><b id="stPending">0</b></div>
+          <div class="stat"><small>Vendas pagas</small><b id="stSales">R$ 0,00</b></div>
+          <div class="stat"><small>Saldo da carteira</small><b id="stWallet">R$ 0,00</b></div>
         </div>
-
-        <div class="cards">
-
-          <div class="card">
-            <small>Pedidos</small>
-            <div id="statOrders" class="number">0</div>
-          </div>
-
-          <div class="card">
-            <small>Produtos ativos</small>
-            <div id="statProducts" class="number">0</div>
-          </div>
-
-          <div class="card">
-            <small>Vendas pagas</small>
-            <div id="statSales" class="number">
-              R$ 0,00
-            </div>
-          </div>
-
-          <div class="card">
-            <small>Pedidos em andamento</small>
-            <div id="statPending" class="number">0</div>
-          </div>
-
-        </div>
-
-
-        <div class="panel">
-
-          <h2>Últimos pedidos</h2>
-
-          <div id="latestOrders">
-            Carregando...
-          </div>
-
-        </div>
-
+        <div class="card"><div class="row"><h2>Pedidos recentes</h2><button class="btn secondary" onclick="showSection('orders')">Ver todos</button></div><div id="recentOrders"></div></div>
+        <div class="card"><h2>Mercado Pago</h2><div id="mpStatus" class="notice">Verificando conexão...</div><div style="margin-top:12px"><button class="btn primary" onclick="connectMercadoPago()">Conectar Mercado Pago</button></div></div>
       </section>
-
-
-      <!-- PEDIDOS -->
 
       <section id="orders" class="hidden">
-
-        <h1>Pedidos</h1>
-
-        <div class="subtitle">
-          Consulte e acompanhe os pedidos da sua loja.
-        </div>
-
-        <div class="panel">
-
-          <div id="ordersTable">
-            Carregando...
-          </div>
-
-        </div>
-
+        <div class="title"><div><h1>Pedidos</h1><p>Pedidos recebidos pela sua loja.</p></div><button class="btn secondary" onclick="loadOrders()">Atualizar</button></div>
+        <div class="card"><div id="ordersTable"></div></div>
       </section>
-
-
-      <!-- PRODUTOS -->
 
       <section id="products" class="hidden">
-
-        <h1>Produtos</h1>
-
-        <div class="subtitle">
-          Cadastre e gerencie os produtos da sua loja.
-        </div>
-
-        <div class="panel">
-
-          <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:15px">
-
-            <h2 style="margin:0">
-              Catálogo
-            </h2>
-
-            <button
-              class="primary"
-              onclick="openProductModal()">
-              Novo produto
-            </button>
-
-          </div>
-
-          <div id="productsTable">
-            Carregando...
-          </div>
-
-        </div>
-
+        <div class="title"><div><h1>Produtos</h1><p>Produtos cadastrados na sua loja.</p></div><button class="btn primary" onclick="openProductModal()">Adicionar produto</button></div>
+        <div class="card"><div id="productsTable"></div></div>
       </section>
-
-
-      <!-- PAGAMENTOS -->
 
       <section id="payments" class="hidden">
-
-        <h1>Pagamentos</h1>
-
-        <div class="subtitle">
-          Acompanhe os pagamentos relacionados aos seus pedidos.
+        <div class="title"><div><h1>Pagamentos</h1><p>Resumo financeiro dos pedidos.</p></div></div>
+        <div class="stats">
+          <div class="stat"><small>Total pago</small><b id="payPaid">R$ 0,00</b></div>
+          <div class="stat"><small>Aguardando pagamento</small><b id="payWaiting">R$ 0,00</b></div>
+          <div class="stat"><small>Comissão TáNaMão</small><b id="payFee">R$ 0,00</b></div>
+          <div class="stat"><small>Valor do vendedor</small><b id="paySeller">R$ 0,00</b></div>
         </div>
-
-        <div class="panel">
-
-          <div id="paymentsTable">
-            Carregando...
-          </div>
-
-        </div>
-
+        <div class="card"><div id="paymentsTable"></div></div>
       </section>
 
-
-      <!-- DADOS DA LOJA -->
+      <section id="wallet" class="hidden">
+        <div class="title"><div><h1>Carteira</h1><p>Acompanhe valores da sua operação.</p></div></div>
+        <div class="card"><div class="subtle">Saldo disponível registrado pelo marketplace</div><div class="money" id="walletBig">R$ 0,00</div><div class="notice" style="margin-top:18px">Os valores e repasses dependem da confirmação dos pagamentos e das regras financeiras configuradas para o marketplace.</div></div>
+      </section>
 
       <section id="store" class="hidden">
-
-        <h1>Dados da loja</h1>
-
-        <div class="subtitle">
-          Informações cadastradas da sua loja.
-        </div>
-
-        <div class="panel">
-
-          <div id="storeData">
-            Carregando...
+        <div class="title"><div><h1>Dados da loja</h1><p>Informações que aparecem para os clientes.</p></div></div>
+        <div class="card">
+          <div class="grid2">
+            <div class="field"><label>Nome da loja</label><input id="storeNome"></div>
+            <div class="field"><label>Telefone</label><input id="storeTelefone"></div>
+            <div class="field"><label>Cidade</label><input id="storeCidade"></div>
+            <div class="field"><label>Estado</label><input id="storeEstado" maxlength="2"></div>
+            <div class="field"><label>CEP</label><input id="storeCep"></div>
+            <div class="field"><label>Descrição</label><input id="storeDescricao"></div>
           </div>
-
+          <button class="btn primary" onclick="saveStore()">Salvar dados da loja</button>
+          <div id="storeMsg" class="msg hidden" style="margin-top:12px"></div>
         </div>
-
       </section>
-
     </main>
-
   </div>
-
 </div>
-
-
-<!-- =========================
-     MODAL PRODUTO
-========================= -->
 
 <div id="productModal" class="modal hidden">
-
   <div class="modalbox">
-
-    <div class="modalhead">
-
-      <h2 style="margin:0">
-        Novo produto
-      </h2>
-
-      <button
-        class="close"
-        onclick="closeProductModal()">
-        ×
-      </button>
-
+    <div class="modalhead"><h2>Novo produto</h2><button class="close" onclick="closeProductModal()">×</button></div>
+    <div style="margin-top:18px">
+      <div class="field"><label>Nome do produto</label><input id="prodNome" placeholder="Ex.: Arroz 5kg"></div>
+      <div class="field"><label>Descrição</label><input id="prodDescricao" placeholder="Descrição do produto"></div>
+      <div class="grid2">
+        <div class="field"><label>Preço</label><input id="prodPreco" type="number" min="0" step="0.01" placeholder="0,00"></div>
+        <div class="field"><label>Estoque</label><input id="prodEstoque" type="number" min="0" step="1" placeholder="0"></div>
+      </div>
+      <div class="field"><label>Categoria</label><select id="prodCategoria"><option value="">Sem categoria</option></select></div>
+      <div id="prodMsg" class="msg hidden"></div>
+      <button class="btn primary" style="width:100%" onclick="saveProduct()">Cadastrar produto</button>
     </div>
-
-    <div
-      id="productMsg"
-      class="msg hidden">
-    </div>
-
-    <form onsubmit="saveProduct(event)">
-
-      <div class="formgrid">
-
-        <div class="field">
-          <label>Nome</label>
-          <input id="pName" required>
-        </div>
-
-        <div class="field">
-          <label>Preço</label>
-          <input
-            id="pPrice"
-            type="number"
-            min="0"
-            step="0.01"
-            required>
-        </div>
-
-        <div class="field">
-          <label>Estoque</label>
-          <input
-            id="pStock"
-            type="number"
-            min="0"
-            step="1"
-            value="0">
-        </div>
-
-        <div class="field">
-          <label>Categoria</label>
-
-          <select id="pCategory">
-            <option value="">
-              Sem categoria
-            </option>
-          </select>
-
-        </div>
-
-      </div>
-
-      <br>
-
-      <div class="field">
-
-        <label>Descrição</label>
-
-        <textarea
-          id="pDescription">
-        </textarea>
-
-      </div>
-
-      <br>
-
-      <div class="actions">
-
-        <button
-          type="button"
-          class="secondary"
-          onclick="closeProductModal()">
-          Cancelar
-        </button>
-
-        <button
-          type="submit"
-          class="primary">
-          Salvar produto
-        </button>
-
-      </div>
-
-    </form>
-
   </div>
-
 </div>
 
-
 <script>
+const SUPABASE_URL = "https://sfzfoavesiintdyoxkca.supabase.co";
+const SUPABASE_KEY = "sb_publishable_wM4A1etSRHTcUpE4qUXb-A_suN-jnep";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let sellerStore=null, ordersCache=[], productsCache=[], authMode="login";
 
-/* ==========================================
-   CONFIGURAÇÃO SUPABASE
-========================================== */
-
-const SUPABASE_URL =
-  'https://sfzfoavesiintdyoxkca.supabase.co';
-
-const SUPABASE_KEY =
-  'sb_publishable_wM4A1etSRHTcUpE4qUXb-A_su-n-jnep'.replace(
-    'su-n-jnep',
-    'suN-jnep'
-  );
-
-const supabaseClient =
-  supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-
-/* ==========================================
-   ESTADO
-========================================== */
-
-let currentUser = null;
-let currentStore = null;
-
-
-/* ==========================================
-   FUNÇÕES BÁSICAS
-========================================== */
-
-function money(value){
-
-  return Number(value || 0)
-    .toLocaleString(
-      'pt-BR',
-      {
-        style:'currency',
-        currency:'BRL'
-      }
-    );
-
+function money(v){return Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function setMsg(id,text,type=""){const e=document.getElementById(id);e.textContent=text;e.className="msg "+(type||"");e.classList.remove("hidden");}
+function clearMsg(id){document.getElementById(id).classList.add("hidden");}
+function toggleAuth(){
+ authMode=authMode==="login"?"register":"login";
+ document.getElementById("registerFields").classList.toggle("hidden",authMode!=="register");
+ document.getElementById("authTitle").textContent=authMode==="login"?"Área do Vendedor":"Criar conta de vendedor";
+ document.getElementById("authSub").textContent=authMode==="login"?"Entre para administrar sua loja e suas vendas.":"Cadastre sua conta e sua loja no TáNaMão.";
+ document.getElementById("authBtn").textContent=authMode==="login"?"Entrar":"Criar minha conta de vendedor";
+ document.getElementById("forgotBtn").classList.toggle("hidden",authMode!=="login");
+ document.getElementById("recoveryForm").classList.add("hidden");
+ document.getElementById("updatePasswordForm").classList.add("hidden");
+ document.getElementById("authSwitch").classList.remove("hidden");
+ document.getElementById("switchText").textContent=authMode==="login"?"Ainda não vende no TáNaMão?":"Já possui uma conta?";
+ document.getElementById("switchLink").textContent=authMode==="login"?"Criar conta de vendedor":"Entrar";
+ clearMsg("authMsg");
 }
-
-
-function escapeHtml(value){
-
-  return String(value ?? '')
-    .replace(
-      /[&<>"']/g,
-      function(match){
-
-        return {
-          '&':'&amp;',
-          '<':'&lt;',
-          '>':'&gt;',
-          '"':'&quot;',
-          "'":'&#039;'
-        }[match];
-
-      }
-    );
-
+function showRecovery(){
+ authMode="login";
+ document.getElementById("registerFields").classList.add("hidden");
+ document.getElementById("authTitle").textContent="Recuperar senha";
+ document.getElementById("authSub").textContent="Informe o e-mail cadastrado para receber o link de recuperação.";
+ document.getElementById("authBtn").classList.add("hidden");
+ document.getElementById("forgotBtn").classList.add("hidden");
+ document.getElementById("recoveryForm").classList.remove("hidden");
+ document.getElementById("updatePasswordForm").classList.add("hidden");
+ document.getElementById("authSwitch").classList.add("hidden");
+ document.getElementById("recoveryEmail").value=document.getElementById("authEmail").value||"";
+ clearMsg("authMsg");
 }
-
-
-function showMsg(
-  text,
-  type=''
-){
-
-  const el =
-    document.getElementById(
-      'authMessage'
-    );
-
-  el.textContent = text;
-
-  el.className =
-    'msg ' +
-    (type || '');
-
-  el.classList.remove(
-    'hidden'
-  );
-
+function backToLogin(){
+ document.getElementById("authBtn").classList.remove("hidden");
+ document.getElementById("forgotBtn").classList.remove("hidden");
+ document.getElementById("recoveryForm").classList.add("hidden");
+ document.getElementById("updatePasswordForm").classList.add("hidden");
+ document.getElementById("authSwitch").classList.remove("hidden");
+ document.getElementById("authTitle").textContent="Área do Vendedor";
+ document.getElementById("authSub").textContent="Entre para administrar sua loja e suas vendas.";
+ document.getElementById("registerFields").classList.add("hidden");
+ authMode="login";
+ clearMsg("authMsg");
 }
-
-
-/* ==========================================
-   TELA LOGIN / CADASTRO
-========================================== */
-
-function showAuth(mode){
-
-  const login =
-    mode === 'login';
-
-  document
-    .getElementById('loginForm')
-    .classList
-    .toggle(
-      'hidden',
-      !login
-    );
-
-  document
-    .getElementById('registerForm')
-    .classList
-    .toggle(
-      'hidden',
-      login
-    );
-
-  document
-    .getElementById('tabLogin')
-    .classList
-    .toggle(
-      'active',
-      login
-    );
-
-  document
-    .getElementById('tabRegister')
-    .classList
-    .toggle(
-      'active',
-      !login
-    );
-
-  document
-    .getElementById('authMessage')
-    .classList
-    .add('hidden');
-
+async function sendRecovery(event){
+ event.preventDefault();
+ const email=document.getElementById("recoveryEmail").value.trim();
+ const redirectTo=window.location.origin+window.location.pathname;
+ setMsg("authMsg","Enviando link de recuperação...");
+ const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo});
+ if(error){setMsg("authMsg",error.message,"error");return;}
+ setMsg("authMsg","Se esse e-mail estiver cadastrado, o link de recuperação foi enviado. Verifique sua caixa de entrada e o spam.","ok");
 }
-
-
-/* ==========================================
-   LOGIN
-========================================== */
-
-async function login(event){
-
-  event.preventDefault();
-
-  showMsg(
-    'Entrando...'
-  );
-
-  const email =
-    document
-      .getElementById('loginEmail')
-      .value
-      .trim();
-
-  const password =
-    document
-      .getElementById('loginPassword')
-      .value;
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .auth
-      .signInWithPassword({
-        email,
-        password
-      });
-
-  if(error){
-
-    showMsg(
-      error.message,
-      'error'
-    );
-
-    return;
-
-  }
-
-  currentUser =
-    data.user;
-
-  await startApp();
-
+async function updatePassword(event){
+ event.preventDefault();
+ const password=document.getElementById("newPassword").value;
+ const confirm=document.getElementById("newPasswordConfirm").value;
+ if(password!==confirm){setMsg("authMsg","As senhas não conferem.","error");return;}
+ if(password.length<6){setMsg("authMsg","A nova senha deve ter pelo menos 6 caracteres.","error");return;}
+ setMsg("authMsg","Salvando nova senha...");
+ const {error}=await supabaseClient.auth.updateUser({password});
+ if(error){setMsg("authMsg",error.message,"error");return;}
+ setMsg("authMsg","Senha alterada com sucesso. Agora você pode entrar com a nova senha.","ok");
+ document.getElementById("newPassword").value="";
+ document.getElementById("newPasswordConfirm").value="";
+ history.replaceState({},document.title,window.location.pathname);
+ setTimeout(backToLogin,900);
 }
-
-
-/* ==========================================
-   CADASTRO
-========================================== */
-
-async function register(event){
-
-  event.preventDefault();
-
-  showMsg(
-    'Criando conta...'
-  );
-
-  const nome =
-    document
-      .getElementById('regName')
-      .value
-      .trim();
-
-  const telefone =
-    document
-      .getElementById('regPhone')
-      .value
-      .trim();
-
-  const loja =
-    document
-      .getElementById('regStore')
-      .value
-      .trim();
-
-  const cidade =
-    document
-      .getElementById('regCity')
-      .value
-      .trim();
-
-  const estado =
-    document
-      .getElementById('regState')
-      .value
-      .trim()
-      .toUpperCase();
-
-  const cep =
-    document
-      .getElementById('regCep')
-      .value
-      .trim();
-
-  const email =
-    document
-      .getElementById('regEmail')
-      .value
-      .trim();
-
-  const senha =
-    document
-      .getElementById('regPassword')
-      .value;
-
-
-  if(estado.length !== 2){
-
-    showMsg(
-      'Informe o estado usando a sigla de 2 letras.',
-      'error'
-    );
-
-    return;
-
-  }
-
-
-  /*
-    Cria o usuário no Supabase Auth.
-    A função de banco pode usar esses metadados
-    para identificar o tipo de usuário.
-  */
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .auth
-      .signUp({
-
-        email,
-
-        password:senha,
-
-        options:{
-          data:{
-            nome:nome,
-            telefone:telefone,
-            role:'vendedor'
-          }
-        }
-
-      });
-
-
-  if(error){
-
-    showMsg(
-      error.message,
-      'error'
-    );
-
-    return;
-
-  }
-
-
-  /*
-    Se o Supabase exigir confirmação de e-mail,
-    a sessão ainda não estará disponível.
-  */
-
-  if(!data.user){
-
-    showMsg(
-      'Conta criada. Confirme seu e-mail para continuar.',
-      'success'
-    );
-
-    return;
-
-  }
-
-
-  currentUser =
-    data.user;
-
-
-  /*
-    Atualiza o perfil.
-  */
-
-  const {
-    error:profileError
-  } =
-    await supabaseClient
-      .from('profiles')
-      .upsert(
-
-        {
-          id:data.user.id,
-          nome:nome,
-          telefone:telefone
-        },
-
-        {
-          onConflict:'id'
-        }
-
-      );
-
-
-  if(profileError){
-
-    console.warn(
-      'Perfil:',
-      profileError.message
-    );
-
-  }
-
-
-  /*
-    Cria a loja vinculada ao usuário.
-  */
-
-  const {
-    data:storeData,
-    error:storeError
-  } =
-    await supabaseClient
-      .from('stores')
-      .insert({
-
-        owner_id:data.user.id,
-        nome:loja,
-        cidade:cidade,
-        estado:estado,
-        cep:cep
-
-      })
-      .select()
-      .single();
-
-
-  if(storeError){
-
-    showMsg(
-      'A conta foi criada, mas houve um problema ao criar a loja: ' +
-      storeError.message,
-      'error'
-    );
-
-    return;
-
-  }
-
-
-  currentStore =
-    storeData;
-
-
-  showMsg(
-    'Conta e loja criadas com sucesso.',
-    'success'
-  );
-
-
-  await startApp();
-
+async function submitAuth(){
+ clearMsg("authMsg");
+ const email=document.getElementById("authEmail").value.trim(), password=document.getElementById("authPassword").value;
+ if(!email||!password){setMsg("authMsg","Informe e-mail e senha.","error");return;}
+ if(authMode==="login"){
+   const {error}=await supabaseClient.auth.signInWithPassword({email,password});
+   if(error){setMsg("authMsg",error.message,"error");return;}
+   await boot();
+ }else{
+   const nome=document.getElementById("regNome").value.trim(), telefone=document.getElementById("regTelefone").value.trim(), loja=document.getElementById("regLoja").value.trim(), cidade=document.getElementById("regCidade").value.trim(), estado=document.getElementById("regEstado").value.trim().toUpperCase(), cep=document.getElementById("regCep").value.trim();
+   if(!nome||!loja||!cidade||!estado){setMsg("authMsg","Preencha nome, loja, cidade e estado.","error");return;}
+   const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{tipo:"vendedor",nome,telefone}}});
+   if(error){setMsg("authMsg",error.message,"error");return;}
+   if(!data.user){setMsg("authMsg","Conta criada. Verifique seu e-mail para continuar.","ok");return;}
+   const {error:storeError}=await supabaseClient.from("stores").insert({owner_id:data.user.id,nome:loja,telefone,cidade,estado,cep,ativo:true});
+   if(storeError){setMsg("authMsg","Conta criada, mas a loja não pôde ser criada automaticamente: "+storeError.message,"error");return;}
+   await boot();
+ }
 }
-
-
-/* ==========================================
-   INICIALIZAÇÃO
-========================================== */
-
-async function startApp(){
-
-  document
-    .getElementById('auth')
-    .classList
-    .add('hidden');
-
-  document
-    .getElementById('app')
-    .classList
-    .remove('hidden');
-
-
-  if(!currentStore){
-
-    await loadStore();
-
-  }
-
-
-  await loadDashboard();
-
+async function boot(){
+ const {data}=await supabaseClient.auth.getUser();
+ if(!data.user){showAuth();return;}
+ document.getElementById("authScreen").classList.add("hidden");document.getElementById("appScreen").classList.remove("hidden");
+ document.getElementById("userEmail").textContent=data.user.email||"";
+ document.getElementById("avatar").textContent=(data.user.user_metadata?.nome||data.user.email||"V").charAt(0).toUpperCase();
+ await loadStore(); await loadOrders(); await loadProducts(); await loadPayments(); await checkMP();
 }
-
-
-/* ==========================================
-   CARREGAR LOJA
-========================================== */
-
 async function loadStore(){
-
-  if(!currentUser){
-
-    return;
-
-  }
-
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from('stores')
-      .select('*')
-      .eq(
-        'owner_id',
-        currentUser.id
-      )
-      .limit(1)
-      .maybeSingle();
-
-
-  if(error){
-
-    console.error(
-      'Erro ao carregar loja:',
-      error
-    );
-
-    document
-      .getElementById(
-        'storeNameTop'
-      )
-      .textContent =
-      'Minha loja';
-
-    return;
-
-  }
-
-
-  currentStore =
-    data;
-
-
-  document
-    .getElementById(
-      'storeNameTop'
-    )
-    .textContent =
-      data?.nome ||
-      'Minha loja';
-
-
-  renderStore();
-
+ const {data,error}=await supabaseClient.from("stores").select("*").eq("owner_id",(await supabaseClient.auth.getUser()).data.user.id).maybeSingle();
+ if(error){document.getElementById("storeWelcome").textContent="Não foi possível carregar os dados da loja.";return;}
+ sellerStore=data;
+ if(data){
+   document.getElementById("storeWelcome").textContent=data.nome+" • "+(data.cidade||"");
+   ["nome","telefone","cidade","estado","cep","descricao"].forEach(k=>{const e=document.getElementById("store"+k.charAt(0).toUpperCase()+k.slice(1));if(e)e.value=data[k]||"";});
+ }else document.getElementById("storeWelcome").textContent="Nenhuma loja cadastrada.";
 }
-
-
-/* ==========================================
-   DASHBOARD
-========================================== */
-
-async function loadDashboard(){
-
-  if(!currentStore){
-
-    return;
-
-  }
-
-
-  const [
-    ordersRes,
-    productsRes
-  ] =
-    await Promise.all([
-
-      supabaseClient
-        .from('orders')
-        .select('*')
-        .eq(
-          'store_id',
-          currentStore.id
-        )
-        .order(
-          'created_at',
-          {
-            ascending:false
-          }
-        )
-        .limit(100),
-
-      supabaseClient
-        .from('products')
-        .select('*')
-        .eq(
-          'store_id',
-          currentStore.id
-        )
-        .limit(500)
-
-    ]);
-
-
-  if(ordersRes.error){
-
-    console.error(
-      'Pedidos:',
-      ordersRes.error
-    );
-
-  }
-
-
-  if(productsRes.error){
-
-    console.error(
-      'Produtos:',
-      productsRes.error
-    );
-
-  }
-
-
-  const orders =
-    ordersRes.data || [];
-
-  const products =
-    productsRes.data || [];
-
-
-  document
-    .getElementById('statOrders')
-    .textContent =
-      orders.length;
-
-
-  document
-    .getElementById('statProducts')
-    .textContent =
-      products.filter(
-        product =>
-          product.ativo !== false
-      ).length;
-
-
-  const paid =
-    orders.filter(
-      order =>
-        order.payment_status === 'pago'
-    );
-
-
-  document
-    .getElementById('statSales')
-    .textContent =
-      money(
-        paid.reduce(
-          (sum, order) =>
-            sum +
-            Number(
-              order.total || 0
-            ),
-          0
-        )
-      );
-
-
-  document
-    .getElementById('statPending')
-    .textContent =
-      orders.filter(
-        order =>
-          ![
-            'entregue',
-            'cancelado'
-          ].includes(
-            order.status
-          )
-      ).length;
-
-
-  renderOrders(
-    orders
-  );
-
-  renderProducts(
-    products
-  );
-
-  renderPayments(
-    orders
-  );
-
+async function loadOrders(){
+ if(!sellerStore){document.getElementById("ordersTable").innerHTML='<div class="empty">Cadastre sua loja para visualizar os pedidos.</div>';return;}
+ const {data,error}=await supabaseClient.from("orders").select("id,status,subtotal,frete,total,payment_status,payment_method,created_at,endereco_entrega,observacoes").eq("store_id",sellerStore.id).order("created_at",{ascending:false}).limit(100);
+ if(error){document.getElementById("ordersTable").innerHTML='<div class="empty">Não foi possível carregar os pedidos.<br><small>'+esc(error.message)+'</small></div>';return;}
+ ordersCache=data||[];
+ renderOrders();
+ updateStats();
 }
-
-
-/* ==========================================
-   PEDIDOS
-========================================== */
-
-function renderOrders(
-  orders
-){
-
-  const html =
-    orders.length
-
-      ?
-
-        `
-        <table>
-
-          <thead>
-
-            <tr>
-              <th>Pedido</th>
-              <th>Data</th>
-              <th>Status</th>
-              <th>Pagamento</th>
-              <th>Total</th>
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            ${
-              orders
-                .slice(0,20)
-                .map(
-                  order => `
-
-                    <tr>
-
-                      <td>
-                        #${escapeHtml(order.id)}
-                      </td>
-
-                      <td>
-                        ${new Date(
-                          order.created_at
-                        ).toLocaleString(
-                          'pt-BR'
-                        )}
-                      </td>
-
-                      <td>
-                        <span class="badge">
-                          ${escapeHtml(
-                            order.status || '-'
-                          )}
-                        </span>
-                      </td>
-
-                      <td>
-                        ${escapeHtml(
-                          order.payment_status || '-'
-                        )}
-                      </td>
-
-                      <td>
-                        ${money(
-                          order.total
-                        )}
-                      </td>
-
-                    </tr>
-
-                  `
-                )
-                .join('')
-            }
-
-          </tbody>
-
-        </table>
-        `
-
-      :
-
-        'Nenhum pedido encontrado.';
-
-
-  document
-    .getElementById(
-      'latestOrders'
-    )
-    .innerHTML =
-      html;
-
-
-  document
-    .getElementById(
-      'ordersTable'
-    )
-    .innerHTML =
-      html;
-
+function statusBadge(s){const map={pendente:["Pendente","orange"],confirmado:["Confirmado","green"],preparando:["Preparando","orange"],pronto:["Pronto","green"],saiu_para_entrega:["Saiu para entrega","green"],entregue:["Entregue","green"],cancelado:["Cancelado","red"]};const x=map[s]||[s||"—",""];return '<span class="badge '+x[1]+'">'+esc(x[0])+'</span>';}
+function renderOrders(){
+ if(!ordersCache.length){document.getElementById("ordersTable").innerHTML='<div class="empty">Nenhum pedido encontrado.</div>';document.getElementById("recentOrders").innerHTML='<div class="empty">Nenhum pedido recente.</div>';return;}
+ const rows=ordersCache.map(o=>'<tr><td>#'+esc(o.id)+'</td><td>'+new Date(o.created_at).toLocaleString("pt-BR")+'</td><td>'+statusBadge(o.status)+'</td><td>'+esc(o.payment_status||"—")+'</td><td>'+money(o.total)+'</td></tr>').join("");
+ document.getElementById("ordersTable").innerHTML='<div class="tablewrap"><table class="table"><thead><tr><th>Pedido</th><th>Data</th><th>Status</th><th>Pagamento</th><th>Total</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+ document.getElementById("recentOrders").innerHTML='<div class="tablewrap"><table class="table"><thead><tr><th>Pedido</th><th>Status</th><th>Total</th></tr></thead><tbody>'+ordersCache.slice(0,5).map(o=>'<tr><td>#'+esc(o.id)+'</td><td>'+statusBadge(o.status)+'</td><td>'+money(o.total)+'</td></tr>').join("")+'</tbody></table></div>';
 }
-
-
-/* ==========================================
-   PRODUTOS
-========================================== */
-
-function renderProducts(
-  products
-){
-
-  document
-    .getElementById(
-      'productsTable'
-    )
-    .innerHTML =
-
-      products.length
-
-        ?
-
-          `
-          <table>
-
-            <thead>
-
-              <tr>
-                <th>Produto</th>
-                <th>Preço</th>
-                <th>Estoque</th>
-                <th>Status</th>
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              ${
-                products
-                  .map(
-                    product => `
-
-                      <tr>
-
-                        <td>
-                          ${escapeHtml(
-                            product.nome ||
-                            product.name ||
-                            '-'
-                          )}
-                        </td>
-
-                        <td>
-                          ${money(
-                            product.preco ??
-                            product.price
-                          )}
-                        </td>
-
-                        <td>
-                          ${
-                            product.estoque ??
-                            product.stock ??
-                            0
-                          }
-                        </td>
-
-                        <td>
-
-                          <span class="badge">
-
-                            ${
-                              product.ativo === false
-                                ? 'Inativo'
-                                : 'Ativo'
-                            }
-
-                          </span>
-
-                        </td>
-
-                      </tr>
-
-                    `
-                  )
-                  .join('')
-              }
-
-            </tbody>
-
-          </table>
-          `
-
-        :
-
-          'Nenhum produto cadastrado.';
-
+function updateStats(){
+ const today=new Date();today.setHours(0,0,0,0);
+ const todayCount=ordersCache.filter(o=>new Date(o.created_at)>=today).length;
+ const pending=ordersCache.filter(o=>["pendente","confirmado","preparando","pronto"].includes(o.status)).length;
+ const paid=ordersCache.filter(o=>o.payment_status==="pago").reduce((s,o)=>s+Number(o.total||0),0);
+ document.getElementById("stToday").textContent=todayCount;document.getElementById("stPending").textContent=pending;document.getElementById("stSales").textContent=money(paid);document.getElementById("stWallet").textContent=money(paid);
+ document.getElementById("walletBig").textContent=money(paid);
 }
-
-
-/* ==========================================
-   PAGAMENTOS
-========================================== */
-
-function renderPayments(
-  orders
-){
-
-  document
-    .getElementById(
-      'paymentsTable'
-    )
-    .innerHTML =
-
-      orders.length
-
-        ?
-
-          `
-          <table>
-
-            <thead>
-
-              <tr>
-                <th>Pedido</th>
-                <th>Pagamento</th>
-                <th>Total</th>
-                <th>Data</th>
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              ${
-                orders
-                  .map(
-                    order => `
-
-                      <tr>
-
-                        <td>
-                          #${escapeHtml(
-                            order.id
-                          )}
-                        </td>
-
-                        <td>
-                          ${escapeHtml(
-                            order.payment_status ||
-                            'aguardando_pagamento'
-                          )}
-                        </td>
-
-                        <td>
-                          ${money(
-                            order.total
-                          )}
-                        </td>
-
-                        <td>
-                          ${new Date(
-                            order.created_at
-                          ).toLocaleDateString(
-                            'pt-BR'
-                          )}
-                        </td>
-
-                      </tr>
-
-                    `
-                  )
-                  .join('')
-              }
-
-            </tbody>
-
-          </table>
-          `
-
-        :
-
-          'Nenhum pagamento encontrado.';
-
+async function loadPayments(){
+ const paid=ordersCache.filter(o=>o.payment_status==="pago").reduce((s,o)=>s+Number(o.total||0),0);
+ const waiting=ordersCache.filter(o=>["aguardando_pagamento"].includes(o.payment_status)).reduce((s,o)=>s+Number(o.total||0),0);
+ const fee=ordersCache.filter(o=>o.payment_status==="pago").reduce((s,o)=>s+Number(o.marketplace_fee||0),0);
+ const seller=ordersCache.filter(o=>o.payment_status==="pago").reduce((s,o)=>s+Number(o.seller_amount||o.total||0),0);
+ document.getElementById("payPaid").textContent=money(paid);document.getElementById("payWaiting").textContent=money(waiting);document.getElementById("payFee").textContent=money(fee);document.getElementById("paySeller").textContent=money(seller);
+ document.getElementById("paymentsTable").innerHTML=ordersCache.length?'<div class="tablewrap"><table class="table"><thead><tr><th>Pedido</th><th>Pagamento</th><th>Total</th><th>Valor vendedor</th></tr></thead><tbody>'+ordersCache.map(o=>'<tr><td>#'+esc(o.id)+'</td><td>'+esc(o.payment_status||"—")+'</td><td>'+money(o.total)+'</td><td>'+money(o.seller_amount||o.total)+'</td></tr>').join("")+'</tbody></table></div>':'<div class="empty">Nenhum registro financeiro.</div>';
 }
-
-
-/* ==========================================
-   DADOS DA LOJA
-========================================== */
-
-function renderStore(){
-
-  const store =
-    currentStore || {};
-
-
-  document
-    .getElementById(
-      'storeData'
-    )
-    .innerHTML = `
-
-      <div class="formgrid">
-
-        <div>
-          <b>Loja</b><br>
-          ${escapeHtml(
-            store.nome || '-'
-          )}
-        </div>
-
-        <div>
-          <b>Responsável</b><br>
-          ${escapeHtml(
-            currentUser?.user_metadata?.nome ||
-            '-'
-          )}
-        </div>
-
-        <div>
-          <b>Telefone</b><br>
-          ${escapeHtml(
-            currentUser?.user_metadata?.telefone ||
-            '-'
-          )}
-        </div>
-
-        <div>
-          <b>Cidade</b><br>
-          ${escapeHtml(
-            store.cidade || '-'
-          )}
-        </div>
-
-        <div>
-          <b>Estado</b><br>
-          ${escapeHtml(
-            store.estado || '-'
-          )}
-        </div>
-
-        <div>
-          <b>CEP</b><br>
-          ${escapeHtml(
-            store.cep || '-'
-          )}
-        </div>
-
-        <div>
-          <b>ID da loja</b><br>
-          ${escapeHtml(
-            store.id || '-'
-          )}
-        </div>
-
-      </div>
-
-    `;
-
+async function loadProducts(){
+ if(!sellerStore){document.getElementById("productsTable").innerHTML='<div class="empty">Cadastre sua loja para gerenciar produtos.</div>';return;}
+ const {data,error}=await supabaseClient.from("products").select("id,nome,descricao,preco,estoque,ativo,created_at").eq("store_id",sellerStore.id).order("created_at",{ascending:false});
+ if(error){document.getElementById("productsTable").innerHTML='<div class="empty">Não foi possível carregar os produtos.<br><small>'+esc(error.message)+'</small></div>';return;}
+ productsCache=data||[];
+ if(!productsCache.length){document.getElementById("productsTable").innerHTML='<div class="empty">Nenhum produto cadastrado.</div>';return;}
+ document.getElementById("productsTable").innerHTML='<div class="tablewrap"><table class="table"><thead><tr><th>Produto</th><th>Preço</th><th>Estoque</th><th>Status</th></tr></thead><tbody>'+productsCache.map(p=>'<tr><td><b>'+esc(p.nome)+'</b><br><span class="subtle">'+esc(p.descricao||"")+'</span></td><td>'+money(p.preco)+'</td><td>'+esc(p.estoque)+'</td><td>'+(p.ativo?'<span class="badge green">Ativo</span>':'<span class="badge red">Inativo</span>')+'</td></tr>').join("")+'</tbody></table></div>';
 }
-
-
-/* ==========================================
-   CATEGORIAS
-========================================== */
-
+async function saveProduct(){
+ clearMsg("prodMsg");
+ if(!sellerStore){setMsg("prodMsg","Cadastre uma loja primeiro.","error");return;}
+ const nome=document.getElementById("prodNome").value.trim(), descricao=document.getElementById("prodDescricao").value.trim(), preco=Number(document.getElementById("prodPreco").value), estoque=Number(document.getElementById("prodEstoque").value);
+ if(!nome||!Number.isFinite(preco)||preco<0||!Number.isInteger(estoque)||estoque<0){setMsg("prodMsg","Preencha nome, preço e estoque corretamente.","error");return;}
+ const payload={store_id:sellerStore.id,nome,descricao,preco,estoque,ativo:true};
+ const cat=document.getElementById("prodCategoria").value;if(cat)payload.category_id=cat;
+ const {error}=await supabaseClient.from("products").insert(payload);
+ if(error){setMsg("prodMsg",error.message,"error");return;}
+ closeProductModal();await loadProducts();
+}
 async function loadCategories(){
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from('categories')
-      .select('*')
-      .limit(200);
-
-
-  if(error){
-
-    console.warn(
-      'Categorias:',
-      error.message
-    );
-
-  }
-
-
-  document
-    .getElementById(
-      'pCategory'
-    )
-    .innerHTML =
-
-      '<option value="">Sem categoria</option>' +
-
-      (data || [])
-        .map(
-          category => `
-
-            <option value="${escapeHtml(category.id)}">
-
-              ${escapeHtml(
-                category.nome ||
-                category.name ||
-                '-'
-              )}
-
-            </option>
-
-          `
-        )
-        .join('');
-
+ const {data}=await supabaseClient.from("categories").select("id,nome").order("nome");
+ document.getElementById("prodCategoria").innerHTML='<option value="">Sem categoria</option>'+(data||[]).map(c=>'<option value="'+esc(c.id)+'">'+esc(c.nome)+'</option>').join("");
 }
-
-
-/* ==========================================
-   MODAL PRODUTO
-========================================== */
-
-function openProductModal(){
-
-  if(!currentStore){
-
-    alert(
-      'A loja ainda não foi carregada.'
-    );
-
-    return;
-
-  }
-
-
-  document
-    .getElementById(
-      'productModal'
-    )
-    .classList
-    .remove('hidden');
-
-
-  loadCategories();
-
+function openProductModal(){document.getElementById("productModal").classList.remove("hidden");loadCategories();}
+function closeProductModal(){document.getElementById("productModal").classList.add("hidden");["prodNome","prodDescricao","prodPreco","prodEstoque"].forEach(id=>document.getElementById(id).value="");clearMsg("prodMsg");}
+async function saveStore(){
+ if(!sellerStore){setMsg("storeMsg","Nenhuma loja cadastrada.","error");return;}
+ const payload={nome:document.getElementById("storeNome").value.trim(),telefone:document.getElementById("storeTelefone").value.trim(),cidade:document.getElementById("storeCidade").value.trim(),estado:document.getElementById("storeEstado").value.trim().toUpperCase(),cep:document.getElementById("storeCep").value.trim(),descricao:document.getElementById("storeDescricao").value.trim()};
+ const {error}=await supabaseClient.from("stores").update(payload).eq("id",sellerStore.id);
+ if(error){setMsg("storeMsg",error.message,"error");return;}Object.assign(sellerStore,payload);setMsg("storeMsg","Dados da loja atualizados.","ok");document.getElementById("storeWelcome").textContent=sellerStore.nome+" • "+sellerStore.cidade;
 }
-
-
-function closeProductModal(){
-
-  document
-    .getElementById(
-      'productModal'
-    )
-    .classList
-    .add('hidden');
-
+async function checkMP(){
+ const el=document.getElementById("mpStatus");
+ if(!sellerStore){el.textContent="Cadastre sua loja primeiro.";return;}
+ const {data}=await supabaseClient.from("stores").select("mp_connected").eq("id",sellerStore.id).maybeSingle();
+ el.textContent=data?.mp_connected?"Mercado Pago conectado.":"Mercado Pago ainda não conectado.";
 }
-
-
-/* ==========================================
-   SALVAR PRODUTO
-========================================== */
-
-async function saveProduct(
-  event
-){
-
-  event.preventDefault();
-
-
-  if(!currentStore){
-
-    return;
-
-  }
-
-
-  const nome =
-    document
-      .getElementById('pName')
-      .value
-      .trim();
-
-  const preco =
-    Number(
-      document
-        .getElementById('pPrice')
-        .value
-    );
-
-  const estoque =
-    Number(
-      document
-        .getElementById('pStock')
-        .value || 0
-    );
-
-  const descricao =
-    document
-      .getElementById('pDescription')
-      .value
-      .trim();
-
-  const categoria =
-    document
-      .getElementById('pCategory')
-      .value;
-
-
-  const payload = {
-
-    store_id:currentStore.id,
-    nome:nome,
-    descricao:descricao,
-    preco:preco,
-    estoque:estoque,
-    ativo:true
-
-  };
-
-
-  if(categoria){
-
-    payload.category_id =
-      categoria;
-
-  }
-
-
-  const {
-    error
-  } =
-    await supabaseClient
-      .from('products')
-      .insert(
-        payload
-      );
-
-
-  if(error){
-
-    const message =
-      document
-        .getElementById(
-          'productMsg'
-        );
-
-    message.textContent =
-      error.message;
-
-    message.className =
-      'msg error';
-
-    message.classList
-      .remove('hidden');
-
-    return;
-
-  }
-
-
-  closeProductModal();
-
-  await loadDashboard();
-
+function connectMercadoPago(){alert("A conexão do Mercado Pago será feita pela autorização OAuth do marketplace. Esta página não expõe nem armazena Access Token no navegador.");}
+function showSection(id,btn){
+ ["dashboard","orders","products","payments","wallet","store"].forEach(x=>document.getElementById(x).classList.toggle("hidden",x!==id));
+ document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active");
+ if(id==="orders")loadOrders();if(id==="products")loadProducts();if(id==="payments")loadPayments();
 }
-
-
-/* ==========================================
-   NAVEGAÇÃO INTERNA
-========================================== */
-
-function openSection(
-  id,
-  button
-){
-
-  [
-    'overview',
-    'orders',
-    'products',
-    'payments',
-    'store'
-  ]
-  .forEach(
-    section => {
-
-      document
-        .getElementById(
-          section
-        )
-        .classList
-        .toggle(
-          'hidden',
-          section !== id
-        );
-
-    }
-  );
-
-
-  document
-    .querySelectorAll(
-      '.nav'
-    )
-    .forEach(
-      item =>
-        item.classList
-          .remove('active')
-    );
-
-
-  button
-    .classList
-    .add('active');
-
-}
-
-
-/* ==========================================
-   SAIR
-========================================== */
-
-async function logout(){
-
-  await supabaseClient
-    .auth
-    .signOut();
-
-  location.reload();
-
-}
-
-
-/* ==========================================
-   VERIFICAR SESSÃO
-========================================== */
-
-supabaseClient
-  .auth
-  .onAuthStateChange(
-    async (
-      event,
-      session
-    ) => {
-
-      if(
-        session &&
-        !currentUser
-      ){
-
-        currentUser =
-          session.user;
-
-        await startApp();
-
-      }
-
-    }
-  );
-
-
-/* ==========================================
-   CARREGAMENTO INICIAL
-========================================== */
-
-(async function(){
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .auth
-      .getSession();
-
-
-  if(error){
-
-    console.error(
-      error
-    );
-
-    return;
-
-  }
-
-
-  if(data.session){
-
-    currentUser =
-      data.session.user;
-
-    await startApp();
-
-  }
-
-})();
-
+async function logout(){await supabaseClient.auth.signOut();showAuth();}
+function showAuth(){document.getElementById("appScreen").classList.add("hidden");document.getElementById("authScreen").classList.remove("hidden");}
+supabaseClient.auth.onAuthStateChange((event)=>{
+ if(event==="PASSWORD_RECOVERY"){
+   document.getElementById("appScreen").classList.add("hidden");
+   document.getElementById("authScreen").classList.remove("hidden");
+   document.getElementById("authTitle").textContent="Criar nova senha";
+   document.getElementById("authSub").textContent="Digite e confirme sua nova senha.";
+   document.getElementById("registerFields").classList.add("hidden");
+   document.getElementById("authBtn").classList.add("hidden");
+   document.getElementById("forgotBtn").classList.add("hidden");
+   document.getElementById("recoveryForm").classList.add("hidden");
+   document.getElementById("updatePasswordForm").classList.remove("hidden");
+   document.getElementById("authSwitch").classList.add("hidden");
+   clearMsg("authMsg");
+   return;
+ }
+ if(event==="SIGNED_OUT")showAuth();
+});
+boot();
 </script>
-
 </body>
 </html>
