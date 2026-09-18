@@ -1139,14 +1139,28 @@ function abrirTelaPagamentoSplit(pedidoId, metodo, initPoint, comissao, valorVen
 
 async function iniciarPagamentoReal(pedidoId, metodo) {
     try {
-        const {data,error}=await supabaseClient.functions.invoke("criar-pagamento",{body:{order_id:pedidoId,payment_method:metodo}});
-        if(error) throw error;
-        if(!data?.init_point) throw new Error(data?.error||"O gateway não retornou o endereço de pagamento.");
-        abrirTelaPagamentoSplit(pedidoId,metodo,data.init_point,data.marketplace_fee,data.seller_amount);
+        const { data, error } = await supabaseClient.functions.invoke(
+            "swift-service",
+            { body: { order_id: pedidoId, payment_method: metodo } }
+        );
+
+        if (error) throw error;
+        if (!data?.checkout_url) {
+            throw new Error(
+                data?.error ||
+                "O gateway não retornou o endereço de pagamento."
+            );
+        }
+
+        // Checkout Pro do Mercado Pago
+        window.location.href = data.checkout_url;
         return true;
-    } catch(err) {
-        console.error("Erro ao iniciar pagamento real:",err);
-        alert("❌ Não foi possível preparar o pagamento.\n\n"+(err?.message||err));
+    } catch (err) {
+        console.error("Erro ao iniciar pagamento real:", err);
+        alert(
+            "❌ Não foi possível preparar o pagamento.\n\n" +
+            (err?.message || err)
+        );
         return false;
     }
 }
