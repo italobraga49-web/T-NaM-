@@ -10,7 +10,7 @@
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--dark)}
 button,input,select{font:inherit}.hidden{display:none!important}
 .top{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:20}
-.brand{font-size:25px;font-weight:800;color:var(--primary)}.brand span{color:#222}
+.brand{display:flex;align-items:center}.brand-logo{display:block;width:145px;height:58px;object-fit:contain}.brand-login-logo{display:block;width:220px;max-width:72%;height:auto;margin:0 auto 18px}
 .userbox{display:flex;align-items:center;gap:12px;color:#555;font-size:14px}.avatar{width:36px;height:36px;border-radius:50%;background:#eef0f3;display:grid;place-items:center;font-weight:700}
 .layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 64px)}
 .side{background:#fff;border-right:1px solid var(--line);padding:18px 12px}.side h4{font-size:11px;color:#999;text-transform:uppercase;margin:8px 12px 12px}
@@ -31,7 +31,7 @@ button,input,select{font:inherit}.hidden{display:none!important}
 
 <div id="authScreen" class="auth">
   <div class="authbox">
-    <div class="brand" style="text-align:center;margin-bottom:18px">TáNaMão</div>
+    <img class="brand-login-logo" src="1001111814.png" alt="TáNaMão">
     <h1 id="authTitle">Área do Vendedor</h1>
     <p class="sub" id="authSub">Entre para administrar sua loja e suas vendas.</p>
 
@@ -66,7 +66,7 @@ button,input,select{font:inherit}.hidden{display:none!important}
 
 <div id="appScreen" class="hidden">
   <header class="top">
-    <div class="brand">TáNaMão <span>• Vendedor</span></div>
+    <div class="brand"><img class="brand-logo" src="1001111814.png" alt="TáNaMão"></div>
     <div class="userbox"><span id="userEmail"></span><div class="avatar" id="avatar">V</div><button class="btn secondary" onclick="logout()">Sair</button></div>
   </header>
 
