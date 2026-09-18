@@ -1,3 +1,4 @@
+```
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -101,7 +102,7 @@ function showAuth(mode){["loginForm","registerForm","recoveryForm","passwordForm
 async function login(e){e.preventDefault();const {error}=await sb.auth.signInWithPassword({email:$("loginEmail").value.trim(),password:$("loginPassword").value});if(error)return setMsg("authMsg",error.message);closeAuth();await session()}
 async function register(e){
  e.preventDefault();const nome=$("regName").value.trim(),telefone=$("regPhone").value.trim(),email=$("regEmail").value.trim(),password=$("regPassword").value;
- const {data,error}=await sb.auth.signUp({email,password,options:{data:{nome,telefone,tipo:"cliente"}}});if(error)return setMsg("authMsg",error.message);
+ const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:"https://t-na-m-inky.vercel.app/cliente.html",data:{nome,telefone,tipo:"cliente"}}});if(error)return setMsg("authMsg",error.message);
  if(data.user){
   const {error:pe}=await sb.from("profiles").upsert({id:data.user.id,nome,telefone},{onConflict:"id"});
   if(pe)return setMsg("authMsg","Conta criada, mas o perfil precisa ser concluído: "+pe.message);
@@ -150,3 +151,4 @@ session();loadCategories();loadProducts();renderCart();
 </script>
 </body><!-- cliente atualizado -->
 </html>
+```
