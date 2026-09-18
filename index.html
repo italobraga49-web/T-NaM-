@@ -1175,6 +1175,37 @@ footer{margin-top:25px!important;background:#202326!important;color:#dfe3e7!impo
 @media(max-width:800px){.footer-empresarial-grid{grid-template-columns:repeat(2,1fr);gap:30px 20px}.footer-final{flex-direction:column}}
 @media(max-width:480px){.footer-empresarial-grid{grid-template-columns:1fr;padding:30px 20px}.footer-final{padding:16px 20px}}
 </style>
+<style>
+.tnm-rota-box{border:1px solid #e1e5ea;border-radius:8px;background:#fff;margin:12px 0;padding:14px}
+.tnm-rota-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:1px solid #eee;padding-bottom:10px;margin-bottom:10px}
+.tnm-rota-title{font-weight:700;font-size:15px}.tnm-rota-meta{font-size:12px;color:#666;margin-top:4px}
+.tnm-rota-total{font-weight:800;font-size:17px;white-space:nowrap}.tnm-rota-item{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #f0f1f3;font-size:13px}.tnm-rota-item:last-child{border-bottom:0}
+.tnm-rota-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.tnm-rota-actions button{border:0;background:#ff6a00;color:#fff;padding:9px 13px;border-radius:6px;cursor:pointer;font-weight:700}.tnm-rota-actions button.secondary{background:#fff;color:#222;border:1px solid #d9dde2}
+.tnm-pagamento-entrega{font-size:12px;color:#444;margin-top:3px}.tnm-entrega-resumo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.tnm-entrega-resumo>div{border:1px solid #e5e7eb;padding:10px;border-radius:7px;background:#fafafa}.tnm-entrega-resumo b{display:block;font-size:16px;margin-top:3px}
+@media(max-width:700px){.tnm-entrega-resumo{grid-template-columns:1fr}.tnm-rota-head{flex-direction:column}.tnm-rota-total{font-size:16px}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<style>
+.tnm-etiqueta-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:25000;display:none;align-items:center;justify-content:center;padding:18px}
+.tnm-etiqueta-painel{background:#fff;width:min(920px,100%);max-height:94vh;overflow:auto;border-radius:10px;padding:20px;box-sizing:border-box}
+.tnm-etiqueta-toolbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-bottom:14px}
+.tnm-etiqueta-toolbar button{border:1px solid #d7dbe0;background:#fff;color:#222;padding:9px 12px;border-radius:6px;cursor:pointer;font-weight:600}
+.tnm-etiqueta-toolbar button.primary{background:#111827;color:#fff;border-color:#111827}
+.tnm-etiqueta-folha{width:210mm;min-height:105mm;max-width:100%;margin:0 auto;background:#fff;border:1px solid #d8dadd;padding:10mm;box-sizing:border-box;color:#111}
+.tnm-etiqueta-top{display:flex;justify-content:space-between;gap:18px;border-bottom:2px solid #111;padding-bottom:8px;margin-bottom:9px}
+.tnm-etiqueta-marca{font-size:22px;font-weight:800}.tnm-etiqueta-tipo{font-size:11px;color:#555;text-transform:uppercase;letter-spacing:.7px;margin-top:3px}
+.tnm-etiqueta-rastreio{font-size:17px;font-weight:800;letter-spacing:1px;text-align:right}
+.tnm-etiqueta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10mm}
+.tnm-etiqueta-bloco h4{font-size:10px;margin:0 0 5px;text-transform:uppercase;color:#666;letter-spacing:.7px}.tnm-etiqueta-bloco p{font-size:12px;line-height:1.45;margin:2px 0}
+.tnm-etiqueta-qr{display:flex;align-items:center;justify-content:center;border:1px solid #ddd;padding:5mm;min-height:48mm}
+.tnm-etiqueta-rodape{border-top:1px solid #ddd;margin-top:9mm;padding-top:5px;display:flex;justify-content:space-between;font-size:9px;color:#666;gap:10px}
+@media print{body>*:not(#tnmEtiquetaModal){display:none!important}.tnm-etiqueta-modal{display:block!important;position:static;background:#fff;padding:0}.tnm-etiqueta-painel{max-width:none;width:auto;max-height:none;overflow:visible;padding:0}.tnm-etiqueta-toolbar{display:none!important}.tnm-etiqueta-folha{border:0;margin:0;width:210mm;min-height:105mm;page-break-inside:avoid}}
+@media(max-width:650px){.tnm-etiqueta-grid{grid-template-columns:1fr}.tnm-etiqueta-folha{padding:7mm}.tnm-etiqueta-top{flex-direction:column}.tnm-etiqueta-rastreio{text-align:left}}
+</style>
+<style>
+.tnm-scanner-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:26000;display:none;align-items:center;justify-content:center;padding:18px}.tnm-scanner-box{background:#fff;width:min(520px,100%);border-radius:10px;padding:18px}.tnm-scanner-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.tnm-scanner-head button{border:0;background:#eee;padding:8px 11px;border-radius:6px;cursor:pointer}.tnm-scanner-result{margin-top:12px;padding:10px;background:#f6f7f8;border:1px solid #e2e5e8;border-radius:7px;font-size:13px}
+</style>
 </head>
 
 <body>
@@ -1749,6 +1780,11 @@ let marketplaceProdutos = [];
 let categoriaAtual = null;
 let tipoEntregaCarrinho = "retirada";
 let freteCarrinhoAtual = 0;
+let freteOriginalCarrinho = 0;
+let freteGratisCarrinho = false;
+let motivoFreteGratisCarrinho = "";
+let localizacaoClienteCheckout = null;
+let preferenciaEntregaCliente = "cliente";
 let enderecoCheckoutAtual = "";
 let lojaCarrinhoAtual = null;
 
@@ -1818,6 +1854,8 @@ function adicionarProdutoCarrinho(id) {
       store_nome: produto.stores?.nome || "",
       store_cidade: produto.stores?.cidade || "",
       store_estado: produto.stores?.estado || "",
+      frete_gratis: !!produto.frete_gratis,
+      frete_gratis_ate_valor: produto.frete_gratis_ate_valor != null ? Number(produto.frete_gratis_ate_valor) : null,
       quantidade: 1
     });
 
@@ -1900,9 +1938,14 @@ function renderizarCarrinho() {
   }).join('');
 
   const descontoCupom = Number(cupomCarrinhoAtual?.desconto || 0);
-  atualizarResumoFrete();
+  atualizarResumoFrete(total);
   const totalFinal = Math.max(0, total + Number(freteCarrinhoAtual || 0) - descontoCupom);
   totalEl.textContent = "R$ " + totalFinal.toFixed(2).replace('.', ',');
+  const avisoFrete = document.getElementById("avisoFreteGratisCarrinho");
+  if (avisoFrete) {
+    avisoFrete.style.display = freteGratisCarrinho ? "block" : "none";
+    avisoFrete.textContent = freteGratisCarrinho ? motivoFreteGratisCarrinho : "";
+  }
   if (btnFinalizar) btnFinalizar.disabled = false;
 }
 
@@ -2070,11 +2113,22 @@ function calcularFreteEstimado(tipo) {
   return 0;
 }
 
-function atualizarResumoFrete() {
+function atualizarResumoFrete(subtotalAtual = null) {
   const resumo = document.getElementById("resumoFreteCarrinho");
   const select = document.getElementById("tipoEntregaCarrinho");
   if (select) select.value = tipoEntregaCarrinho;
-  freteCarrinhoAtual = calcularFreteEstimado(tipoEntregaCarrinho);
+  const subtotal = subtotalAtual == null ? carrinho.reduce((soma,item) => soma + obterPrecoCarrinhoAtual(item,item) * Number(item.quantidade||0),0) : Number(subtotalAtual||0);
+  freteOriginalCarrinho = calcularFreteEstimado(tipoEntregaCarrinho);
+  freteGratisCarrinho = false;
+  motivoFreteGratisCarrinho = "";
+  const cupomFreteGratis = !!cupomCarrinhoAtual?.freteGratis;
+  const pedidoElegivel = subtotal > 100;
+  const produtoPromocional = carrinho.length > 0 && carrinho.every(item => item.frete_gratis === true && (item.frete_gratis_ate_valor == null || obterPrecoCarrinhoAtual(item, item) <= Number(item.frete_gratis_ate_valor)));
+  if (tipoEntregaCarrinho !== "retirada" && (cupomFreteGratis || pedidoElegivel || produtoPromocional)) {
+    freteGratisCarrinho = true;
+    motivoFreteGratisCarrinho = cupomFreteGratis ? "Cupom de frete grátis aplicado." : pedidoElegivel ? "Frete grátis para pedidos acima de R$ 100,00." : "Frete grátis promocional para este produto.";
+  }
+  freteCarrinhoAtual = freteGratisCarrinho ? 0 : freteOriginalCarrinho;
   if (resumo) {
     const nomes = {
       retirada: "Retirada no local.",
@@ -2082,7 +2136,9 @@ function atualizarResumoFrete() {
       frete_proprio: "Frete próprio. Valor estimado conforme a região.",
       correios: "Correios. Valor estimado; a cotação oficial pode variar."
     };
-    resumo.innerHTML = `${nomes[tipoEntregaCarrinho] || ""} <strong>R$ ${Number(freteCarrinhoAtual).toFixed(2).replace(".", ",")}</strong>`;
+    resumo.innerHTML = freteGratisCarrinho
+      ? `${nomes[tipoEntregaCarrinho] || "Entrega"} <strong style="color:#15803d;">Frete grátis</strong><div style="font-size:12px;color:#15803d;margin-top:4px;">${motivoFreteGratisCarrinho}</div>`
+      : `${nomes[tipoEntregaCarrinho] || ""} <strong>R$ ${Number(freteCarrinhoAtual).toFixed(2).replace(".", ",")}</strong>`;
   }
 }
 
@@ -2107,6 +2163,59 @@ async function selecionarTipoEntregaCarrinho(tipo) {
 }
 
 
+
+function obterLocalizacaoClienteCheckout() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error("Este dispositivo/navegador não oferece localização."));
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      pos => resolve({
+        latitude: Number(pos.coords.latitude.toFixed(7)),
+        longitude: Number(pos.coords.longitude.toFixed(7)),
+        precisao_metros: Number.isFinite(pos.coords.accuracy) ? Math.round(pos.coords.accuracy) : null
+      }),
+      err => {
+        const mensagens = {
+          1: "A localização foi negada. Para entrega por GPS, permita a localização no navegador.",
+          2: "Não foi possível determinar sua localização.",
+          3: "A localização demorou para responder. Tente novamente."
+        };
+        reject(new Error(mensagens[err?.code] || "Não foi possível obter sua localização."));
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
+    );
+  });
+}
+
+async function confirmarLocalizacaoParaEntrega() {
+  try {
+    const loc = await obterLocalizacaoClienteCheckout();
+    localizacaoClienteCheckout = loc;
+    return loc;
+  } catch (e) {
+    alert((e?.message || e) + "\n\nSem uma localização válida, confirme o endereço manualmente para continuar.");
+    return null;
+  }
+}
+
+function abrirPreferenciasEntregaCliente() {
+  const atual = preferenciaEntregaCliente || "cliente";
+  const valor = prompt(
+    "Preferência para uma entrega caso você esteja ausente:\n\n" +
+    "1 - Entregar somente para mim\n" +
+    "2 - Pode entregar ao porteiro\n" +
+    "3 - Pode entregar a um vizinho\n" +
+    "4 - Pode deixar em local autorizado\n\n" +
+    "Digite 1, 2, 3 ou 4.",
+    ({cliente:"1",porteiro:"2",vizinho:"3",local_autorizado:"4"})[atual] || "1"
+  );
+  const mapa = {"1":"cliente","2":"porteiro","3":"vizinho","4":"local_autorizado"};
+  if (mapa[String(valor || "")]) preferenciaEntregaCliente = mapa[String(valor)];
+  return preferenciaEntregaCliente;
+}
+
 async function finalizarCompra() {
   if (!carrinho.length) return;
 
@@ -2123,6 +2232,12 @@ async function finalizarCompra() {
   if (tipoEntregaCarrinho !== "retirada") {
     endereco = await selecionarEnderecoParaCompra(data.user.id);
     if (!endereco) return;
+
+    const loc = await confirmarLocalizacaoParaEntrega();
+    if (!loc) return;
+
+    const preferencia = abrirPreferenciasEntregaCliente();
+    if (!preferencia) return;
   }
 
   if (!formaPagamentoCarrinho) {
@@ -2138,6 +2253,7 @@ async function finalizarCompra() {
     0
   );
   const descontoAtual = Number(cupomCarrinhoAtual?.desconto || 0);
+  atualizarResumoFrete(subtotalCarrinho);
   const total = Math.max(0, subtotalCarrinho + Number(freteCarrinhoAtual || 0) - descontoAtual);
 
   const btn = document.getElementById("btnFinalizarCompra");
@@ -2243,8 +2359,13 @@ async function finalizarCompra() {
       total: total,
       endereco_entrega: endereco,
       tipo_entrega: tipoEntregaCarrinho,
+      cliente_latitude: tipoEntregaCarrinho !== "retirada" ? localizacaoClienteCheckout?.latitude ?? null : null,
+      cliente_longitude: tipoEntregaCarrinho !== "retirada" ? localizacaoClienteCheckout?.longitude ?? null : null,
+      entrega_preferencia: tipoEntregaCarrinho !== "retirada" ? (preferenciaEntregaCliente || "cliente") : null,
       cupom_codigo: cupomCarrinhoAtual?.codigo || null,
       desconto_cupom: Number(cupomCarrinhoAtual?.desconto || 0),
+      frete_gratis: !!freteGratisCarrinho,
+      frete_subsidio: freteGratisCarrinho ? Number(freteOriginalCarrinho || 0) : 0,
       payment_method: formaPagamentoCarrinho,
       payment_status: formaPagamentoCarrinho === "boleto" ? "aguardando_pagamento" : "aguardando_pagamento"
     };
@@ -2423,7 +2544,7 @@ async function aplicarCupomCarrinho() {
   const storeId = storeIds[0];
   const { data: cupons, error: erroCupom } = await supabaseClient
     .from("store_coupons")
-    .select("id,codigo,desconto_percentual,min_subtotal,max_usos,usos,ativo,expires_at")
+    .select("id,codigo,desconto_percentual,min_subtotal,max_usos,usos,ativo,expires_at,tipo,frete_gratis,frete_maximo_subsidio")
     .eq("store_id", storeId)
     .ilike("codigo", codigo)
     .eq("ativo", true)
@@ -2467,6 +2588,20 @@ async function aplicarCupomCarrinho() {
 
   if (subtotalElegivel <= 0) {
     if (resultado) resultado.textContent = "Este cupom não se aplica aos produtos atuais do carrinho.";
+    return;
+  }
+
+  const cupomEhFreteGratis = cupom.frete_gratis === true || cupom.tipo === "frete_gratis";
+  if (cupomEhFreteGratis) {
+    const minimoCupom = Number(cupom.min_subtotal || 0);
+    if (subtotalElegivel < minimoCupom) {
+      if (resultado) resultado.textContent = `Este cupom exige compra mínima de R$ ${minimoCupom.toFixed(2).replace('.', ',')}.`;
+      return;
+    }
+    cupomCarrinhoAtual = { codigo, desconto: 0, freteGratis: true, freteMaximoSubsidio: Number(cupom.frete_maximo_subsidio || 0), store_id: storeId, coupon_id: cupom.id };
+    if (resultado) { resultado.style.color = "#166534"; resultado.textContent = "Cupom aplicado: frete grátis."; }
+    atualizarResumoFrete();
+    renderizarCarrinho();
     return;
   }
 
@@ -2948,7 +3083,7 @@ async function carregarPerfilCliente() {
   const telefone = perfil?.telefone || user.user_metadata?.telefone || "Não informado";
   const tipo = perfil?.tipo || "cliente";
   const enderecos = await carregarEnderecosCliente();
-  const { data: pedidos, error: erroPedidos } = await supabaseClient.from("orders").select(`id,status,total,tracking_code,created_at,cancel_reason,cancelled_at,payment_method,payment_status,order_items(id,quantidade,preco_unitario,subtotal,products(id,nome))`).eq("customer_id", user.id).order("created_at", {ascending:false});
+  const { data: pedidos, error: erroPedidos } = await supabaseClient.from("orders").select(`id,status,total,tracking_code,created_at,cancel_reason,cancelled_at,payment_method,payment_status,entrega_codigo,entrega_preferencia,cliente_latitude,cliente_longitude,entrega_forma_confirmacao,entrega_recipiente_nome,order_items(id,quantidade,preco_unitario,subtotal,products(id,nome))`).eq("customer_id", user.id).order("created_at", {ascending:false});
   let html = `<div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:18px;margin-bottom:20px;"><h3 style="margin:0 0 14px;">Dados da conta</h3><div style="display:grid;gap:8px;color:#444;"><div><strong>Nome:</strong> ${escapeHtml(nome)}</div><div><strong>E-mail:</strong> ${escapeHtml(user.email || "Não informado")}</div><div><strong>Telefone:</strong> ${escapeHtml(telefone)}</div><div><strong>Tipo:</strong> ${escapeHtml(tipo === "cliente" ? "Cliente" : "Revendedor")}</div></div></div><div style="margin-bottom:22px;">
    <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
     <h3 style="margin:0;"> Meus endereços</h3>
@@ -2968,7 +3103,7 @@ async function carregarPerfilCliente() {
     html += pedidos.map(pedido => {
       const itens = pedido.order_items || [];
       const itensHtml = itens.map(item => `<div style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #eee;"><span>${item.quantidade}x ${escapeHtml(item.products?.nome || "Produto")}</span><strong>R$ ${Number(item.subtotal || 0).toFixed(2).replace('.', ',')}</strong></div>`).join("") || '<div style="color:#777;">Itens não disponíveis.</div>';
-      return `<div style="background:white;border:1px solid #e5e7eb;border-radius:13px;padding:18px;margin-bottom:14px;"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;"><div><strong>Pedido #${escapeHtml(pedido.id)}</strong><div style="font-size:13px;color:#777;margin-top:4px;">${new Date(pedido.created_at).toLocaleString('pt-BR')}</div></div><span style="background:#eef2ff;color:#3730a3;padding:7px 10px;border-radius:20px;font-size:13px;font-weight:bold;">${formatarStatusPedido(pedido.status)}</span></div><div style="margin-top:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;"><div><div style="font-size:12px;color:#9a3412;font-weight:bold;">CÓDIGO DE RASTREIO</div><strong style="font-size:17px;letter-spacing:1px;">${escapeHtml(pedido.tracking_code || "Gerando...")}</strong></div><button onclick="abrirRastreamento('${escapeHtml(pedido.tracking_code || "")}')" ${pedido.tracking_code ? "" : "disabled"} style="border:0;background:#ff6a00;color:white;padding:10px 13px;border-radius:8px;cursor:pointer;font-weight:bold;"> Rastrear pedido</button>
+      return `<div style="background:white;border:1px solid #e5e7eb;border-radius:13px;padding:18px;margin-bottom:14px;"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;"><div><strong>Pedido #${escapeHtml(pedido.id)}</strong><div style="font-size:13px;color:#777;margin-top:4px;">${new Date(pedido.created_at).toLocaleString('pt-BR')}</div></div><span style="background:#eef2ff;color:#3730a3;padding:7px 10px;border-radius:20px;font-size:13px;font-weight:bold;">${formatarStatusPedido(pedido.status)}</span></div><div style="margin-top:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;"><div><div style="font-size:12px;color:#9a3412;font-weight:bold;">CÓDIGO DE RASTREIO</div><strong style="font-size:17px;letter-spacing:1px;">${escapeHtml(pedido.tracking_code || "Gerando...")}</strong></div>${pedido.entrega_codigo ? `<div style="margin-top:10px;border:1px solid #e5e7eb;background:#f8fafc;border-radius:9px;padding:11px;"><div style="font-size:11px;color:#666;font-weight:700;">CÓDIGO DE SEGURANÇA DA ENTREGA</div><strong style="font-size:21px;letter-spacing:3px;">${escapeHtml(pedido.entrega_codigo)}</strong><div style="font-size:12px;color:#666;margin-top:4px;">Informe este código ao entregador quando ele chegar. Não compartilhe antes da chegada.</div></div>` : ""}<div style="margin-top:10px;font-size:13px;color:#555;"><strong>Preferência de entrega:</strong> ${escapeHtml(({cliente:"Somente para mim",porteiro:"Porteiro",vizinho:"Vizinho",local_autorizado:"Local autorizado"})[pedido.entrega_preferencia] || "Não definida")}</div><button onclick="abrirRastreamento('${escapeHtml(pedido.tracking_code || "")}')" ${pedido.tracking_code ? "" : "disabled"} style="border:0;background:#ff6a00;color:white;padding:10px 13px;border-radius:8px;cursor:pointer;font-weight:bold;"> Rastrear pedido</button>
 ${["pendente","confirmado"].includes(pedido.status) ? `<button onclick="abrirCancelamentoPedido('${pedido.id}')" style="border:0;background:#fee2e2;color:#b91c1c;padding:10px 13px;border-radius:8px;cursor:pointer;font-weight:bold;"> Cancelar pedido</button>` : ""}</div><div style="margin-top:14px;">${itensHtml}</div><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px;"><span style="color:#555;"><strong>Entrega:</strong> ${escapeHtml(pedido.endereco_entrega || "Não informado")}</span><div style="font-size:14px;color:#555;"><strong> Pagamento:</strong> ${escapeHtml(formatarFormaPagamento(pedido.payment_method))} — ${escapeHtml(pedido.payment_status || 'aguardando_pagamento')}</div><strong style="font-size:18px;">Total: R$ ${Number(pedido.total || 0).toFixed(2).replace('.', ',')}</strong></div>${pedido.cancel_reason ? `<div style="margin-top:8px;color:#b91c1c;font-size:14px;"><strong>Motivo do cancelamento:</strong> ${escapeHtml(pedido.cancel_reason)}</div>` : ""}${pedido.observacoes ? `<div style="margin-top:8px;color:#666;font-size:14px;"><strong>Obs.:</strong> ${escapeHtml(pedido.observacoes)}</div>` : ""}</div>`;
     }).join("");
   }
@@ -5140,6 +5275,7 @@ async function abrirPedidosVendedor() {
               ${['pendente','confirmado','em_preparo','saiu_para_entrega','entregue','cancelado'].map(st => `<option value="${st}" ${pedido.status === st ? 'selected' : ''}>${formatarStatusPedido(st)}</option>`).join('')}
             </select>
             ${['pendente','confirmado','em_preparo'].includes(pedido.status) ? `<button type="button" onclick="marcarPedidoPreparado('${pedido.id}')" style="border:0;background:#f97316;color:white;padding:10px 13px;border-radius:8px;cursor:pointer;font-weight:bold;white-space:nowrap;"> Marcar como preparado</button>` : ''}
+            <button type="button" onclick="abrirEtiquetaExpedicao('${pedido.id}')" style="border:1px solid #111827;background:#fff;color:#111827;padding:10px 13px;border-radius:8px;cursor:pointer;font-weight:bold;white-space:nowrap;">Gerar etiqueta</button>
           </div>
         </div>
         <div style="margin-top:15px;color:#444;"><strong> Entrega:</strong> ${escapeHtml(pedido.endereco_entrega || 'Não informado')}</div>
@@ -5155,6 +5291,49 @@ async function abrirPedidosVendedor() {
 
   html += `</div></div>`;
   document.body.insertAdjacentHTML('beforeend', html);
+}
+
+
+async function abrirEtiquetaExpedicao(orderId) {
+  const { data: authData, error: authError } = await supabaseClient.auth.getUser();
+  if (authError || !authData?.user) { abrirLogin(); return; }
+  const { data: perfil } = await supabaseClient.from("profiles").select("nome,telefone").eq("id", authData.user.id).maybeSingle();
+  const { data: pedido, error } = await supabaseClient.from("orders")
+    .select("id,tracking_code,created_at,total,endereco_entrega,observacoes,customer_id,store_id,entrega_telefone_contato,entrega_codigo,cliente_latitude,cliente_longitude")
+    .eq("id", orderId).maybeSingle();
+  if (error || !pedido) { alert("Pedido não encontrado."); return; }
+  const { data: loja } = await supabaseClient.from("stores").select("nome,telefone,cep,endereco,numero,bairro,cidade,estado").eq("id", pedido.store_id).maybeSingle();
+  const { data: cliente } = await supabaseClient.from("profiles").select("nome,telefone").eq("id", pedido.customer_id).maybeSingle();
+  const rastreio = pedido.tracking_code || `TNM-${String(pedido.id).padStart(8,'0')}`;
+  if (!pedido.tracking_code) {
+    await supabaseClient.from("orders").update({tracking_code:rastreio}).eq("id", pedido.id);
+  }
+  const qrPayload = `TNM|${rastreio}|${pedido.id}`;
+  const modal = document.getElementById("tnmEtiquetaModal");
+  const folha = document.getElementById("tnmEtiquetaFolha");
+  const qr = document.getElementById("tnmEtiquetaQR");
+  if (!modal || !folha || !qr) return;
+  qr.innerHTML = "";
+  if (window.QRCode) new QRCode(qr,{text:qrPayload,width:150,height:150,correctLevel:QRCode.CorrectLevel.M});
+  document.getElementById("tnmEtiquetaRastreio").textContent = rastreio;
+  const rodapeRastreio = document.getElementById("tnmEtiquetaRastreioRodape"); if (rodapeRastreio) rodapeRastreio.textContent = rastreio;
+  document.getElementById("tnmEtiquetaPedido").textContent = `Pedido #${pedido.id}`;
+  document.getElementById("tnmEtiquetaData").textContent = new Date(pedido.created_at).toLocaleString("pt-BR");
+  document.getElementById("tnmEtiquetaRemetente").innerHTML = `<b>${escapeHtml(loja?.nome||perfil?.nome||"Loja")}</b><br>${escapeHtml([loja?.endereco,loja?.numero].filter(Boolean).join(', ')||'Endereço não informado')}<br>${escapeHtml([loja?.bairro,loja?.cidade,loja?.estado].filter(Boolean).join(' - '))}<br>${loja?.cep?`CEP: ${escapeHtml(loja.cep)}<br>`:''}Telefone: ${escapeHtml(loja?.telefone||perfil?.telefone||'Não informado')}`;
+  document.getElementById("tnmEtiquetaDestinatario").innerHTML = `<b>${escapeHtml(cliente?.nome||"Cliente")}</b><br>${escapeHtml(pedido.endereco_entrega||"Endereço não informado")}<br>Telefone: ${escapeHtml(pedido.entrega_telefone_contato||cliente?.telefone||"Não informado")}`;
+  document.getElementById("tnmEtiquetaObservacoes").textContent = pedido.observacoes || "Sem observações";
+  modal.style.display="flex";
+  try { await supabaseClient.from("orders").update({etiqueta_gerada_at:new Date().toISOString()}).eq("id",pedido.id); } catch(e) {}
+}
+function fecharEtiquetaExpedicao(){ const m=document.getElementById("tnmEtiquetaModal"); if(m)m.style.display="none"; }
+function imprimirEtiquetaExpedicao(){ window.print(); }
+function salvarEtiquetaComoPDF(){ alert("Na janela de impressão, selecione 'Salvar como PDF' como impressora de destino."); window.print(); }
+function lerQRRemessaNoPainel(codigo){
+  const limpo=String(codigo||"").trim();
+  if(!limpo)return;
+  const partes=limpo.split("|");
+  const rastreio=partes[1]||limpo;
+  abrirRastreamento(rastreio);
 }
 
 function formatarFormaPagamento(metodo) {
@@ -5426,9 +5605,10 @@ async function carregarPainelEntregas(driver) {
   const box = document.getElementById("entregasMotoboyConteudo");
   if (!box) return;
   box.innerHTML = '<div style="padding:25px;text-align:center;color:#777;">Carregando entregas...</div>';
+
   const { data: disponiveis, error } = await supabaseClient
     .from("deliveries")
-    .select("id,order_id,status,distancia_km,valor_entrega,created_at")
+    .select("id,order_id,status,distancia_km,valor_entrega,valor_pacote,created_at,orders(store_id,entrega_preferencia,entrega_telefone_contato,cliente_latitude,cliente_longitude)")
     .eq("status", "aguardando_entregador")
     .order("created_at", { ascending: true });
   if (error) {
@@ -5437,30 +5617,176 @@ async function carregarPainelEntregas(driver) {
   }
   const { data: minhas, error: minhasError } = await supabaseClient
     .from("deliveries")
-    .select("id,order_id,status,distancia_km,valor_entrega,created_at")
+    .select("id,order_id,status,distancia_km,valor_entrega,valor_pacote,created_at,orders(store_id,entrega_preferencia,entrega_telefone_contato,cliente_latitude,cliente_longitude)")
     .eq("driver_id", driver.id)
     .in("status", ["aceita","a_caminho_loja","pedido_coletado","saiu_para_entrega"])
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: true });
   if (minhasError) console.warn(minhasError);
 
+  const valorPacote = km => {
+    km = Number(km || 0);
+    if (km <= 5) return 10;
+    if (km <= 10) return 9.5;
+    if (km <= 15) return 9;
+    if (km <= 20) return 8.75;
+    if (km <= 25) return 8.5;
+    if (km <= 30) return 8.25;
+    return 8;
+  };
+  const calcularRota = itens => {
+    const totalKm = itens.reduce((a,d)=>a+Number(d.distancia_km||0),0);
+    const base = itens.reduce((a,d)=>a+valorPacote(d.distancia_km),0);
+    const adicional = totalKm > 30 ? Math.ceil((totalKm-30)/10)*3 : 0;
+    return {totalKm, total:base+adicional};
+  };
   const statusLabel = {aceita:"Aceita",a_caminho_loja:"A caminho da loja",pedido_coletado:"Pedido coletado",saiu_para_entrega:"Saiu para entrega"};
-  const card = d => `<div style="border-bottom:1px solid #eee;padding:14px 0;display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap;">
-    <div><strong>Pedido #${escapeHtml(String(d.order_id))}</strong><div style="font-size:13px;color:#777;margin-top:5px;">Status: ${escapeHtml(statusLabel[d.status] || "Aguardando")}</div><div style="font-size:13px;color:#555;margin-top:4px;">Valor da entrega: R$ ${Number(d.valor_entrega||0).toFixed(2).replace(".",",")}${d.distancia_km ? " · "+Number(d.distancia_km).toFixed(1).replace(".",",")+" km" : ""}</div></div>
-    <button type="button" onclick="aceitarEntregaMotoboy('${d.id}')" style="border:0;background:#ff6a00;color:#fff;padding:9px 14px;border-radius:6px;cursor:pointer;font-weight:700;">Aceitar entrega</button></div>`;
-  const minhaCard = d => `<div style="border:1px solid #e4e7eb;padding:15px;border-radius:7px;margin-bottom:10px;"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;"><strong>Pedido #${escapeHtml(String(d.order_id))}</strong><span style="font-size:12px;color:#555;">${escapeHtml(statusLabel[d.status] || d.status)}</span></div><div style="margin-top:8px;color:#555;">Valor: R$ ${Number(d.valor_entrega||0).toFixed(2).replace(".",",")}</div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;">${d.status==="aceita"?`<button onclick="atualizarEntregaMotoboy('${d.id}','a_caminho_loja')" class="tnm-delivery-btn">A caminho da loja</button>`:""}${d.status==="a_caminho_loja"?`<button onclick="atualizarEntregaMotoboy('${d.id}','pedido_coletado')" class="tnm-delivery-btn">Pedido coletado</button>`:""}${d.status==="pedido_coletado"?`<button onclick="atualizarEntregaMotoboy('${d.id}','saiu_para_entrega')" class="tnm-delivery-btn">Saiu para entrega</button>`:""}${d.status==="saiu_para_entrega"?`<button onclick="atualizarEntregaMotoboy('${d.id}','entregue')" class="tnm-delivery-btn">Marcar entregue</button>`:""}<button onclick="atualizarEntregaMotoboy('${d.id}','cancelada')" style="border:1px solid #ddd;background:#fff;padding:8px 11px;border-radius:6px;cursor:pointer;">Cancelar</button></div></div>`;
-  box.innerHTML = `<div style="margin-bottom:24px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><h3 style="margin:0;">Minhas entregas</h3><button onclick="abrirPainelEntregas()" style="border:1px solid #ddd;background:#fff;padding:7px 11px;border-radius:6px;cursor:pointer;">Atualizar</button></div>${minhas?.length ? minhas.map(minhaCard).join("") : '<div style="padding:18px 0;color:#777;">Nenhuma entrega em andamento.</div>'}</div><div><h3 style="margin:0 0 8px;">Entregas disponíveis</h3>${disponiveis?.length ? disponiveis.map(card).join("") : '<div style="padding:18px 0;color:#777;">Nenhuma entrega disponível no momento.</div>'}</div>`;
+  let html = `<div class="tnm-entrega-resumo"><div>Entregas disponíveis<b>${disponiveis?.length||0}</b></div><div>Pacotes em andamento<b>${minhas?.length||0}</b></div><div>Veículo<b>${escapeHtml(driver.veiculo||"Não informado")}</b></div></div><div style="display:flex;justify-content:flex-end;margin:8px 0 14px;"><button type="button" onclick="abrirLeitorQRMotoboy()" style="border:1px solid #111827;background:#111827;color:#fff;padding:10px 13px;border-radius:6px;cursor:pointer;font-weight:700;">Ler QR Code da remessa</button></div>`;
+
+  if ((minhas||[]).length) {
+    const atual = calcularRota(minhas);
+    html += `<h3 style="margin:16px 0 8px;">Minha rota atual</h3><div class="tnm-rota-box"><div class="tnm-rota-head"><div><div class="tnm-rota-title">Rota em andamento</div><div class="tnm-rota-meta">${minhas.length} pacote(s) · ${atual.totalKm.toFixed(1).replace('.',',')} km</div></div><div class="tnm-rota-total">R$ ${atual.total.toFixed(2).replace('.',',')}</div></div>`;
+    minhas.forEach(d => {
+      html += `<div class="tnm-rota-item"><div><b>Pedido #${escapeHtml(String(d.order_id))}</b><div class="tnm-pagamento-entrega">${escapeHtml(statusLabel[d.status]||d.status)} · ${Number(d.distancia_km||0).toFixed(1).replace('.',',')} km</div></div><div style="text-align:right;"><strong>R$ ${Number(d.valor_pacote || valorPacote(d.distancia_km)).toFixed(2).replace('.',',')}</strong><div style="margin-top:6px;display:flex;gap:5px;justify-content:flex-end;flex-wrap:wrap;"><button type="button" onclick="avancarEntregaMotoboy('${escapeHtml(String(d.id))}','${escapeHtml(String(d.status))}')" style="border:1px solid #ddd;background:#fff;padding:6px 8px;border-radius:6px;cursor:pointer;font-size:12px;">Atualizar</button><button type="button" onclick="abrirConfirmacaoEntregaMotoboy('${escapeHtml(String(d.id))}')" style="border:0;background:#111827;color:#fff;padding:6px 8px;border-radius:6px;cursor:pointer;font-size:12px;">Finalizar</button></div></div></div>`;
+    });
+    html += `</div>`;
+  }
+
+  const grupos = {};
+  (disponiveis||[]).forEach(d => {
+    const loja = d.orders?.store_id || "sem-loja";
+    (grupos[loja] ||= []).push(d);
+  });
+  html += `<h3 style="margin:18px 0 8px;">Rotas disponíveis</h3>`;
+  const lojas = Object.keys(grupos);
+  if (!lojas.length) html += '<div style="padding:18px 0;color:#777;">Nenhuma entrega disponível no momento.</div>';
+  lojas.forEach((loja,i) => {
+    const itens = grupos[loja];
+    const rota = calcularRota(itens);
+    const ids = itens.map(x=>x.id);
+    html += `<div class="tnm-rota-box"><div class="tnm-rota-head"><div><div class="tnm-rota-title">Rota com ${itens.length} pacote(s)</div><div class="tnm-rota-meta">Loja ${escapeHtml(String(loja))} · ${rota.totalKm.toFixed(1).replace('.',',')} km somados</div></div><div class="tnm-rota-total">R$ ${rota.total.toFixed(2).replace('.',',')}</div></div>`;
+    itens.forEach(d => {
+      html += `<div class="tnm-rota-item"><div><b>Pedido #${escapeHtml(String(d.order_id))}</b><div class="tnm-pagamento-entrega">${Number(d.distancia_km||0).toFixed(1).replace('.',',')} km · valor do pacote</div></div><strong>R$ ${Number(d.valor_pacote || valorPacote(d.distancia_km)).toFixed(2).replace('.',',')}</strong></div>`;
+    });
+    html += `<div class="tnm-rota-actions"><button type="button" onclick='aceitarRotaMotoboy(${JSON.stringify(ids)})'>Aceitar rota</button></div></div>`;
+  });
+  box.innerHTML = html;
 }
 
-async function aceitarEntregaMotoboy(deliveryId) {
+async function aceitarRotaMotoboy(deliveryIds) {
+  if (!Array.isArray(deliveryIds) || !deliveryIds.length) return;
   const { data, error } = await supabaseClient.auth.getUser();
   if (error || !data?.user) { abrirLogin(); return; }
-  const { data: driver } = await supabaseClient.from("delivery_drivers").select("id,ativo,disponivel,veiculo,placa").eq("user_id", data.user.id).maybeSingle();
+  const { data: driver } = await supabaseClient.from("delivery_drivers").select("id,ativo,disponivel").eq("user_id", data.user.id).maybeSingle();
   if (!driver?.id || !driver.ativo) { alert("Cadastro de entregador não encontrado ou inativo."); return; }
-  const { data: resultado, error: rpcError } = await supabaseClient.rpc("aceitar_entrega", { p_delivery_id: deliveryId, p_driver_id: driver.id });
-  if (rpcError) { alert("Não foi possível aceitar a entrega.\n\n" + rpcError.message); return; }
+  if (!driver.disponivel) { alert("Você já possui uma entrega em andamento."); return; }
+  const { data: resultado, error: rpcError } = await supabaseClient.rpc("aceitar_rota_entregas", { p_delivery_ids: deliveryIds, p_driver_id: driver.id });
+  if (rpcError) { alert("Não foi possível aceitar a rota.\n\n" + rpcError.message); return; }
+  const r = Array.isArray(resultado) ? resultado[0] : resultado;
+  alert(r?.mensagem || "Rota processada.");
+  if (r?.ok) await carregarPainelEntregas(driver);
+}
+
+
+function proximoStatusEntrega(status) {
+  const mapa = {aceita:"a_caminho_loja",a_caminho_loja:"pedido_coletado",pedido_coletado:"saiu_para_entrega",saiu_para_entrega:"saiu_para_entrega"};
+  return mapa[status] || null;
+}
+
+async function avancarEntregaMotoboy(deliveryId, statusAtual) {
+  const proximo = proximoStatusEntrega(statusAtual);
+  if (!proximo) { abrirConfirmacaoEntregaMotoboy(deliveryId); return; }
+  await atualizarEntregaMotoboy(deliveryId, proximo);
+}
+
+async function abrirConfirmacaoEntregaMotoboy(deliveryId) {
+  const { data, error } = await supabaseClient.auth.getUser();
+  if (error || !data?.user) { abrirLogin(); return; }
+  const { data: driver } = await supabaseClient.from("delivery_drivers").select("id,ativo").eq("user_id", data.user.id).maybeSingle();
+  if (!driver?.id || !driver.ativo) { alert("Cadastro de entregador não encontrado ou inativo."); return; }
+
+  const { data: pedido, error: pe } = await supabaseClient
+    .from("deliveries")
+    .select("id,order_id,status,orders(entrega_codigo,entrega_preferencia,entrega_telefone_contato)")
+    .eq("id", deliveryId).eq("driver_id", driver.id).maybeSingle();
+  if (pe || !pedido) { alert("Não foi possível localizar a entrega."); return; }
+
+  const forma = prompt("Como a entrega foi realizada?\n\n1 - Cliente recebeu\n2 - Porteiro\n3 - Vizinho\n4 - Local autorizado\n\nDigite 1, 2, 3 ou 4.", "1");
+  const mapa = {"1":"cliente","2":"porteiro","3":"vizinho","4":"local_autorizado"};
+  const selecionada = mapa[String(forma || "")];
+  if (!selecionada) return;
+
+  if (selecionada === "cliente") {
+    const codigo = prompt("Peça ao cliente o código de segurança de 4 dígitos e informe-o aqui:");
+    if (!codigo) return;
+    const { data: resultado, error: rpcError } = await supabaseClient.rpc("confirmar_entrega_com_codigo", {
+      p_delivery_id: deliveryId, p_driver_id: driver.id, p_codigo: codigo
+    });
+    if (rpcError) { alert("Não foi possível confirmar a entrega.\n\n" + rpcError.message); return; }
+    const r = Array.isArray(resultado) ? resultado[0] : resultado;
+    alert(r?.mensagem || "Entrega processada.");
+    if (r?.ok) await carregarPainelEntregas(driver);
+    return;
+  }
+
+  const preferencia = pedido.orders?.entrega_preferencia;
+  if (preferencia !== selecionada) {
+    alert("Esta forma de entrega não foi autorizada pelo cliente. Verifique a preferência cadastrada no pedido.");
+    return;
+  }
+  const nome = prompt(selecionada === "porteiro" ? "Nome do porteiro:" : selecionada === "vizinho" ? "Nome do vizinho:" : "Identifique o local autorizado:", "");
+  if (!nome) return;
+  const observacoes = prompt("Observação da entrega (opcional):", "") || "";
+  const contato = confirm("O cliente estava ausente e você entrou em contato pelo telefone informado?\n\nOK = sim\nCancelar = não");
+  if (!contato) {
+    alert("Para registrar a entrega alternativa, confirme que houve contato com o cliente.");
+    return;
+  }
+  const { data: resultado, error: rpcError } = await supabaseClient.rpc("confirmar_entrega_alternativa", {
+    p_delivery_id: deliveryId, p_driver_id: driver.id, p_forma: selecionada,
+    p_nome: nome, p_contato_realizado: true, p_observacoes: observacoes
+  });
+  if (rpcError) { alert("Não foi possível confirmar a entrega.\n\n" + rpcError.message); return; }
   const r = Array.isArray(resultado) ? resultado[0] : resultado;
   alert(r?.mensagem || "Entrega processada.");
   if (r?.ok) await carregarPainelEntregas(driver);
+}
+
+
+let tnmQrScanner = null;
+async function abrirLeitorQRMotoboy(){
+  const modal=document.getElementById('tnmScannerModal');
+  if(!modal){return;}
+  modal.style.display='flex';
+  const alvo=document.getElementById('tnmQrReader');
+  const resultado=document.getElementById('tnmQrResultado');
+  if(resultado) resultado.textContent='Aponte a câmera para o QR Code da etiqueta.';
+  if(!window.Html5Qrcode){ if(resultado) resultado.textContent='Leitor QR não carregado. Verifique sua conexão.'; return; }
+  try{
+    if(tnmQrScanner){ try{await tnmQrScanner.stop();}catch(e){} }
+    tnmQrScanner=new Html5Qrcode('tnmQrReader');
+    await tnmQrScanner.start({facingMode:'environment'},{fps:10,qrbox:{width:250,height:250}},async decoded=>{
+      if(tnmQrScanner){try{await tnmQrScanner.stop();}catch(e){}}
+      await processarQrRemessa(decoded);
+    },()=>{});
+  }catch(e){ console.error(e); if(resultado) resultado.textContent='Não foi possível abrir a câmera. Verifique a permissão de câmera no celular.'; }
+}
+async function fecharLeitorQRMotoboy(){
+  if(tnmQrScanner){try{await tnmQrScanner.stop();}catch(e){} try{await tnmQrScanner.clear();}catch(e){}}
+  tnmQrScanner=null;
+  const m=document.getElementById('tnmScannerModal'); if(m)m.style.display='none';
+}
+async function processarQrRemessa(codigo){
+  const bruto=String(codigo||'').trim();
+  const partes=bruto.split('|');
+  const rastreio=partes[1]||bruto;
+  const resultado=document.getElementById('tnmQrResultado');
+  if(resultado) resultado.textContent='Validando remessa...';
+  const {data,error}=await supabaseClient.rpc('consultar_remessa_qr',{p_codigo:rastreio});
+  if(error){if(resultado)resultado.textContent='Não foi possível validar a remessa: '+error.message;return;}
+  const r=Array.isArray(data)?data[0]:data;
+  if(!r?.ok){if(resultado)resultado.textContent=r?.mensagem||'Remessa não encontrada.';return;}
+  await fecharLeitorQRMotoboy();
+  alert(`Remessa ${r.tracking_code} validada.\nPedido #${r.order_id}\nCliente: ${r.cliente_nome||'Não informado'}\nEndereço: ${r.endereco_entrega||'Não informado'}`);
 }
 
 async function atualizarEntregaMotoboy(deliveryId, novoStatus) {
@@ -6224,6 +6550,7 @@ iniciarTimersOfertasCarrinho();
         <option value="correios">Correios</option>
       </select>
       <div id="resumoFreteCarrinho" style="margin-top:8px;font-size:13px;color:#666;">Retirada no local.</div>
+      <div id="avisoFreteGratisCarrinho" style="display:none;margin-top:8px;padding:9px;background:#ecfdf5;border:1px solid #bbf7d0;color:#166534;border-radius:7px;font-size:12px;font-weight:700;"></div>
     </div>
 
     <div style="margin-top:15px;padding:14px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;">
@@ -6375,5 +6702,41 @@ iniciarTimersOfertasCarrinho();
   </div>
 </div>
 
+
+<div id="tnmEtiquetaModal" class="tnm-etiqueta-modal">
+  <div class="tnm-etiqueta-painel">
+    <div class="tnm-etiqueta-toolbar">
+      <button type="button" onclick="fecharEtiquetaExpedicao()">Fechar</button>
+      <button type="button" onclick="salvarEtiquetaComoPDF()">Salvar / PDF</button>
+      <button type="button" class="primary" onclick="imprimirEtiquetaExpedicao()">Imprimir etiqueta</button>
+    </div>
+    <div id="tnmEtiquetaFolha" class="tnm-etiqueta-folha">
+      <div class="tnm-etiqueta-top">
+        <div><div class="tnm-etiqueta-marca">TáNaMão</div><div class="tnm-etiqueta-tipo">Etiqueta de expedição</div></div>
+        <div><div class="tnm-etiqueta-rastreio" id="tnmEtiquetaRastreio">TNM-00000000</div><div style="font-size:10px;text-align:right;color:#666" id="tnmEtiquetaPedido">Pedido #</div></div>
+      </div>
+      <div class="tnm-etiqueta-grid">
+        <div>
+          <div class="tnm-etiqueta-bloco"><h4>Remetente</h4><p id="tnmEtiquetaRemetente"></p></div>
+          <div class="tnm-etiqueta-bloco" style="margin-top:12px"><h4>Destinatário</h4><p id="tnmEtiquetaDestinatario"></p></div>
+          <div class="tnm-etiqueta-bloco" style="margin-top:12px"><h4>Observações</h4><p id="tnmEtiquetaObservacoes"></p></div>
+        </div>
+        <div>
+          <div class="tnm-etiqueta-qr" id="tnmEtiquetaQR"></div>
+          <div style="text-align:center;font-size:10px;color:#555;margin-top:6px">Escaneie este QR Code no sistema TáNaMão</div>
+        </div>
+      </div>
+      <div class="tnm-etiqueta-rodape"><span>Gerado pelo TáNaMão</span><span id="tnmEtiquetaData"></span><span>Rastreamento: <b id="tnmEtiquetaRastreioRodape">remessa</b></span></div>
+    </div>
+  </div>
+</div>
+
+<div id="tnmScannerModal" class="tnm-scanner-modal">
+  <div class="tnm-scanner-box">
+    <div class="tnm-scanner-head"><strong>Ler QR Code da remessa</strong><button type="button" onclick="fecharLeitorQRMotoboy()">Fechar</button></div>
+    <div id="tnmQrReader" style="width:100%;"></div>
+    <div id="tnmQrResultado" class="tnm-scanner-result">Aponte a câmera para o QR Code da etiqueta.</div>
+  </div>
+</div>
 </body>
 </html>
