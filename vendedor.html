@@ -242,7 +242,7 @@ async function submitAuth(){
  }else{
    const nome=document.getElementById("regNome").value.trim(), telefone=document.getElementById("regTelefone").value.trim(), loja=document.getElementById("regLoja").value.trim(), cidade=document.getElementById("regCidade").value.trim(), estado=document.getElementById("regEstado").value.trim().toUpperCase(), cep=document.getElementById("regCep").value.trim();
    if(!nome||!loja||!cidade||!estado){setMsg("authMsg","Preencha nome, loja, cidade e estado.","error");return;}
-   const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{tipo:"vendedor",nome,telefone}}});
+   const {data,error}=await supabaseClient.auth.signUp({email,password,options:{emailRedirectTo:"https://t-na-m-inky.vercel.app/vendedor.html",data:{tipo:"vendedor",nome,telefone}}});
    if(error){setMsg("authMsg",error.message,"error");return;}
    if(!data.user){setMsg("authMsg","Conta criada. Verifique seu e-mail para continuar.","ok");return;}
    const {error:storeError}=await supabaseClient.from("stores").insert({owner_id:data.user.id,nome:loja,telefone,cidade,estado,cep,ativo:true});
