@@ -4,44 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TáNaMão — Área do Entregador</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-function showRecovery(){
-  const email=document.getElementById('loginEmail')?.value || document.getElementById('authEmail')?.value || '';
-  ['loginForm','registerForm'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
-  document.getElementById('forgotBtn')?.classList.add('hidden');
-  document.getElementById('recoveryForm')?.classList.remove('hidden');
-  document.getElementById('updatePasswordForm')?.classList.add('hidden');
-  const r=document.getElementById('recoveryEmail'); if(r) r.value=email;
-}
-async function sendRecovery(event){
-  event.preventDefault();
-  const email=document.getElementById('recoveryEmail').value.trim();
-  const redirectTo=window.location.origin+window.location.pathname;
-  const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo});
-  if(error){ alert(error.message); return; }
-  alert('Se esse e-mail estiver cadastrado, o link de recuperação foi enviado. Verifique também o spam.');
-}
-async function updatePassword(event){
-  event.preventDefault();
-  const p=document.getElementById('newPassword').value;
-  const c=document.getElementById('newPasswordConfirm').value;
-  if(p!==c){ alert('As senhas não conferem.'); return; }
-  const {error}=await supabaseClient.auth.updateUser({password:p});
-  if(error){ alert(error.message); return; }
-  alert('Senha alterada com sucesso.');
-  if(typeof showAuth==='function') showAuth('login');
-}
-supabaseClient.auth.onAuthStateChange((event)=>{
-  if(event==='PASSWORD_RECOVERY'){
-    document.getElementById('auth')?.classList.remove('hidden');
-    document.getElementById('app')?.classList.add('hidden');
-    ['loginForm','registerForm','recoveryForm'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
-    document.getElementById('forgotBtn')?.classList.add('hidden');
-    document.getElementById('updatePasswordForm')?.classList.remove('hidden');
-  }
-});
-
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://unpkg.com/html5-qrcode" defer></script>
 <style>
 :root{--ink:#202124;--muted:#6b7280;--line:#e5e7eb;--bg:#f6f7f9;--white:#fff;--dark:#111827;--ok:#16803c;--warn:#b45309;--danger:#b42318}
@@ -67,9 +30,56 @@ main{padding:24px;max-width:1300px;width:100%;margin:auto}.page-head{display:fle
 .field{margin-top:12px}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}.field input{width:100%;border:1px solid #d5d9de;border-radius:7px;padding:10px}
 .notice{padding:12px;border:1px solid #dfe3e8;background:#fafbfc;border-radius:7px;color:#4b5563;font-size:13px;line-height:1.45}
 @media(max-width:800px){.layout{grid-template-columns:1fr}.side{display:none}.top{padding:0 15px}.top-right .btn:first-child{display:none}main{padding:15px}.stats{grid-template-columns:repeat(2,1fr)}.page-head{align-items:start;flex-direction:column}.route-head{flex-direction:column}.route-total{font-size:18px}.delivery{grid-template-columns:1fr}.value{text-align:left}}
+
+.auth-screen{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-card{width:min(430px,100%);background:#fff;border:1px solid var(--line);border-radius:10px;padding:26px;box-shadow:0 12px 35px rgba(0,0,0,.08)}
+.auth-card h1{margin:0 0 6px;font-size:25px}.auth-card .brand-login{font-size:24px;font-weight:800;margin-bottom:20px}
+.auth-card .auth-sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+.auth-card .auth-actions{display:flex;gap:8px;margin-top:14px}.auth-card .auth-actions button{flex:1}
+.auth-link{border:0;background:transparent;padding:8px 0;color:#374151;text-decoration:underline;cursor:pointer}
+.auth-message{font-size:13px;padding:10px;border-radius:7px;background:#f3f4f6;margin-top:12px}
+
 </style>
 </head>
 <body>
+
+<div id="authScreen" class="auth-screen">
+  <div class="auth-card">
+    <div class="brand-login">TáNaMão</div>
+    <h1 id="authTitle">Área do entregador</h1>
+    <div id="authSub" class="auth-sub">Entre com sua conta de entregador.</div>
+
+    <form id="loginForm" onsubmit="entrar(event)">
+      <div class="field"><label>E-mail</label><input id="loginEmail" type="email" autocomplete="email" required></div>
+      <div class="field"><label>Senha</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
+      <div class="auth-actions"><button class="btn dark" type="submit">Entrar</button><button class="btn" type="button" onclick="showAuth('register')">Criar conta</button></div>
+      <button id="forgotBtn" class="auth-link" type="button" onclick="showRecovery()">Esqueci minha senha</button>
+    </form>
+
+    <form id="registerForm" class="hidden" onsubmit="cadastrar(event)">
+      <div class="field"><label>Nome completo</label><input id="registerName" required></div>
+      <div class="field"><label>Telefone</label><input id="registerPhone" inputmode="tel" required></div>
+      <div class="field"><label>Veículo</label><input id="registerVehicle" placeholder="Ex.: Moto" required></div>
+      <div class="field"><label>Placa</label><input id="registerPlate" placeholder="ABC1D23" required></div>
+      <div class="field"><label>E-mail</label><input id="registerEmail" type="email" autocomplete="email" required></div>
+      <div class="field"><label>Senha</label><input id="registerPassword" type="password" minlength="6" autocomplete="new-password" required></div>
+      <div class="auth-actions"><button class="btn dark" type="submit">Criar conta</button><button class="btn" type="button" onclick="showAuth('login')">Voltar</button></div>
+    </form>
+
+    <form id="recoveryForm" class="hidden" onsubmit="sendRecovery(event)">
+      <div class="field"><label>E-mail cadastrado</label><input id="recoveryEmail" type="email" required></div>
+      <div class="auth-actions"><button class="btn dark" type="submit">Enviar link</button><button class="btn" type="button" onclick="showAuth('login')">Voltar</button></div>
+    </form>
+
+    <form id="updatePasswordForm" class="hidden" onsubmit="updatePassword(event)">
+      <div class="field"><label>Nova senha</label><input id="newPassword" type="password" minlength="6" required></div>
+      <div class="field"><label>Confirmar nova senha</label><input id="newPasswordConfirm" type="password" minlength="6" required></div>
+      <div class="auth-actions"><button class="btn dark" type="submit">Salvar nova senha</button></div>
+    </form>
+    <div id="authMessage" class="auth-message hidden"></div>
+  </div>
+</div>
+
 <header class="top">
   <div class="brand">TáNaMão</div>
   <div class="top-right">
@@ -143,6 +153,70 @@ main{padding:24px;max-width:1300px;width:100%;margin:auto}.page-head{display:fle
 const SUPABASE_URL="https://sfzfoavesiintdyoxkca.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_wM4A1etSRHTcUpE4qUXb-A_suN-jnep";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+
+function authMsg(text){
+ const e=document.getElementById("authMessage");
+ e.textContent=text||"";e.classList.toggle("hidden",!text);
+}
+function showAuth(mode="login"){
+ document.getElementById("authScreen").classList.remove("hidden");
+ ["loginForm","registerForm","recoveryForm","updatePasswordForm"].forEach(id=>document.getElementById(id)?.classList.add("hidden"));
+ const map={login:"loginForm",register:"registerForm",recovery:"recoveryForm",password:"updatePasswordForm"};
+ document.getElementById(map[mode]||"loginForm")?.classList.remove("hidden");
+ document.getElementById("authTitle").textContent=mode==="register"?"Cadastro do entregador":mode==="recovery"?"Recuperar senha":mode==="password"?"Criar nova senha":"Área do entregador";
+ document.getElementById("authSub").textContent=mode==="register"?"Crie sua conta exclusiva de entregador.":mode==="recovery"?"Informe o e-mail cadastrado.":mode==="password"?"Digite e confirme sua nova senha.":"Entre com sua conta de entregador.";
+ authMsg("");
+}
+async function entrar(event){
+ event.preventDefault();authMsg("Entrando...");
+ const email=document.getElementById("loginEmail").value.trim();
+ const password=document.getElementById("loginPassword").value;
+ const {error}=await supabaseClient.auth.signInWithPassword({email,password});
+ if(error){authMsg("Não foi possível entrar: "+error.message);return}
+ document.getElementById("authScreen").classList.add("hidden");
+ await init();
+}
+async function cadastrar(event){
+ event.preventDefault();authMsg("Criando conta...");
+ const nome=document.getElementById("registerName").value.trim();
+ const telefone=document.getElementById("registerPhone").value.trim();
+ const veiculo=document.getElementById("registerVehicle").value.trim();
+ const placa=document.getElementById("registerPlate").value.trim().toUpperCase();
+ const email=document.getElementById("registerEmail").value.trim();
+ const password=document.getElementById("registerPassword").value;
+ const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{nome,tipo:"entregador",telefone}}});
+ if(error){authMsg("Não foi possível criar a conta: "+error.message);return}
+ if(!data?.user){authMsg("Conta criada. Verifique seu e-mail para confirmar o cadastro.");return}
+ const {error:profileError}=await supabaseClient.from("delivery_drivers").insert({user_id:data.user.id,ativo:true,disponivel:true,veiculo,placa});
+ if(profileError){authMsg("A conta foi criada, mas o cadastro do entregador precisa ser concluído: "+profileError.message);return}
+ if(!data.session){authMsg("Cadastro criado. Verifique seu e-mail para confirmar a conta.");return}
+ document.getElementById("authScreen").classList.add("hidden");
+ await init();
+}
+function showRecovery(){
+ const email=document.getElementById("loginEmail")?.value||"";
+ showAuth("recovery");document.getElementById("recoveryEmail").value=email;
+}
+async function sendRecovery(event){
+ event.preventDefault();authMsg("Enviando link...");
+ const email=document.getElementById("recoveryEmail").value.trim();
+ const redirectTo=window.location.origin+window.location.pathname;
+ const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo});
+ if(error){authMsg("Não foi possível enviar: "+error.message);return}
+ authMsg("Se o e-mail estiver cadastrado, o link de recuperação foi enviado. Verifique também o spam.");
+}
+async function updatePassword(event){
+ event.preventDefault();
+ const p=document.getElementById("newPassword").value,c=document.getElementById("newPasswordConfirm").value;
+ if(p!==c){authMsg("As senhas não conferem.");return}
+ const {error}=await supabaseClient.auth.updateUser({password:p});
+ if(error){authMsg("Não foi possível alterar a senha: "+error.message);return}
+ authMsg("Senha alterada com sucesso.");setTimeout(()=>showAuth("login"),1000);
+}
+supabaseClient.auth.onAuthStateChange((event)=>{
+ if(event==="PASSWORD_RECOVERY") showAuth("password");
+});
+
 let driver=null, minhas=[], disponiveis=[], historico=[], scanner=null, confirmDelivery=null;
 
 const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
@@ -156,11 +230,12 @@ function routeGroups(arr){const g={};for(const d of arr){const key=d.orders?.sto
 
 async function init(){
  const {data,error}=await supabaseClient.auth.getUser();
- if(error||!data?.user){location.href="index.html";return}
+ if(error||!data?.user){showAuth("login");return}
  const {data:d,error:de}=await supabaseClient.from("delivery_drivers").select("id,user_id,ativo,disponivel,veiculo,placa").eq("user_id",data.user.id).maybeSingle();
  if(de||!d){document.getElementById("subtitle").textContent="Cadastro de entregador não encontrado.";return}
  if(!d.ativo){document.getElementById("subtitle").textContent="Cadastro de entregador inativo.";return}
  driver=d;
+ document.getElementById("authScreen").classList.add("hidden");
  document.getElementById("driverName").textContent=data.user.user_metadata?.nome||"Entregador";
  document.getElementById("driverVehicle").textContent=(d.veiculo||"Veículo não informado")+(d.placa?" · "+d.placa:"");
  document.getElementById("avatar").textContent=(data.user.user_metadata?.nome||"E").charAt(0).toUpperCase();
@@ -262,7 +337,7 @@ function mostrarAba(a,btn){
  document.getElementById(a==="inicio"?"abaInicio":a==="rota"?"abaRota":a==="disponiveis"?"abaDisponiveis":"abaHistorico").classList.remove("hidden");
  document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active");
 }
-async function sair(){await supabaseClient.auth.signOut();location.href="index.html"}
+async function sair(){await supabaseClient.auth.signOut();driver=null;document.getElementById("authScreen").classList.remove("hidden");showAuth("login")}
 document.addEventListener("DOMContentLoaded",init);
 </script>
 </body>
