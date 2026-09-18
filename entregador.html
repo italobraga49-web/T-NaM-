@@ -12,7 +12,7 @@
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
 button,input{font:inherit}button{cursor:pointer}
 .top{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:20}
-.brand{font-size:22px;font-weight:800;letter-spacing:-.5px}.top-right{display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center}.brand-logo{display:block;width:145px;height:58px;object-fit:contain}.top-right{display:flex;align-items:center;gap:10px}
 .btn{border:1px solid #d7dbe0;background:#fff;border-radius:7px;padding:9px 13px}.btn.dark{background:var(--dark);color:#fff;border-color:var(--dark)}.btn.danger{color:var(--danger)}
 .layout{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:calc(100vh - 64px)}
 .side{background:#fff;border-right:1px solid var(--line);padding:20px 12px}
@@ -34,7 +34,7 @@ main{padding:24px;max-width:1300px;width:100%;margin:auto}.page-head{display:fle
 
 .auth-screen{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
 .auth-card{width:min(430px,100%);background:#fff;border:1px solid var(--line);border-radius:10px;padding:26px;box-shadow:0 12px 35px rgba(0,0,0,.08)}
-.auth-card h1{margin:0 0 6px;font-size:25px}.auth-card .brand-login{font-size:24px;font-weight:800;margin-bottom:20px}
+.auth-card h1{margin:0 0 6px;font-size:25px}.auth-card .brand-login{margin-bottom:18px}.brand-login-logo{display:block;width:220px;max-width:72%;height:auto;margin:0 auto}
 .auth-card .auth-sub{color:var(--muted);font-size:13px;margin-bottom:18px}
 .auth-card .auth-actions{display:flex;gap:8px;margin-top:14px}.auth-card .auth-actions button{flex:1}
 .auth-link{border:0;background:transparent;padding:8px 0;color:#374151;text-decoration:underline;cursor:pointer}
@@ -46,7 +46,7 @@ main{padding:24px;max-width:1300px;width:100%;margin:auto}.page-head{display:fle
 
 <div id="authScreen" class="auth-screen">
   <div class="auth-card">
-    <div class="brand-login">TáNaMão</div>
+    <div class="brand-login"><img class="brand-login-logo" src="1001111814.png" alt="TáNaMão"></div>
     <h1 id="authTitle">Área do entregador</h1>
     <div id="authSub" class="auth-sub">Entre com sua conta de entregador.</div>
 
@@ -82,7 +82,7 @@ main{padding:24px;max-width:1300px;width:100%;margin:auto}.page-head{display:fle
 </div>
 
 <header class="top">
-  <div class="brand">TáNaMão</div>
+  <div class="brand"><img class="brand-logo" src="1001111814.png" alt="TáNaMão"></div>
   <div class="top-right">
     <button class="btn" onclick="atualizar()">Atualizar</button>
     <button class="btn" onclick="abrirScanner()">Ler QR Code</button>
