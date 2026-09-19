@@ -1,4 +1,4 @@
-```
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -90,6 +90,20 @@ footer{font-size:13px}
 .cancel-note{font-size:12px;color:var(--muted);line-height:1.45}
 .cancel-btn{border-color:#fda29b;color:#b42318}
 .cancelled-badge{display:inline-block;margin-top:6px;padding:5px 8px;border-radius:999px;background:#fef3f2;color:#b42318;font-size:12px;font-weight:700}
+
+/* Central de ajuda flutuante */
+.help-float{position:fixed;right:18px;bottom:18px;z-index:9998}
+.help-launch{border:0;border-radius:999px;padding:12px 16px;font-weight:800;box-shadow:0 8px 28px rgba(0,0,0,.18);cursor:pointer;background:var(--primary,#ee4d2d);color:#fff}
+.help-panel{position:absolute;right:0;bottom:58px;width:min(360px,calc(100vw - 28px));max-height:70vh;overflow:auto;background:#fff;border:1px solid var(--line,#ddd);border-radius:14px;box-shadow:0 12px 38px rgba(0,0,0,.22);padding:16px}
+.help-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.help-head h3{margin:0;font-size:18px}
+.help-close{border:0;background:transparent;font-size:22px;cursor:pointer}
+.help-topic{border-top:1px solid var(--line,#eee);padding:11px 0;cursor:pointer;border-radius:8px}
+.help-topic:first-of-type{border-top:0}.help-topic:hover{background:#fafafa;padding-left:8px;padding-right:8px}
+.help-topic b{display:block;margin-bottom:4px;font-size:14px}
+.help-topic span{font-size:12px;color:var(--muted,#666);line-height:1.45}
+.help-support{width:100%;margin-top:10px}
+@media(max-width:600px){.help-float{right:12px;bottom:12px}.help-panel{width:calc(100vw - 24px)}}
 </style></head>
 <body>
 <div class="utility"><div class="utility-in"><span>Marketplace local • lojas e entregas em um só lugar</span><span>Compra protegida • acompanhe seu pedido</span></div></div>
@@ -119,7 +133,7 @@ footer{font-size:13px}
 <div class="field"><label>E-mail</label><input id="accEmail" disabled></div>
 <div class="field"><label>Telefone</label><input id="accTelefone" autocomplete="tel"></div>
 <div class="filter-row"><div class="field"><label>CPF</label><input id="accCpf" disabled></div><div class="field"><label>Data de nascimento</label><input id="accNascimento" type="date" disabled></div></div>
-<div class="notice">CPF e data de nascimento são dados pessoais da conta e não podem ser alterados diretamente por esta tela.</div>
+<div class="notice">Para sua segurança, CPF e data de nascimento não podem ser alterados diretamente. Caso precise corrigir essas informações, entre em contato com o suporte do TáNaMão.</div>
 <button class="btn primary" style="margin-top:12px" onclick="saveProfile()">Salvar nome e telefone</button><div id="profileMsg" class="small" style="margin-top:8px"></div></section>
 <section id="acc-enderecos" class="acc hidden">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px">
@@ -518,5 +532,78 @@ function calculateCouponDiscount(subtotal){
 function recalculateCheckout(){renderCheckoutSummary()}
 function openOrders(){openAccount("pedidos")}async function sendPasswordReset(){if(!user?.email)return;const {error}=await sb.auth.resetPasswordForEmail(user.email,{redirectTo:location.origin+"/"});alert(error?error.message:"Enviamos as instruções para o seu e-mail.")}
 session();loadCategories();loadProducts();renderCart();
-</script></body></html>
-```
+
+function toggleHelp(){
+ const p=document.getElementById("helpPanel");
+ if(!p)return;
+ p.classList.toggle("hidden");
+ const b=document.querySelector(".help-launch");
+ if(b)b.setAttribute("aria-expanded",String(!p.classList.contains("hidden")));
+}
+function openSupportHelp(){
+ const p=document.getElementById("helpPanel");
+ if(p)p.classList.add("hidden");
+ // Abre a área da conta; o canal real de atendimento pode ser conectado aqui depois.
+ try{openAccount();showAcc("dados")}catch(e){}
+ alert("Para alterações de CPF ou data de nascimento e outros casos que precisem de atendimento, use o canal oficial de suporte do TáNaMão quando ele estiver conectado.");
+}
+
+
+let selectedSupportTopic="";
+const TANAMAO_SUPPORT={
+  // Preencha futuramente, por exemplo:
+  // email:"suporte@seudominio.com",
+  // chatUrl:"https://seu-chat-online.com"
+  email:"",
+  chatUrl:""
+};
+function openSupportChannel(topic){
+ selectedSupportTopic=topic||"Atendimento";
+ const hp=document.getElementById("helpPanel"); if(hp)hp.classList.add("hidden");
+ document.getElementById("supportTopic").textContent="Assunto: "+selectedSupportTopic;
+ setMsg("supportChannelMsg","");
+ document.getElementById("supportChannelModal").classList.remove("hidden");
+}
+function closeSupportChannel(){document.getElementById("supportChannelModal").classList.add("hidden")}
+function startOnlineChat(){
+ if(!TANAMAO_SUPPORT.chatUrl)return setMsg("supportChannelMsg","O chat online do TáNaMão será disponibilizado em breve.");
+ window.open(TANAMAO_SUPPORT.chatUrl,"_blank","noopener,noreferrer");
+}
+function startSupportEmail(){
+ if(!TANAMAO_SUPPORT.email)return setMsg("supportChannelMsg","O e-mail oficial de suporte do TáNaMão será disponibilizado em breve.");
+ const subject=encodeURIComponent("Ajuda TáNaMão - "+selectedSupportTopic);
+ const body=encodeURIComponent("Olá, preciso de ajuda com: "+selectedSupportTopic+"\n\nDescreva aqui sua dúvida:");
+ location.href="mailto:"+TANAMAO_SUPPORT.email+"?subject="+subject+"&body="+body;
+}
+
+</script>
+
+<div id="supportChannelModal" class="modal hidden"><div class="box">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <div><h2 style="margin:0">Atendimento TáNaMão</h2><div id="supportTopic" class="small"></div></div>
+    <button class="btn" onclick="closeSupportChannel()">Fechar</button>
+  </div>
+  <p class="small">Escolha como deseja falar com o suporte. Os canais serão ativados quando você cadastrar o chat e o e-mail oficiais.</p>
+  <button class="btn primary" style="width:100%;margin-top:8px" onclick="startOnlineChat()">💬 Chat online</button>
+  <button class="btn" style="width:100%;margin-top:8px" onclick="startSupportEmail()">✉️ Enviar e-mail</button>
+  <div id="supportChannelMsg" class="msg hidden"></div>
+</div></div>
+
+<div class="help-float" id="helpFloat">
+  <div id="helpPanel" class="help-panel hidden" role="dialog" aria-label="Central de ajuda">
+    <div class="help-head"><h3>Como podemos ajudar?</h3><button class="help-close" onclick="toggleHelp()" aria-label="Fechar">×</button></div>
+    <div class="small">Encontre ajuda rápida para usar o TáNaMão.</div>
+    <div class="help-topic" onclick="openSupportChannel('Minha conta e dados pessoais')"><b>Minha conta e dados pessoais</b><span>Ajuda com nome, telefone, e-mail, CPF, data de nascimento, senha e acesso à conta.</span></div>
+    <div class="help-topic" onclick="openSupportChannel('Pedidos')"><b>Pedidos</b><span>Consulte seus pedidos, acompanhe o status e veja informações da compra.</span></div>
+    <div class="help-topic" onclick="openSupportChannel('Pagamento')"><b>Pagamento</b><span>Ajuda com Pix, cartão, boleto, pagamento pendente ou pagamento não reconhecido.</span></div>
+    <div class="help-topic" onclick="openSupportChannel('Entrega e rastreamento')"><b>Entrega e rastreamento</b><span>Acompanhe preparação, coleta, rota de entrega e conclusão do pedido.</span></div>
+    <div class="help-topic" onclick="openSupportChannel('Cancelamento e reembolso')"><b>Cancelamento e reembolso</b><span>Veja quando um pedido pode ser cancelado e acompanhe informações relacionadas ao reembolso.</span></div>
+    <div class="help-topic" onclick="openSupportChannel('Endereço e frete')"><b>Endereço e frete</b><span>Ajuda para cadastrar endereço, conferir o CEP e entender o valor ou prazo estimado da entrega.</span></div>
+    <div class="help-topic" onclick="openSupportChannel('Cupons e descontos')"><b>Cupons e descontos</b><span>Saiba como selecionar cupons disponíveis e verificar as condições de uso.</span></div>
+    <div class="help-topic" onclick="openSupportChannel('Lojas e produtos')"><b>Lojas e produtos</b><span>Ajuda com informações do produto, variações, loja vendedora e avaliações.</span></div>
+    <button class="btn primary help-support" onclick="openSupportChannel('Outros assuntos')">Ainda preciso de ajuda</button>
+  </div>
+  <button class="help-launch" onclick="toggleHelp()" aria-expanded="false">💬 Posso ajudar?</button>
+</div>
+
+</body></html>
