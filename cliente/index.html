@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -104,15 +103,84 @@ footer{font-size:13px}
 .help-topic span{font-size:12px;color:var(--muted,#666);line-height:1.45}
 .help-support{width:100%;margin-top:10px}
 @media(max-width:600px){.help-float{right:12px;bottom:12px}.help-panel{width:calc(100vw - 24px)}}
+
+/* ===== TáNaMão: interface compacta + promoções + carrinho visual ===== */
+.promo-badge,.stock-badge{position:absolute;top:6px;left:6px;z-index:2;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:800;color:#fff}
+.promo-badge{background:var(--o)}.stock-badge{background:#b42318;left:auto;right:6px}
+.product .pic{position:relative}
+.old-price{font-size:10px;color:var(--muted);text-decoration:line-through;margin-top:4px}
+.highlight-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.highlight-card{background:#fff;border:1px solid var(--line);border-radius:9px;overflow:hidden;cursor:pointer;min-width:0}
+.highlight-card img{width:100%;height:110px;object-fit:cover;background:#eef0f3}
+.highlight-card .inside{padding:7px}.highlight-card b{display:block;font-size:11px;line-height:14px;height:28px;overflow:hidden}
+.highlight-card .hp{font-size:14px;font-weight:800;color:var(--o);margin-top:5px}
+.cart-item{grid-template-columns:54px minmax(0,1fr) auto!important;align-items:start}
+.cart-thumb{width:54px;height:54px;border-radius:8px;object-fit:cover;background:#eef0f3;border:1px solid var(--line)}
+.cart-remove{padding:6px 8px!important;font-size:11px!important;color:#b42318}
+.coupon-actions{display:flex;align-items:center;gap:7px;margin-top:9px;flex-wrap:wrap}
+.coupon-wanted{font-size:11px;color:var(--green);font-weight:800}
+.topbar{flex-wrap:nowrap!important}
+.actions{flex-wrap:nowrap!important;white-space:nowrap}
+@media(max-width:700px){
+ .topbar{padding:6px 7px!important;gap:5px!important;overflow:hidden}
+ .logo{width:76px!important;height:34px!important;flex:0 0 auto}
+ .search{order:0!important;flex:1 1 auto!important;min-width:0!important;border-width:1px!important}
+ .search input{min-width:0!important;padding:7px 6px!important;font-size:10px!important}
+ .search button{padding:0 7px!important;font-size:10px!important}
+ .actions{margin-left:0!important;gap:3px!important;flex:0 0 auto}
+ .actions .btn{padding:7px 6px!important;font-size:9px!important;border-radius:6px!important}
+ .nav-in{gap:13px!important}
+ .nav button{font-size:10px!important;padding:8px 0!important}
+ .wrap{padding:8px!important}
+ .hero-main{min-height:150px!important;padding:17px!important}
+ .hero h1{font-size:21px!important;line-height:1.12!important}
+ .hero p{font-size:11px!important;margin-bottom:12px!important}
+ .section{margin:14px 0!important}.section-head{margin-bottom:7px!important}
+ .section-head h2{font-size:16px!important}
+ .categories{gap:5px!important}.chip{font-size:10px!important;padding:6px 8px!important}
+ .catalog{gap:8px!important}
+ .filters{padding:10px!important}
+ .grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important}
+ .pic{height:105px!important}
+ .product-body{padding:6px!important}
+ .product-name{font-size:10px!important;line-height:13px!important;height:26px!important}
+ .price{font-size:14px!important;margin-top:4px!important}
+ .store{font-size:8px!important;margin-top:3px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .product-actions{gap:3px!important;margin-top:5px!important}
+ .product-actions .btn{font-size:9px!important;padding:6px 3px!important}
+ .highlight-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+ .highlight-card img{height:90px}
+ .highlight-card .inside{padding:5px}.highlight-card b{font-size:9px;line-height:12px;height:24px}.highlight-card .hp{font-size:12px}
+ .drawer{padding:12px!important}.cart-item{grid-template-columns:46px minmax(0,1fr) auto!important;gap:7px!important;padding:10px 0!important}
+ .cart-thumb{width:46px;height:46px}.qtybox button{padding:4px 7px!important}.qtybox b{min-width:27px!important;font-size:11px}
+}
+@media(max-width:360px){
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .highlight-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .logo{width:66px!important}
+ .actions .btn{font-size:8px!important;padding:7px 4px!important}
+}
+
+
+/* ===== FULL perto de você + Frete Grátis ===== */
+.full-badge{display:inline-flex;align-items:center;gap:3px;background:#16803c;color:#fff;border-radius:999px;padding:3px 6px;font-size:9px;font-weight:900;letter-spacing:.2px}
+.full-row{margin-top:5px}
+.free-shipping-badge{display:inline-flex;align-items:center;gap:4px;background:#eaf8ef;color:#16803c;border:1px solid #a6e3b8;border-radius:999px;padding:4px 7px;font-size:10px;font-weight:900}
+.full-section-note{font-size:11px;color:var(--muted)}
+@media(max-width:700px){.full-badge,.free-shipping-badge{font-size:8px;padding:3px 5px}.full-row{margin-top:3px}}
+
 </style></head>
 <body>
 <div class="utility"><div class="utility-in"><span>Marketplace local • lojas e entregas em um só lugar</span><span>Compra protegida • acompanhe seu pedido</span></div></div>
-<header class="top"><div class="topbar"><img class="logo" src="1001111814.png" alt="TáNaMão"><div class="search"><input id="searchInput" placeholder="Busque um produto e compare vendedores" onkeydown="if(event.key==='Enter')loadProducts()"><button onclick="loadProducts()">Buscar</button></div><div class="actions"><button id="accountBtn" class="btn" onclick="accountAction()">Entrar</button><button class="btn primary" onclick="toggleCart()">Carrinho <span id="cartCount">0</span></button></div></div></header>
+<header class="top"><div class="topbar"><img class="logo" src="1001111814.png" alt="TáNaMão"><div class="search"><input id="searchInput" placeholder="Busque um produto e compare vendedores" onkeydown="if(event.key==='Enter')loadProducts()"><button onclick="loadProducts()">Buscar</button></div><div class="actions"><button id="accountBtn" class="btn" onclick="accountAction()">Entrar</button><button class="btn" id="myAccountQuick" onclick="openAccount('dados')" style="display:none">Minha conta</button><button class="btn primary" onclick="toggleCart()">🛒 <span class="cart-word">Carrinho</span> <span id="cartCount">0</span></button></div></div></header>
 <nav class="nav"><div class="nav-in"><button onclick="scrollProducts()">Produtos</button><button onclick="openOrders()">Meus pedidos</button><button onclick="openAccount('enderecos')">Endereços</button><button onclick="openAccount('cupons')">Cupons</button><button onclick="openAccount('avaliacoes')">Avaliações</button><button onclick="openAccount('devolucoes')">Devoluções e reembolsos</button></div></nav>
 <main><div class="wrap">
 <section class="hero"><div class="hero-main"><h1>Compre perto de você e compare ofertas.</h1><p>Pesquise o mesmo produto em diferentes vendedores, compare preços e escolha a opção ideal sem sair do TáNaMão.</p><button class="btn" onclick="scrollProducts()">Explorar produtos</button></div></section>
 <section class="section"><div class="section-head"><h2>Categorias</h2><span>Encontre rapidamente o que procura</span></div><div id="categories" class="categories"><button class="chip active" onclick="chooseCategory(null,this)">Todos</button></div></section>
 
+<section class="section hidden" id="fullSection"><div class="section-head"><h2><span class="full-badge">FULL</span> Perto de você</h2><span>Produtos de lojas próximas</span></div><div id="fullProducts" class="highlight-grid"></div><div class="full-section-note">A proximidade é calculada usando o endereço selecionado pelo cliente e a localização cadastrada da loja.</div></section>
+<section class="section" id="promoSection"><div class="section-head"><h2>🔥 Ofertas especiais</h2><span>Produtos em promoção</span></div><div id="promoProducts" class="highlight-grid"></div></section>
+<section class="section" id="lowStockSection"><div class="section-head"><h2>⏳ Últimas unidades</h2><span>Produtos com estoque quase esgotado</span></div><div id="lowStockProducts" class="highlight-grid"></div></section>
 <section class="section" id="productsSection"><div class="section-head"><h2>Produtos e ofertas</h2><span id="resultInfo">Carregando ofertas...</span></div><div class="catalog">
 <aside class="filters"><h3>Filtrar pesquisa</h3><div class="filter"><label>Ordenar</label><select id="sortFilter" onchange="renderProducts()"><option value="relevancia">Relevância</option><option value="menor">Menor preço</option><option value="maior">Maior preço</option><option value="loja">Loja</option></select></div><div class="filter"><label>Faixa de preço</label><div class="filter-row"><input id="minPrice" type="number" min="0" placeholder="Mín."><input id="maxPrice" type="number" min="0" placeholder="Máx."></div></div><div class="filter"><label>Vendedor</label><select id="storeFilter"><option value="">Todos os vendedores</option></select></div><button class="btn primary" style="width:100%" onclick="renderProducts()">Aplicar filtros</button><button class="btn" style="width:100%;margin-top:7px" onclick="clearFilters()">Limpar</button></aside>
 <div id="products" class="grid"></div></div></section>
@@ -199,7 +267,8 @@ const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let user=null,products=[],filteredProducts=[],cart=[],category=null,selectedPay="pix",currentProduct=null;
 let customerLocation=null,locationAskedForUser=null;
 let checkoutAddresses=[],selectedCheckoutAddress=null,freightQuote=null,freightQuoteKey="";
-let availableCoupons=[],appliedCoupon=null;
+let availableCoupons=[],appliedCoupon=null,claimedCouponIds=new Set(),usedCouponIds=new Set();
+let fullNearbyStoreIds=new Set(),FULL_MAX_KM=10;
 const $=id=>document.getElementById(id),money=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"}),esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 function setMsg(id,t){$(id).textContent=t;$(id).classList.toggle("hidden",!t)}
 function scrollProducts(){$("productsSection").scrollIntoView({behavior:"smooth"})}
@@ -218,7 +287,7 @@ async function ensureProfile(u){const {data}=await sb.from("profiles").select("i
 async function recover(e){e.preventDefault();const {error}=await sb.auth.resetPasswordForEmail($("recoveryEmail").value.trim(),{redirectTo:location.origin+"/"});setMsg("authMsg",error?error.message:"Se o e-mail estiver cadastrado, o link foi enviado.")}
 async function updatePassword(e){e.preventDefault();if($("newPassword").value!==$("newPassword2").value)return setMsg("authMsg","As senhas não conferem.");const {error}=await sb.auth.updateUser({password:$("newPassword").value});setMsg("authMsg",error?error.message:"Senha alterada com sucesso.")}
 async function logout(){await sb.auth.signOut();closeAccount();await session()}
-async function session(){const {data}=await sb.auth.getUser();user=data.user||null;if(user){await ensureProfile(user);$("accountBtn").textContent=user.user_metadata?.nome||user.user_metadata?.full_name||user.user_metadata?.name||"Minha conta";setTimeout(requestLocationAfterLogin,500)}else{$("accountBtn").textContent="Entrar";customerLocation=null;locationAskedForUser=null}}
+async function session(){const {data}=await sb.auth.getUser();user=data.user||null;if(user){await ensureProfile(user);$("accountBtn").textContent="Conta";$("myAccountQuick").style.display="inline-block";setTimeout(requestLocationAfterLogin,500)}else{$("accountBtn").textContent="Entrar";$("myAccountQuick").style.display="none";customerLocation=null;locationAskedForUser=null}}
 function requestLocationAfterLogin(){if(!user||locationAskedForUser===user.id)return;locationAskedForUser=user.id;$("locationModal").classList.remove("hidden");setMsg("locationMsg","")}
 function closeLocationModal(){$("locationModal").classList.add("hidden")}
 function allowLocation(){if(!navigator.geolocation){setMsg("locationMsg","Este aparelho ou navegador não oferece suporte à localização.");return}setMsg("locationMsg","Obtendo sua localização...");navigator.geolocation.getCurrentPosition(p=>{customerLocation={lat:p.coords.latitude,lng:p.coords.longitude,accuracy:p.coords.accuracy};setMsg("locationMsg","Localização permitida com sucesso.");setTimeout(closeLocationModal,700)},e=>{const m=e.code===1?"Você não permitiu o acesso à localização. Você pode continuar usando seu endereço cadastrado.":"Não foi possível obter sua localização agora. Você pode continuar usando seu endereço cadastrado.";setMsg("locationMsg",m)},{enableHighAccuracy:true,timeout:10000,maximumAge:300000})}
@@ -226,9 +295,55 @@ sb.auth.onAuthStateChange(event=>{if(event==="PASSWORD_RECOVERY"){$("authModal")
 
 async function loadCategories(){const {data}=await sb.from("categories").select("id,nome").order("nome");if(!data)return;data.forEach(c=>$("categories").insertAdjacentHTML("beforeend",`<button class="chip" onclick="chooseCategory(${JSON.stringify(c.id)},this)">${esc(c.nome)}</button>`))}
 function chooseCategory(id,el){category=id;document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));el.classList.add("active");loadProducts()}
-async function loadProducts(){let q=sb.from("products").select("id,nome,preco,imagem_url,store_id,category_id,ativo,created_at,stores(nome)").eq("ativo",true);if(category)q=q.eq("category_id",category);const term=$("searchInput").value.trim();if(term)q=q.ilike("nome","%"+term+"%");const {data,error}=await q.order("created_at",{ascending:false}).limit(200);if(error){$("products").innerHTML=`<div class="empty">Não foi possível carregar os produtos:<br>${esc(error.message)}</div>`;return}products=data||[];buildStoreFilter();renderProducts()}
+async function loadProducts(){let q=sb.from("products").select("id,nome,preco,preco_oferta,oferta_especial_ativa,oferta_expira_em,estoque,imagem_url,store_id,category_id,ativo,created_at,stores(nome)").eq("ativo",true);if(category)q=q.eq("category_id",category);const term=$("searchInput").value.trim();if(term)q=q.ilike("nome","%"+term+"%");const {data,error}=await q.order("created_at",{ascending:false}).limit(200);if(error){$("products").innerHTML=`<div class="empty">Não foi possível carregar os produtos:<br>${esc(error.message)}</div>`;return}products=data||[];buildStoreFilter();renderProducts();refreshFullNearby()}
 function buildStoreFilter(){const old=$("storeFilter").value,stores=new Map();products.forEach(p=>stores.set(String(p.store_id),p.stores?.nome||"Loja"));$("storeFilter").innerHTML='<option value="">Todos os vendedores</option>'+[...stores].map(([id,n])=>`<option value="${esc(id)}">${esc(n)}</option>`).join("");$("storeFilter").value=old}
-function renderProducts(){let a=[...products],min=Number($("minPrice").value||0),max=Number($("maxPrice").value||0),st=$("storeFilter").value;if(min)a=a.filter(p=>Number(p.preco)>=min);if(max)a=a.filter(p=>Number(p.preco)<=max);if(st)a=a.filter(p=>String(p.store_id)===st);const sort=$("sortFilter").value;if(sort==="menor")a.sort((x,y)=>x.preco-y.preco);if(sort==="maior")a.sort((x,y)=>y.preco-x.preco);if(sort==="loja")a.sort((x,y)=>(x.stores?.nome||"").localeCompare(y.stores?.nome||""));filteredProducts=a;$("resultInfo").textContent=`${a.length} oferta(s) encontrada(s)`;$("products").innerHTML=a.length?a.map(p=>`<article class="product" onclick="openProduct(${JSON.stringify(p.id)})"><div class="pic">${p.imagem_url?`<img src="${esc(p.imagem_url)}" alt="${esc(p.nome)}">`:"Imagem do produto"}</div><div class="product-body"><div class="product-name">${esc(p.nome)}</div><div class="price">${money(p.preco)}</div><div class="store">Vendido por <button class="link" style="padding:0;font-size:11px" onclick="event.stopPropagation();openStore(${JSON.stringify(p.store_id)})">${esc(p.stores?.nome||"Loja")} · Ver loja</button></div><div class="product-actions"><button class="btn primary" onclick="event.stopPropagation();addCart(${JSON.stringify(p.id)})">Adicionar</button><button class="btn" onclick="event.stopPropagation();openProduct(${JSON.stringify(p.id)})">Ver</button></div></div></article>`).join(""):'<div class="empty"><div><b>Nenhuma oferta encontrada.</b><br><span class="small">Tente outro produto, vendedor ou faixa de preço.</span></div></div>'}
+
+function offerActive(p){return !!p.oferta_especial_ativa&&Number(p.preco_oferta||0)>0&&(!p.oferta_expira_em||new Date(p.oferta_expira_em)>new Date())}
+function productPrice(p){return offerActive(p)?Number(p.preco_oferta):Number(p.preco||0)}
+function lowStock(p){const n=Number(p.estoque);return Number.isFinite(n)&&n>0&&n<=5}
+function productBadges(p){return `${offerActive(p)?'<span class="promo-badge">OFERTA</span>':""}${lowStock(p)?'<span class="stock-badge">ÚLTIMAS '+Number(p.estoque)+'</span>':""}`}
+
+function haversineKm(lat1,lon1,lat2,lon2){
+ const R=6371,toRad=x=>Number(x)*Math.PI/180;
+ const a1=toRad(lat1),a2=toRad(lat2),dlat=toRad(Number(lat2)-Number(lat1)),dlon=toRad(Number(lon2)-Number(lon1));
+ const a=Math.sin(dlat/2)**2+Math.cos(a1)*Math.cos(a2)*Math.sin(dlon/2)**2;
+ return 2*R*Math.asin(Math.sqrt(a));
+}
+async function refreshFullNearby(){
+ fullNearbyStoreIds=new Set();
+ if(!user){renderHighlights();return}
+ let addr=selectedCheckoutAddress;
+ if(!addr){
+   const {data}=await sb.from("addresses").select("id,latitude,longitude,principal").eq("user_id",user.id).order("principal",{ascending:false}).limit(1).maybeSingle();
+   addr=data||null;
+ }
+ if(addr?.latitude==null||addr?.longitude==null){renderHighlights();return}
+ const ids=[...new Set(products.map(p=>p.store_id).filter(Boolean))];
+ if(!ids.length){renderHighlights();return}
+ const {data:stores}=await sb.from("stores").select("id,latitude,longitude").in("id",ids);
+ (stores||[]).forEach(s=>{
+   if(s.latitude!=null&&s.longitude!=null&&haversineKm(addr.latitude,addr.longitude,s.latitude,s.longitude)<=FULL_MAX_KM)
+     fullNearbyStoreIds.add(String(s.id));
+ });
+ renderHighlights();
+}
+function isFullProduct(p){return fullNearbyStoreIds.has(String(p.store_id))}
+
+function renderHighlights(){
+ const promo=products.filter(offerActive).slice(0,12),low=products.filter(lowStock).slice(0,12),full=products.filter(isFullProduct).slice(0,12);
+ $("promoSection").classList.toggle("hidden",!promo.length);$("lowStockSection").classList.toggle("hidden",!low.length);$("fullSection").classList.toggle("hidden",!full.length);
+ const card=p=>`<article class="highlight-card" onclick="openProduct(${JSON.stringify(p.id)})">${p.imagem_url?`<img src="${esc(p.imagem_url)}" alt="${esc(p.nome)}">`:'<div class="pic">Imagem</div>'}<div class="inside"><b>${esc(p.nome)}</b>${offerActive(p)?`<div class="old-price">${money(p.preco)}</div>`:""}<div class="hp">${money(productPrice(p))}</div>${lowStock(p)?`<div class="small">Só ${Number(p.estoque)} restante(s)</div>`:""}</div></article>`;
+ $("promoProducts").innerHTML=promo.map(card).join("");$("lowStockProducts").innerHTML=low.map(card).join("");$("fullProducts").innerHTML=full.map(card).join("");
+}
+
+function renderProducts(){
+ let a=[...products],min=Number($("minPrice").value||0),max=Number($("maxPrice").value||0),st=$("storeFilter").value;
+ if(min)a=a.filter(p=>productPrice(p)>=min);if(max)a=a.filter(p=>productPrice(p)<=max);if(st)a=a.filter(p=>String(p.store_id)===st);
+ const sort=$("sortFilter").value;if(sort==="menor")a.sort((x,y)=>productPrice(x)-productPrice(y));if(sort==="maior")a.sort((x,y)=>productPrice(y)-productPrice(x));if(sort==="loja")a.sort((x,y)=>(x.stores?.nome||"").localeCompare(y.stores?.nome||""));
+ if(sort==="relevancia")a.sort((x,y)=>(offerActive(y)-offerActive(x))||(lowStock(y)-lowStock(x)));
+ filteredProducts=a;$("resultInfo").textContent=`${a.length} oferta(s) encontrada(s)`;renderHighlights();
+ $("products").innerHTML=a.length?a.map(p=>`<article class="product" onclick="openProduct(${JSON.stringify(p.id)})"><div class="pic">${productBadges(p)}${p.imagem_url?`<img src="${esc(p.imagem_url)}" alt="${esc(p.nome)}">`:"Imagem do produto"}</div><div class="product-body"><div class="product-name">${esc(p.nome)}</div>${isFullProduct(p)?`<div class="full-row"><span class="full-badge">FULL</span></div>`:""}${offerActive(p)?`<div class="old-price">${money(p.preco)}</div>`:""}<div class="price">${money(productPrice(p))}</div>${lowStock(p)?`<div class="small" style="color:#b42318;font-weight:800">Quase esgotado</div>`:""}<div class="store">Vendido por <button class="link" style="padding:0;font-size:inherit" onclick="event.stopPropagation();openStore(${JSON.stringify(p.store_id)})">${esc(p.stores?.nome||"Loja")} · Ver loja</button></div><div class="product-actions"><button class="btn primary" onclick="event.stopPropagation();addCart(${JSON.stringify(p.id)})">Adicionar</button><button class="btn" onclick="event.stopPropagation();openProduct(${JSON.stringify(p.id)})">Ver</button></div></div></article>`).join(""):'<div class="empty"><div><b>Nenhuma oferta encontrada.</b><br><span class="small">Tente outro produto, vendedor ou faixa de preço.</span></div></div>';
+}
 function clearFilters(){$("minPrice").value="";$("maxPrice").value="";$("storeFilter").value="";$("sortFilter").value="relevancia";renderProducts()}
 
 async function openProduct(id){const p=products.find(x=>String(x.id)===String(id));if(!p)return;currentProduct=p;$("productModal").classList.remove("hidden");$("productDetail").innerHTML='<div class="placeholder">Carregando produto e loja...</div>';const [{data:store},{data:more}]=await Promise.all([sb.from("stores").select("*").eq("id",p.store_id).maybeSingle(),sb.from("products").select("id,nome,preco,imagem_url,store_id,ativo").eq("store_id",p.store_id).eq("ativo",true).neq("id",p.id).limit(8)]);const cover=store?.fachada_url||store?.capa_url||store?.imagem_url||"";$("productDetail").innerHTML=`<div class="product-view"><div class="product-main-img">${p.imagem_url?`<img src="${esc(p.imagem_url)}" alt="${esc(p.nome)}">`:"Imagem do produto"}</div><div><h1>${esc(p.nome)}</h1><div class="small">Vendido por ${esc(store?.nome||p.stores?.nome||"Loja")}</div><div class="big-price">${money(p.preco)}</div><p class="small">Compare esta oferta com outros vendedores usando a pesquisa e os filtros do marketplace.</p><button class="btn primary" onclick="addCart(${JSON.stringify(p.id)})">Adicionar ao carrinho</button><button class="btn" onclick="buyNow(${JSON.stringify(p.id)})">Comprar agora</button></div></div><div class="storefront"><div class="store-cover" ${cover?`style="background-image:linear-gradient(#0004,#0006),url('${esc(cover)}')"`:""}><b>Loja do vendedor</b></div><div class="store-info"><div><h3>${esc(store?.nome||p.stores?.nome||"Loja")}</h3><div class="small">${esc(store?.cidade||"")} ${esc(store?.estado||"")}</div></div><button class="btn" onclick="openStore(${JSON.stringify(p.store_id)})">Ver loja</button></div></div><h3>Mais produtos desta loja</h3><div class="related">${(more||[]).length?(more||[]).map(x=>`<div class="mini" onclick="openProductFromStore(${JSON.stringify(x.id)})"><b>${esc(x.nome)}</b><span>${money(x.preco)}</span></div>`).join(""):'<div class="small">Nenhum outro produto disponível nesta loja.</div>'}</div>`}
@@ -254,12 +369,13 @@ async function openStore(storeId){
 
 function buyNow(id){addCart(id);closeProduct();startCheckout()}
 
-function addCart(id){const p=products.find(x=>String(x.id)===String(id));if(!p)return;const e=cart.find(x=>String(x.id)===String(id));e?e.qty++:cart.push({...p,qty:1});renderCart()}
+function addCart(id){const p=products.find(x=>String(x.id)===String(id));if(!p)return;const e=cart.find(x=>String(x.id)===String(id));e?e.qty++:cart.push({...p,preco_original:Number(p.preco||0),preco:productPrice(p),qty:1});renderCart()}
 function changeQty(i,d){const x=cart[i];if(!x)return;x.qty=Math.max(1,Number(x.qty||1)+d);renderCart()}
 function renderCart(){
  $("cartCount").textContent=cart.reduce((a,x)=>a+x.qty,0);
- $("cartItems").innerHTML=cart.length?cart.map((x,i)=>`<div class="cart-item"><div><b>${esc(x.nome)}</b><div class="small">${esc(x.stores?.nome||"Loja")} · ${money(x.preco)} cada</div><div class="qtybox"><button onclick="changeQty(${i},-1)">−</button><b>${x.qty}</b><button onclick="changeQty(${i},1)">+</button></div></div><div style="text-align:right"><b>${money(Number(x.preco)*x.qty)}</b><br><button class="btn" style="margin-top:7px" onclick="removeCart(${i})">Remover</button></div></div>`).join(""):'<div class="placeholder" style="margin-top:15px">Seu carrinho está vazio.</div>';
- $("subtotal").textContent=money(cart.reduce((a,x)=>a+Number(x.preco)*x.qty,0))
+ $("cartItems").innerHTML=cart.length?cart.map((x,i)=>`<div class="cart-item">${x.imagem_url?`<img class="cart-thumb" src="${esc(x.imagem_url)}" alt="${esc(x.nome)}">`:`<div class="cart-thumb"></div>`}<div><b>${esc(x.nome)}</b><div class="small">${esc(x.stores?.nome||"Loja")} · ${money(x.preco)} cada</div><div class="qtybox"><button onclick="changeQty(${i},-1)">−</button><b>${x.qty}</b><button onclick="changeQty(${i},1)">+</button></div></div><div style="text-align:right"><b>${money(Number(x.preco)*x.qty)}</b><br><button class="btn cart-remove" style="margin-top:7px" onclick="removeCart(${i})">🗑 Excluir</button></div></div>`).join(""):'<div class="placeholder" style="margin-top:15px">Seu carrinho está vazio.</div>';
+ $("subtotal").textContent=money(cart.reduce((a,x)=>a+Number(x.preco)*x.qty,0));
+ if($("checkoutModal")&&!$("checkoutModal").classList.contains("hidden")){freightQuote=null;freightQuoteKey="";renderCheckoutSummary()}
 }
 function removeCart(i){cart.splice(i,1);renderCart()}function toggleCart(){$("cart").classList.toggle("hidden")}
 async function startCheckout(){
@@ -299,7 +415,7 @@ async function loadCheckoutAddresses(){
 }
 function renderCheckoutAddress(){
  const id=$("checkoutAddress").value;
- selectedCheckoutAddress=checkoutAddresses.find(a=>String(a.id)===String(id))||null;
+ selectedCheckoutAddress=checkoutAddresses.find(a=>String(a.id)===String(id))||null;setTimeout(refreshFullNearby,0);
  if(!selectedCheckoutAddress){$("checkoutAddressPreview").classList.add("hidden");return}
  const a=selectedCheckoutAddress;
  $("checkoutAddressPreview").innerHTML=`<b>${esc(a.nome_destinatario||"Endereço de entrega")}</b><div>${esc(a.rua||"")}${a.numero?", "+esc(a.numero):""}</div><div class="small">${esc(a.bairro||"")} · ${esc(a.cidade||"")}${a.estado?" - "+esc(a.estado):""} · ${esc(a.cep||"")}</div>${a.complemento?`<div class="small">${esc(a.complemento)}</div>`:""}`;
@@ -332,6 +448,7 @@ async function quoteFreight(){
  showFreightQuote(freightQuote);renderCheckoutSummary();
 }
 function renderCheckoutSummary(){
+ const freeShipCoupon=selectedCoupon();
  const subtotal=cart.reduce((a,x)=>a+Number(x.preco)*x.qty,0);
  const frete=$("deliveryType")?.value==="retirada"?0:Number(freightQuote?.frete||0);
  const desconto=calculateCouponDiscount(subtotal);
@@ -339,7 +456,7 @@ function renderCheckoutSummary(){
  if($("checkoutSummary"))$("checkoutSummary").innerHTML=`<b>Resumo da compra</b><div class="small" style="margin-top:7px">Produtos: ${money(subtotal)}<br>Entrega: ${money(frete)}<br>Desconto: ${money(desconto)}</div><div class="total" style="margin-bottom:0"><span>Total</span><span>${money(total)}</span></div>`;
 }
 async function deliveryTypeChanged(){
- if($("deliveryType").value==="retirada"){freightQuote=null;freightQuoteKey="";$("freightBox").classList.add("hidden");return}
+ if($("deliveryType").value==="retirada"){freightQuote=null;freightQuoteKey="";$("freightBox").classList.add("hidden");$("freightPrice").textContent=money(0);renderCheckoutSummary();return}
  await quoteFreight();
 }
 function openCheckoutAddresses(){
@@ -517,10 +634,29 @@ async function loadCoupons(){
  const now=new Date().toISOString();
  let {data,error}=await sb.from("coupons").select("*").eq("ativo",true).limit(100);
  availableCoupons=(data||[]).filter(c=>(!c.inicio_em||c.inicio_em<=now)&&(!c.fim_em||c.fim_em>=now));
- $("couponsList").innerHTML=error||!availableCoupons.length?'<div class="placeholder">Nenhum cupom disponível no momento.</div>':availableCoupons.map(c=>`<div class="coupon-card"><div class="coupon-code">${esc(c.codigo||"Cupom")}</div><div>${esc(c.descricao||"Promoção disponível")}</div><div class="small">${c.store_id?"Cupom da loja":"Cupom da plataforma"}${c.valor_minimo?` · Compra mínima ${money(c.valor_minimo)}`:""}</div></div>`).join("");
- const sel=$("checkoutCoupon");if(sel){sel.innerHTML='<option value="">Sem cupom</option>'+availableCoupons.map(c=>`<option value="${esc(c.id)}">${esc(c.codigo)} — ${c.store_id?"Loja":"TáNaMão"}</option>`).join("");}
+ claimedCouponIds=new Set();usedCouponIds=new Set();
+ if(user){
+   const [cr,ur]=await Promise.all([
+     sb.from("coupon_claims").select("coupon_id").eq("customer_id",user.id),
+     sb.from("coupon_usages").select("coupon_id").eq("customer_id",user.id)
+   ]);
+   (cr.data||[]).forEach(x=>claimedCouponIds.add(String(x.coupon_id)));
+   (ur.data||[]).forEach(x=>usedCouponIds.add(String(x.coupon_id)));
+ }
+ const visible=availableCoupons.filter(c=>!usedCouponIds.has(String(c.id)));
+ $("couponsList").innerHTML=error||!visible.length?'<div class="placeholder">Nenhum cupom disponível no momento.</div>':visible.map(c=>`<div class="coupon-card"><div class="coupon-code">${esc(c.codigo||"Cupom")}</div>${c.frete_gratis?`<div style="margin:6px 0"><span class="free-shipping-badge">🚚 FRETE GRÁTIS</span></div>`:""}<div>${esc(c.descricao||"Promoção disponível")}</div><div class="small">${c.store_id?"Cupom da loja":"Cupom da plataforma"}${c.valor_minimo?` · Compra mínima ${money(c.valor_minimo)}`:""}</div><div class="coupon-actions">${claimedCouponIds.has(String(c.id))?`<span class="coupon-wanted">✓ Cupom salvo</span><button class="btn" onclick="copyCouponCode('${esc(c.codigo)}')">Copiar</button>`:`<button class="btn primary" onclick="claimCoupon(${JSON.stringify(c.id)})">Sim, eu quero</button>`}</div></div>`).join("");
+ const sel=$("checkoutCoupon");if(sel){const usable=visible.filter(c=>claimedCouponIds.has(String(c.id)));sel.innerHTML='<option value="">Sem cupom</option>'+usable.map(c=>`<option value="${esc(c.id)}">${c.frete_gratis?"🚚 FRETE GRÁTIS · ":""}${esc(c.codigo)} — ${c.store_id?"Loja":"TáNaMão"}</option>`).join("");}
 }
-function selectedCoupon(){const id=$("checkoutCoupon")?.value;return availableCoupons.find(c=>String(c.id)===String(id))||null}
+async function claimCoupon(id){
+ if(!user)return openAuth();
+ const c=availableCoupons.find(x=>String(x.id)===String(id));if(!c)return;
+ const {error}=await sb.from("coupon_claims").upsert({coupon_id:c.id,customer_id:user.id},{onConflict:"coupon_id,customer_id"});
+ if(error)return alert("Não foi possível salvar o cupom: "+error.message);
+ claimedCouponIds.add(String(c.id));await copyCouponCode(c.codigo);await loadCoupons();
+}
+async function copyCouponCode(code){try{await navigator.clipboard.writeText(code);alert("Cupom "+code+" copiado e salvo para usar no checkout.")}catch(e){alert("Seu cupom é: "+code)}}
+function couponGivesFreeShipping(c){return !!c?.frete_gratis}
+function selectedCoupon(){const id=$("checkoutCoupon")?.value;return availableCoupons.find(c=>String(c.id)===String(id)&&claimedCouponIds.has(String(c.id))&&!usedCouponIds.has(String(c.id)))||null}
 function calculateCouponDiscount(subtotal){
  const c=selectedCoupon();appliedCoupon=c;if(!c)return 0;
  if(Number(c.valor_minimo||0)>subtotal)return 0;
