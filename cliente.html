@@ -1,190 +1,5461 @@
-```
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TáNaMão — Cliente</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--orange:#ee4d2d;--ink:#222;--muted:#6b7280;--line:#e5e7eb;--bg:#f5f5f5;--white:#fff;--green:#16803c}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}button,input,select{font:inherit}.hidden{display:none!important}
-.top{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}.topbar{max-width:1300px;margin:auto;padding:14px 20px;display:flex;align-items:center;gap:22px}.brand{display:flex;align-items:center;flex:0 0 auto}.brand-logo{display:block;width:150px;height:62px;object-fit:contain}.search{flex:1;display:flex}.search input{width:100%;padding:12px 14px;border:2px solid var(--orange);border-radius:7px 0 0 7px;outline:0}.search button{border:0;background:var(--orange);color:#fff;padding:0 20px;border-radius:0 7px 7px 0;font-weight:700}.top-actions{display:flex;gap:8px}.btn{border:1px solid #d7dbe0;background:#fff;border-radius:7px;padding:10px 13px;cursor:pointer}.btn.primary{background:var(--orange);border-color:var(--orange);color:#fff}.btn.green{background:var(--green);border-color:var(--green);color:#fff}
-.wrap{max-width:1300px;margin:auto;padding:20px}.hero{background:#fff;border:1px solid var(--line);border-radius:9px;padding:25px;margin-bottom:18px}.hero h1{margin:0 0 7px;font-size:28px}.hero p{margin:0;color:var(--muted)}
-.categories{display:flex;gap:9px;overflow:auto;margin-bottom:18px}.chip{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;cursor:pointer}.chip.active{border-color:var(--orange);color:var(--orange);font-weight:700}
-.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.product{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;transition:.15s}.product:hover{transform:translateY(-2px);box-shadow:0 5px 16px #00000012}.pic{height:170px;background:#f0f1f3;display:grid;place-items:center;color:#9ca3af;font-size:13px}.pic img{width:100%;height:100%;object-fit:cover}.product-body{padding:12px}.product-name{height:38px;font-size:14px;line-height:19px;overflow:hidden}.price{font-size:20px;color:var(--orange);font-weight:800;margin-top:9px}.store{font-size:11px;color:var(--muted);margin-top:7px}.product .btn{width:100%;margin-top:10px}
-.drawer{position:fixed;top:0;right:0;width:min(440px,100%);height:100vh;background:#fff;z-index:80;box-shadow:-8px 0 30px #0002;padding:20px;overflow:auto}.drawer-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:14px}.cart-item{display:grid;grid-template-columns:1fr auto;gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}.small{font-size:12px;color:var(--muted)}.total{display:flex;justify-content:space-between;font-size:20px;font-weight:800;margin:18px 0}
-.modal{position:fixed;inset:0;background:#0007;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px}.box{width:min(470px,100%);background:#fff;border-radius:10px;padding:24px;max-height:92vh;overflow:auto}.box h2{margin:0 0 6px}.field{margin-top:12px}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}.field input,.field select{width:100%;padding:11px;border:1px solid #d5d9de;border-radius:7px}.auth-actions{display:flex;gap:8px;margin-top:16px}.auth-actions>*{flex:1}.link{border:0;background:transparent;text-decoration:underline;cursor:pointer;padding:10px 0}.msg{padding:10px;background:#f3f4f6;border-radius:7px;margin-top:12px;font-size:13px}
-.checkout{background:#fff;border:1px solid var(--line);border-radius:9px;padding:20px}.checkout h2{margin-top:0}.notice{padding:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:7px;font-size:13px;color:#854d0e;margin:12px 0}
-footer{background:#fff;border-top:1px solid var(--line);margin-top:35px}.foot{max-width:1300px;margin:auto;padding:28px 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:25px}.foot h4{margin:0 0 10px}.foot p{font-size:12px;color:var(--muted);line-height:1.6}
-@media(max-width:1000px){.grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.topbar{flex-wrap:wrap}.brand{width:100%}.brand-logo{width:130px;height:54px}.search{order:3;width:100%}.grid{grid-template-columns:repeat(2,1fr)}.foot{grid-template-columns:1fr 1fr}.wrap{padding:12px}}
+:root{
+  --orange:#f4512c;
+  --orange2:#ff7a18;
+  --ink:#171a21;
+  --muted:#667085;
+  --line:#e5e7eb;
+  --bg:#f6f7f9;
+  --white:#fff;
+  --green:#16803c;
+  --shadow:0 12px 34px #1118270d;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  min-height:100%;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+
+button,input,select,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* =========================
+   BARRA SUPERIOR
+========================= */
+
+.utility{
+  background:#181b20;
+  color:#fff;
+  font-size:12px;
+}
+
+.utility-inner{
+  max-width:1320px;
+  margin:auto;
+  padding:8px 20px;
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.utility span{
+  opacity:.85;
+}
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+.header{
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  position:sticky;
+  top:0;
+  z-index:30;
+}
+
+.header-inner{
+  max-width:1320px;
+  margin:auto;
+  padding:11px 20px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+.logo{
+  width:155px;
+  height:58px;
+  object-fit:contain;
+}
+
+.search{
+  flex:1;
+  display:flex;
+  border:2px solid var(--orange);
+  border-radius:9px;
+  overflow:hidden;
+}
+
+.search input{
+  flex:1;
+  border:0;
+  outline:0;
+  padding:13px 14px;
+}
+
+.search button{
+  border:0;
+  background:var(--orange);
+  color:#fff;
+  padding:0 24px;
+  font-weight:800;
+}
+
+.header-actions{
+  display:flex;
+  gap:8px;
+}
+
+.btn{
+  border:1px solid #d7dbe0;
+  background:#fff;
+  border-radius:8px;
+  padding:10px 13px;
+}
+
+.btn:hover{
+  border-color:#aeb4bc;
+}
+
+.btn-primary{
+  background:var(--orange);
+  border-color:var(--orange);
+  color:#fff;
+  font-weight:700;
+}
+
+.btn-green{
+  background:var(--green);
+  border-color:var(--green);
+  color:#fff;
+}
+
+/* =========================
+   MENU
+========================= */
+
+.navigation{
+  background:#fff;
+  border-bottom:1px solid var(--line);
+}
+
+.navigation-inner{
+  max-width:1320px;
+  margin:auto;
+  padding:0 20px;
+  display:flex;
+  gap:25px;
+  overflow:auto;
+}
+
+.navigation button{
+  border:0;
+  background:none;
+  padding:12px 0;
+  white-space:nowrap;
+  color:#444;
+}
+
+.navigation button:hover{
+  color:var(--orange);
+}
+
+/* =========================
+   CONTEÚDO
+========================= */
+
+main{
+  flex:1;
+}
+
+.container{
+  max-width:1320px;
+  margin:auto;
+  padding:20px;
+}
+
+/* =========================
+   BANNER
+========================= */
+
+.hero{
+  min-height:245px;
+  padding:38px;
+  border-radius:15px;
+  color:#fff;
+  background:linear-gradient(
+    120deg,
+    var(--orange),
+    #ff9c21
+  );
+  position:relative;
+  overflow:hidden;
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  width:360px;
+  height:360px;
+  border-radius:50%;
+  background:#ffffff10;
+  right:-80px;
+  top:-120px;
+}
+
+.hero h1{
+  position:relative;
+  z-index:2;
+  font-size:38px;
+  max-width:680px;
+  margin:0 0 12px;
+}
+
+.hero p{
+  position:relative;
+  z-index:2;
+  max-width:650px;
+  line-height:1.55;
+  margin:0 0 24px;
+}
+
+.hero button{
+  position:relative;
+  z-index:2;
+}
+
+/* =========================
+   SEÇÕES
+========================= */
+
+.section{
+  margin:28px 0;
+}
+
+.section-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin-bottom:14px;
+}
+
+.section-header h2{
+  margin:0;
+  font-size:22px;
+}
+
+.small{
+  font-size:12px;
+  color:var(--muted);
+}
+
+/* =========================
+   CATEGORIAS
+========================= */
+
+.categories{
+  display:flex;
+  gap:9px;
+  overflow:auto;
+  padding-bottom:3px;
+}
+
+.category{
+  white-space:nowrap;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:999px;
+  padding:10px 15px;
+}
+
+.category.active{
+  border-color:var(--orange);
+  color:var(--orange);
+  font-weight:800;
+}
+
+/* =========================
+   CATÁLOGO
+========================= */
+
+.catalog{
+  display:grid;
+  grid-template-columns:240px 1fr;
+  gap:15px;
+}
+
+.filters{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:17px;
+  height:max-content;
+  position:sticky;
+  top:105px;
+}
+
+.filters h3{
+  margin:0 0 15px;
+}
+
+.filter{
+  margin-bottom:15px;
+}
+
+.filter label{
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+.filter input,
+.filter select{
+  width:100%;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+
+.filter-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+
+/* =========================
+   PRODUTOS
+========================= */
+
+.products{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:13px;
+  min-height:280px;
+}
+
+.product{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:11px;
+  overflow:hidden;
+  transition:.15s;
+}
+
+.product:hover{
+  transform:translateY(-3px);
+  box-shadow:var(--shadow);
+}
+
+.product-image{
+  height:185px;
+  background:#eef0f3;
+  display:grid;
+  place-items:center;
+  color:#98a2b3;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.product-image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.product-content{
+  padding:13px;
+}
+
+.product-name{
+  min-height:38px;
+  font-size:14px;
+  line-height:19px;
+  overflow:hidden;
+  cursor:pointer;
+}
+
+.product-price{
+  color:var(--orange);
+  font-size:21px;
+  font-weight:800;
+  margin-top:8px;
+}
+
+.product-store{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:6px;
+}
+
+.product-actions{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:6px;
+  margin-top:11px;
+}
+
+.empty{
+  grid-column:1/-1;
+  background:#fff;
+  border:1px dashed #d5d9df;
+  border-radius:12px;
+  min-height:230px;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  color:var(--muted);
+  padding:25px;
+}
+
+/* =========================
+   CARRINHO
+========================= */
+
+.drawer{
+  position:fixed;
+  top:0;
+  right:0;
+  width:min(460px,100%);
+  height:100vh;
+  background:#fff;
+  z-index:80;
+  box-shadow:-10px 0 35px #0002;
+  padding:20px;
+  overflow:auto;
+}
+
+.drawer-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--line);
+  padding-bottom:13px;
+}
+
+.cart-item{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  padding:14px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.total{
+  display:flex;
+  justify-content:space-between;
+  font-size:20px;
+  font-weight:800;
+  margin:18px 0;
+}
+
+/* =========================
+   MODAIS
+========================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:#10182899;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+
+.modal-box{
+  width:min(500px,100%);
+  background:#fff;
+  border-radius:14px;
+  padding:24px;
+  max-height:92vh;
+  overflow:auto;
+  box-shadow:0 20px 60px #0003;
+}
+
+.modal-box.wide{
+  width:min(1000px,100%);
+}
+
+.modal-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.modal-title h2{
+  margin:0;
+}
+
+/* =========================
+   FORMULÁRIOS
+========================= */
+
+.field{
+  margin-top:13px;
+}
+
+.field label{
+  display:block;
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:5px;
+}
+
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  padding:11px;
+  border:1px solid #d5d9de;
+  border-radius:8px;
+  outline:0;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:var(--orange);
+}
+
+.form-actions{
+  display:flex;
+  gap:8px;
+  margin-top:16px;
+}
+
+.form-actions > *{
+  flex:1;
+}
+
+.link{
+  border:0;
+  background:transparent;
+  text-decoration:underline;
+  padding:10px 0;
+}
+
+.message{
+  padding:11px;
+  background:#f3f4f6;
+  border-radius:8px;
+  margin-top:12px;
+  font-size:13px;
+}
+
+/* =========================
+   MINHA CONTA
+========================= */
+
+.account-tabs{
+  display:flex;
+  gap:7px;
+  overflow:auto;
+  border-bottom:1px solid var(--line);
+  padding:15px 0;
+  margin-bottom:17px;
+}
+
+.account-tab{
+  white-space:nowrap;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:8px;
+  padding:9px 12px;
+}
+
+.account-tab.active{
+  background:var(--orange);
+  border-color:var(--orange);
+  color:#fff;
+}
+
+.account-card{
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:15px;
+  margin-bottom:10px;
+}
+
+.placeholder{
+  border:1px dashed var(--line);
+  border-radius:10px;
+  padding:25px;
+  text-align:center;
+  color:var(--muted);
+}
+
+/* =========================
+   PRODUTO / LOJA
+========================= */
+
+.product-detail{
+  display:grid;
+  grid-template-columns:1fr 1.15fr;
+  gap:24px;
+}
+
+.product-detail-image{
+  height:400px;
+  background:#f0f2f4;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  color:#98a2b3;
+}
+
+.product-detail-image img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+.product-detail h1{
+  margin:0 0 10px;
+  font-size:27px;
+}
+
+.big-price{
+  font-size:33px;
+  font-weight:800;
+  color:var(--orange);
+  margin:14px 0;
+}
+
+.storefront{
+  margin-top:24px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.store-cover{
+  height:150px;
+  background:
+    linear-gradient(120deg,#20242b,#555f6d);
+  background-size:cover;
+  background-position:center;
+  display:flex;
+  align-items:flex-end;
+  padding:20px;
+  color:#fff;
+}
+
+.store-cover b{
+  font-size:20px;
+}
+
+.store-information{
+  padding:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+}
+
+.store-information h3{
+  margin:0 0 5px;
+}
+
+.related-products{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:13px;
+}
+
+.related-product{
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:11px;
+}
+
+.related-product b{
+  display:block;
+  font-size:13px;
+}
+
+.related-product span{
+  color:var(--orange);
+  font-size:12px;
+  font-weight:700;
+}
+
+/* =========================
+   CHECKOUT
+========================= */
+
+.checkout-steps{
+  display:flex;
+  gap:7px;
+  margin:15px 0 20px;
+}
+
+.checkout-step{
+  flex:1;
+  background:#f2f4f7;
+  border-radius:8px;
+  padding:10px;
+  text-align:center;
+  font-size:12px;
+  font-weight:700;
+}
+
+.checkout-step.active{
+  background:#fff1ec;
+  color:var(--orange);
+}
+
+.payment-options{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:12px;
+}
+
+.payment-option{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:9px;
+  padding:13px;
+  text-align:center;
+}
+
+.payment-option.active{
+  border-color:var(--orange);
+  box-shadow:0 0 0 1px var(--orange);
+}
+
+.payment-panel{
+  margin-top:15px;
+  border:1px solid var(--line);
+  background:#fafafa;
+  border-radius:10px;
+  padding:16px;
+}
+
+.notice{
+  padding:12px;
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  border-radius:8px;
+  color:#854d0e;
+  font-size:12px;
+  margin-top:13px;
+}
+
+.qr-box{
+  width:210px;
+  height:210px;
+  margin:15px auto;
+  background:#fff;
+  border:1px solid var(--line);
+  display:grid;
+  place-items:center;
+}
+
+.qr-box img{
+  max-width:100%;
+  max-height:100%;
+}
+
+/* =========================
+   RODAPÉ
+========================= */
+
+footer{
+  margin-top:auto;
+  background:#171a1f;
+  color:#fff;
+}
+
+.footer-inner{
+  max-width:1320px;
+  margin:auto;
+  padding:42px 20px;
+  display:grid;
+  grid-template-columns:1.2fr repeat(3,1fr);
+  gap:30px;
+}
+
+.footer-inner h4{
+  margin:0 0 12px;
+}
+
+.footer-inner p{
+  color:#c5cad1;
+  font-size:12px;
+  line-height:1.7;
+}
+
+.copyright{
+  border-top:1px solid #ffffff18;
+  text-align:center;
+  padding:15px;
+  color:#aeb4bc;
+  font-size:11px;
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media(max-width:1050px){
+
+  .catalog{
+    grid-template-columns:1fr;
+  }
+
+  .filters{
+    position:static;
+  }
+
+  .products{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+}
+
+@media(max-width:700px){
+
+  .utility{
+    display:none;
+  }
+
+  .header-inner{
+    padding:9px 12px;
+    flex-wrap:wrap;
+  }
+
+  .logo{
+    width:125px;
+    height:48px;
+  }
+
+  .header-actions{
+    margin-left:auto;
+  }
+
+  .search{
+    order:3;
+    flex-basis:100%;
+  }
+
+  .container{
+    padding:12px;
+  }
+
+  .hero{
+    min-height:215px;
+    padding:25px;
+  }
+
+  .hero h1{
+    font-size:28px;
+  }
+
+  .products{
+    grid-template-columns:repeat(2,1fr);
+    gap:9px;
+  }
+
+  .product-image{
+    height:150px;
+  }
+
+  .footer-inner{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .product-detail{
+    grid-template-columns:1fr;
+  }
+
+  .product-detail-image{
+    height:290px;
+  }
+
+  .related-products{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .payment-options{
+    grid-template-columns:1fr 1fr;
+  }
+
+}
 </style>
 </head>
-<body>
-<header class="top"><div class="topbar">
- <div class="brand"><img class="brand-logo" src="1001111814.png" alt="TáNaMão"></div>
- <div class="search"><input id="searchInput" placeholder="Buscar produtos"><button onclick="loadProducts()">Buscar</button></div>
- <div class="top-actions"><button id="accountBtn" class="btn" onclick="openAuth()">Entrar</button><button class="btn primary" onclick="toggleCart()">Carrinho <span id="cartCount">0</span></button></div>
-</div></header>
 
-<main class="wrap">
- <div class="hero"><h1>Encontre o que precisa perto de você</h1><p>Produtos de lojas disponíveis no TáNaMão.</p></div>
- <div id="categories" class="categories"><button class="chip active" onclick="chooseCategory(null,this)">Todos</button></div>
- <div id="products" class="grid"></div>
+<body>
+
+<div class="utility">
+  <div class="utility-inner">
+    <span>TáNaMão Marketplace</span>
+    <span>Compre de lojas disponíveis na sua região</span>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+
+    <img
+      src="1001111814.png"
+      class="logo"
+      alt="TáNaMão"
+    >
+
+    <div class="search">
+      <input
+        id="searchInput"
+        placeholder="O que você está procurando?"
+        onkeydown="if(event.key==='Enter') loadProducts()"
+      >
+
+      <button onclick="loadProducts()">
+        Buscar
+      </button>
+    </div>
+
+    <div class="header-actions">
+
+      <button
+        id="accountBtn"
+        class="btn"
+        onclick="accountAction()"
+      >
+        Entrar
+      </button>
+
+      <button
+        class="btn btn-primary"
+        onclick="toggleCart()"
+      >
+        Carrinho
+        <span id="cartCount">0</span>
+      </button>
+
+    </div>
+
+  </div>
+</header>
+
+<nav class="navigation">
+  <div class="navigation-inner">
+
+    <button onclick="scrollProducts()">
+      Produtos
+    </button>
+
+    <button onclick="openOrders()">
+      Meus pedidos
+    </button>
+
+    <button onclick="openAccount('enderecos')">
+      Meus endereços
+    </button>
+
+    <button onclick="openAccount('cupons')">
+      Cupons
+    </button>
+
+    <button onclick="openAccount('avaliacoes')">
+      Avaliações
+    </button>
+
+    <button onclick="openAccount('devolucoes')">
+      Devoluções e reembolsos
+    </button>
+
+  </div>
+</nav>
+
+<main>
+
+<div class="container">
+
+  <section class="hero">
+
+    <h1>
+      Encontre o que precisa perto de você
+    </h1>
+
+    <p>
+      Pesquise produtos, encontre lojas e faça seus pedidos
+      diretamente pelo TáNaMão.
+    </p>
+
+    <button
+      class="btn"
+      onclick="scrollProducts()"
+    >
+      Ver produtos
+    </button>
+
+  </section>
+
+  <section class="section">
+
+    <div class="section-header">
+
+      <h2>Categorias</h2>
+
+      <span class="small">
+        Escolha uma categoria
+      </span>
+
+    </div>
+
+    <div
+      id="categories"
+      class="categories"
+    >
+
+      <button
+        class="category active"
+        onclick="chooseCategory(null,this)"
+      >
+        Todos
+      </button>
+
+    </div>
+
+  </section>
+
+  <section
+    class="section"
+    id="productsSection"
+  >
+
+    <div class="section-header">
+
+      <h2>Produtos</h2>
+
+      <span
+        id="resultInfo"
+        class="small"
+      >
+        Carregando...
+      </span>
+
+    </div>
+
+    <div class="catalog">
+
+      <aside class="filters">
+
+        <h3>Filtros</h3>
+
+        <div class="filter">
+
+          <label>Ordenar por</label>
+
+          <select
+            id="sortFilter"
+            onchange="renderProducts()"
+          >
+
+            <option value="relevancia">
+              Relevância
+            </option>
+
+            <option value="menor">
+              Menor preço
+            </option>
+
+            <option value="maior">
+              Maior preço
+            </option>
+
+            <option value="loja">
+              Loja
+            </option>
+
+          </select>
+
+        </div>
+
+        <div class="filter">
+
+          <label>Faixa de preço</label>
+
+          <div class="filter-row">
+
+            <input
+              id="minPrice"
+              type="number"
+              min="0"
+              placeholder="Mínimo"
+            >
+
+            <input
+              id="maxPrice"
+              type="number"
+              min="0"
+              placeholder="Máximo"
+            >
+
+          </div>
+
+        </div>
+
+        <div class="filter">
+
+          <label>Loja</label>
+
+          <select id="storeFilter">
+
+            <option value="">
+              Todas as lojas
+            </option>
+
+          </select>
+
+        </div>
+
+        <button
+          class="btn btn-primary"
+          style="width:100%"
+          onclick="renderProducts()"
+        >
+          Aplicar filtros
+        </button>
+
+        <button
+          class="btn"
+          style="width:100%;margin-top:7px"
+          onclick="clearFilters()"
+        >
+          Limpar filtros
+        </button>
+
+      </aside>
+
+      <div
+        id="products"
+        class="products"
+      ></div>
+
+    </div>
+
+  </section>
+
+</div>
+
 </main>
 
-<footer><div class="foot">
- <div><h4>TáNaMão</h4><p>Marketplace para conectar clientes e lojas.</p></div>
- <div><h4>Atendimento</h4><p>Acompanhe seus pedidos pela sua conta.</p></div>
- <div><h4>Segurança</h4><p>Pagamentos processados por provedor de pagamento. O TáNaMão não armazena número completo de cartão ou código de segurança.</p></div>
- <div><h4>Empresa</h4><p>CNPJ 43.755.975/0001-32<br>Magalhães de Almeida - MA, s/n<br>CEP 65565000</p></div>
-</div></footer>
+<footer>
 
-<aside id="cart" class="drawer hidden">
- <div class="drawer-head"><h2>Carrinho</h2><button class="btn" onclick="toggleCart()">Fechar</button></div>
- <div id="cartItems"></div>
- <div class="total"><span>Subtotal</span><span id="subtotal">R$ 0,00</span></div>
- <button class="btn primary" style="width:100%" onclick="startCheckout()">Continuar compra</button>
+  <div class="footer-inner">
+
+    <div>
+
+      <h4>TáNaMão</h4>
+
+      <p>
+        Marketplace para conectar clientes,
+        lojas e entregas.
+      </p>
+
+    </div>
+
+    <div>
+
+      <h4>Minha conta</h4>
+
+      <p>
+        Meus pedidos<br>
+        Meus endereços<br>
+        Cupons<br>
+        Avaliações
+      </p>
+
+    </div>
+
+    <div>
+
+      <h4>Atendimento</h4>
+
+      <p>
+        Acompanhe seus pedidos e informações
+        através da sua conta.
+      </p>
+
+    </div>
+
+    <div>
+
+      <h4>Empresa</h4>
+
+      <p>
+        CNPJ 43.755.975/0001-32<br>
+        Magalhães de Almeida - MA<br>
+        CEP 65565000
+      </p>
+
+    </div>
+
+  </div>
+
+  <div class="copyright">
+    © 2026 TáNaMão. Todos os direitos reservados.
+  </div>
+
+</footer>
+
+
+<!-- =====================================
+     CARRINHO
+===================================== -->
+
+<aside
+  id="cart"
+  class="drawer hidden"
+>
+
+  <div class="drawer-header">
+
+    <h2>Carrinho</h2>
+
+    <button
+      class="btn"
+      onclick="toggleCart()"
+    >
+      Fechar
+    </button>
+
+  </div>
+
+  <div id="cartItems"></div>
+
+  <div class="total">
+
+    <span>Subtotal</span>
+
+    <span id="subtotal">
+      R$ 0,00
+    </span>
+
+  </div>
+
+  <button
+    class="btn btn-primary"
+    style="width:100%"
+    onclick="startCheckout()"
+  >
+    Continuar compra
+  </button>
+
 </aside>
 
-<div id="authModal" class="modal hidden"><div class="box">
- <h2 id="authTitle">Entrar</h2><div class="small" id="authSub">Acesse sua conta de cliente.</div>
- <form id="loginForm" onsubmit="login(event)">
-  <div class="field"><label>E-mail</label><input id="loginEmail" type="email" required></div>
-  <div class="field"><label>Senha</label><input id="loginPassword" type="password" required></div>
-  <div class="auth-actions"><button class="btn primary">Entrar</button><button type="button" class="btn" onclick="showAuth('register')">Criar conta</button></div>
-  <button type="button" class="link" onclick="showAuth('recovery')">Esqueci minha senha</button>
- </form>
- <form id="registerForm" class="hidden" onsubmit="register(event)">
-  <div class="field"><label>Nome completo</label><input id="regName" required></div>
-  <div class="field"><label>Telefone</label><input id="regPhone" required></div>
-  <div class="field"><label>E-mail</label><input id="regEmail" type="email" required></div>
-  <div class="field"><label>Senha</label><input id="regPassword" type="password" minlength="6" required></div>
-  <div class="auth-actions"><button class="btn primary">Criar conta</button><button type="button" class="btn" onclick="showAuth('login')">Voltar</button></div>
- </form>
- <form id="recoveryForm" class="hidden" onsubmit="recover(event)">
-  <div class="field"><label>E-mail cadastrado</label><input id="recoveryEmail" type="email" required></div>
-  <div class="auth-actions"><button class="btn primary">Enviar link</button><button type="button" class="btn" onclick="showAuth('login')">Voltar</button></div>
- </form>
- <form id="passwordForm" class="hidden" onsubmit="updatePassword(event)">
-  <div class="field"><label>Nova senha</label><input id="newPassword" type="password" minlength="6" required></div>
-  <div class="field"><label>Confirmar senha</label><input id="newPassword2" type="password" minlength="6" required></div>
-  <button class="btn primary" style="width:100%;margin-top:16px">Salvar nova senha</button>
- </form>
- <div id="authMsg" class="msg hidden"></div>
- <button class="link" style="width:100%" onclick="closeAuth()">Fechar</button>
-</div></div>
 
-<div id="checkoutModal" class="modal hidden"><div class="box">
- <h2>Finalizar pedido</h2>
- <div class="field"><label>Endereço de entrega</label><input id="address" placeholder="Rua, número, bairro, cidade"></div>
- <div class="field"><label>Referência</label><input id="reference" placeholder="Opcional"></div>
- <div class="notice">Para entrega local, o navegador poderá solicitar sua localização para calcular/confirmar o frete. Se você não permitir agora, poderá confirmar antes de concluir o pedido.</div>
- <div class="field"><label>Forma de entrega</label><select id="deliveryType"><option value="entrega_loja">Entrega local</option><option value="retirada">Retirada</option></select></div>
- <div class="field"><label>Pagamento</label><select id="paymentMethod"><option value="pix">Pix</option><option value="cartao_credito">Cartão de crédito</option><option value="cartao_debito">Cartão de débito</option><option value="boleto">Boleto</option></select></div>
- <div id="checkoutMsg" class="msg hidden"></div>
- <div class="auth-actions"><button class="btn primary" type="button" onclick="placeOrder()">Criar pedido e pagar</button><button class="btn" type="button" onclick="closeCheckout()">Cancelar</button></div>
-</div></div>
+<!-- =====================================
+     LOGIN / CADASTRO
+===================================== -->
+
+<div
+  id="authModal"
+  class="modal hidden"
+>
+
+<div class="modal-box">
+
+  <h2 id="authTitle">
+    Entrar
+  </h2>
+
+  <p class="small">
+    Acesse sua conta de cliente.
+  </p>
+
+  <form
+    id="loginForm"
+    onsubmit="login(event)"
+  >
+
+    <div class="field">
+
+      <label>E-mail</label>
+
+      <input
+        id="loginEmail"
+        type="email"
+        required
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>Senha</label>
+
+      <input
+        id="loginPassword"
+        type="password"
+        required
+      >
+
+    </div>
+
+    <div class="form-actions">
+
+      <button class="btn btn-primary">
+        Entrar
+      </button>
+
+      <button
+        type="button"
+        class="btn"
+        onclick="showAuth('register')"
+      >
+        Criar conta
+      </button>
+
+    </div>
+
+    <button
+      type="button"
+      class="link"
+      onclick="showAuth('recovery')"
+    >
+      Esqueci minha senha
+    </button>
+
+  </form>
+
+
+  <form
+    id="registerForm"
+    class="hidden"
+    onsubmit="register(event)"
+  >
+
+    <div class="field">
+
+      <label>Nome completo</label>
+
+      <input
+        id="regName"
+        required
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>Telefone</label>
+
+      <input
+        id="regPhone"
+        required
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>E-mail</label>
+
+      <input
+        id="regEmail"
+        type="email"
+        required
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>Senha</label>
+
+      <input
+        id="regPassword"
+        type="password"
+        minlength="6"
+        required
+      >
+
+    </div>
+
+    <div class="form-actions">
+
+      <button class="btn btn-primary">
+        Criar conta
+      </button>
+
+      <button
+        type="button"
+        class="btn"
+        onclick="showAuth('login')"
+      >
+        Voltar
+      </button>
+
+    </div>
+
+  </form>
+
+
+  <form
+    id="recoveryForm"
+    class="hidden"
+    onsubmit="recover(event)"
+  >
+
+    <div class="field">
+
+      <label>E-mail cadastrado</label>
+
+      <input
+        id="recoveryEmail"
+        type="email"
+        required
+      >
+
+    </div>
+
+    <div class="form-actions">
+
+      <button class="btn btn-primary">
+        Enviar link
+      </button>
+
+      <button
+        type="button"
+        class="btn"
+        onclick="showAuth('login')"
+      >
+        Voltar
+      </button>
+
+    </div>
+
+  </form>
+
+
+  <form
+    id="passwordForm"
+    class="hidden"
+    onsubmit="updatePassword(event)"
+  >
+
+    <div class="field">
+
+      <label>Nova senha</label>
+
+      <input
+        id="newPassword"
+        type="password"
+        minlength="6"
+        required
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>Confirmar senha</label>
+
+      <input
+        id="newPassword2"
+        type="password"
+        minlength="6"
+        required
+      >
+
+    </div>
+
+    <button
+      class="btn btn-primary"
+      style="width:100%;margin-top:16px"
+    >
+      Salvar nova senha
+    </button>
+
+  </form>
+
+  <div
+    id="authMsg"
+    class="message hidden"
+  ></div>
+
+  <button
+    class="link"
+    style="width:100%"
+    onclick="closeAuth()"
+  >
+    Fechar
+  </button>
+
+</div>
+
+</div>
+
+
+<!-- =====================================
+     MINHA CONTA
+===================================== -->
+
+<div
+  id="accountModal"
+  class="modal hidden"
+>
+
+<div class="modal-box wide">
+
+  <div class="modal-title">
+
+    <div>
+
+      <h2>Minha conta</h2>
+
+      <div
+        id="accountEmail"
+        class="small"
+      ></div>
+
+    </div>
+
+    <button
+      class="btn"
+      onclick="closeAccount()"
+    >
+      Fechar
+    </button>
+
+  </div>
+
+
+  <div class="account-tabs">
+
+    <button
+      class="account-tab active"
+      data-tab="dados"
+      onclick="accountTab('dados',this)"
+    >
+      Meus dados
+    </button>
+
+    <button
+      class="account-tab"
+      data-tab="enderecos"
+      onclick="accountTab('enderecos',this)"
+    >
+      Endereços
+    </button>
+
+    <button
+      class="account-tab"
+      data-tab="pedidos"
+      onclick="accountTab('pedidos',this)"
+    >
+      Pedidos
+    </button>
+
+    <button
+      class="account-tab"
+      data-tab="cupons"
+      onclick="accountTab('cupons',this)"
+    >
+      Cupons
+    </button>
+
+    <button
+      class="account-tab"
+      data-tab="avaliacoes"
+      onclick="accountTab('avaliacoes',this)"
+    >
+      Avaliações
+    </button>
+
+    <button
+      class="account-tab"
+      data-tab="devolucoes"
+      onclick="accountTab('devolucoes',this)"
+    >
+      Devoluções
+    </button>
+
+    <button
+      class="account-tab"
+      data-tab="seguranca"
+      onclick="accountTab('seguranca',this)"
+    >
+      Segurança
+    </button>
+
+  </div>
+
+
+  <!-- DADOS -->
+
+  <section
+    id="acc-dados"
+    class="account-section"
+  >
+
+    <div class="field">
+
+      <label>Nome</label>
+
+      <input id="accNome">
+
+    </div>
+
+    <div class="field">
+
+      <label>E-mail</label>
+
+      <input
+        id="accEmail"
+        disabled
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>Telefone</label>
+
+      <input id="accTelefone">
+
+    </div>
+
+    <button
+      class="btn btn-primary"
+      style="margin-top:13px"
+      onclick="saveProfile()"
+    >
+      Salvar alterações
+    </button>
+
+    <div
+      id="profileMsg"
+      class="small"
+      style="margin-top:9px"
+    ></div>
+
+  </section>
+
+
+  <!-- ENDEREÇOS -->
+
+  <section
+    id="acc-enderecos"
+    class="account-section hidden"
+  >
+
+    <div
+      style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:15px;
+      "
+    >
+
+      <div>
+
+        <h3 style="margin:0">
+          Meus endereços
+        </h3>
+
+        <div class="small">
+          Cadastre os locais onde deseja receber seus pedidos.
+        </div>
+
+      </div>
+
+      <button
+        class="btn btn-primary"
+        onclick="newAddress()"
+      >
+        + Cadastrar endereço
+      </button>
+
+    </div>
+
+
+    <div id="addressList"></div>
+
+
+    <div
+      id="addressForm"
+      class="account-card hidden"
+    >
+
+      <input
+        id="addressEditId"
+        type="hidden"
+      >
+
+
+      <div class="field">
+
+        <label>Nome do endereço</label>
+
+        <input
+          id="addrLabel"
+          placeholder="Ex.: Casa, Trabalho"
+        >
+
+      </div>
+
+
+      <div class="filter-row">
+
+        <div class="field">
+
+          <label>CEP</label>
+
+          <input
+            id="addrCep"
+            inputmode="numeric"
+            placeholder="00000-000"
+          >
+
+        </div>
+
+        <div class="field">
+
+          <label>Número</label>
+
+          <input
+            id="addrNumero"
+            placeholder="123"
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="field">
+
+        <label>Rua / Avenida</label>
+
+        <input
+          id="addrRua"
+          placeholder="Nome da rua ou avenida"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>Bairro</label>
+
+        <input id="addrBairro">
+
+      </div>
+
+
+      <div class="filter-row">
+
+        <div class="field">
+
+          <label>Cidade</label>
+
+          <input id="addrCidade">
+
+        </div>
+
+        <div class="field">
+
+          <label>Estado</label>
+
+          <input
+            id="addrEstado"
+            maxlength="2"
+            placeholder="MA"
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="field">
+
+        <label>Complemento</label>
+
+        <input
+          id="addrComplemento"
+          placeholder="Apartamento, bloco, referência..."
+        >
+
+      </div>
+
+
+      <label
+        style="
+        display:flex;
+        gap:8px;
+        align-items:center;
+        margin-top:14px;
+        font-size:13px;
+        "
+      >
+
+        <input
+          id="addrPrincipal"
+          type="checkbox"
+          style="width:auto"
+        >
+
+        Definir como endereço principal
+
+      </label>
+
+
+      <div class="form-actions">
+
+        <button
+          class="btn btn-primary"
+          type="button"
+          onclick="saveAddress()"
+        >
+          Salvar endereço
+        </button>
+
+        <button
+          class="btn"
+          type="button"
+          onclick="cancelAddress()"
+        >
+          Cancelar
+        </button>
+
+      </div>
+
+      <div
+        id="addressMsg"
+        class="message hidden"
+      ></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- PEDIDOS -->
+
+  <section
+    id="acc-pedidos"
+    class="account-section hidden"
+  >
+
+    <div id="ordersList"></div>
+
+  </section>
+
+
+  <!-- CUPONS -->
+
+  <section
+    id="acc-cupons"
+    class="account-section hidden"
+  >
+
+    <div id="couponsList"></div>
+
+  </section>
+
+
+  <!-- AVALIAÇÕES -->
+
+  <section
+    id="acc-avaliacoes"
+    class="account-section hidden"
+  >
+
+    <div class="placeholder">
+      Suas avaliações aparecerão aqui.
+    </div>
+
+  </section>
+
+
+  <!-- DEVOLUÇÕES -->
+
+  <section
+    id="acc-devolucoes"
+    class="account-section hidden"
+  >
+
+    <div class="placeholder">
+      Suas solicitações de devolução e reembolso aparecerão aqui.
+    </div>
+
+  </section>
+
+
+  <!-- SEGURANÇA -->
+
+  <section
+    id="acc-seguranca"
+    class="account-section hidden"
+  >
+
+    <button
+      class="btn"
+      onclick="sendPasswordReset()"
+    >
+      Alterar senha
+    </button>
+
+    <button
+      class="btn"
+      onclick="logout()"
+    >
+      Sair da conta
+    </button>
+
+  </section>
+
+</div>
+
+</div>
+
+
+<!-- =====================================
+     PRODUTO
+===================================== -->
+
+<div
+  id="productModal"
+  class="modal hidden"
+>
+
+<div class="modal-box wide">
+
+  <div style="text-align:right">
+
+    <button
+      class="btn"
+      onclick="closeProduct()"
+    >
+      Fechar
+    </button>
+
+  </div>
+
+  <div id="productDetail"></div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================
+     CHECKOUT
+===================================== -->
+
+<div
+  id="checkoutModal"
+  class="modal hidden"
+>
+
+<div class="modal-box wide">
+
+  <div class="modal-title">
+
+    <h2>Finalizar compra</h2>
+
+    <button
+      class="btn"
+      onclick="closeCheckout()"
+    >
+      Fechar
+    </button>
+
+  </div>
+
+
+  <div class="checkout-steps">
+
+    <div class="checkout-step active">
+      1. Endereço
+    </div>
+
+    <div class="checkout-step active">
+      2. Entrega
+    </div>
+
+    <div class="checkout-step active">
+      3. Pagamento
+    </div>
+
+  </div>
+
+
+  <div class="field">
+
+    <label>Endereço de entrega</label>
+
+    <input
+      id="address"
+      placeholder="Rua, número, bairro, cidade"
+    >
+
+  </div>
+
+
+  <div class="field">
+
+    <label>Referência</label>
+
+    <input
+      id="reference"
+      placeholder="Opcional"
+    >
+
+  </div>
+
+
+  <div class="field">
+
+    <label>Forma de entrega</label>
+
+    <select id="deliveryType">
+
+      <option value="entrega_loja">
+        Entrega
+      </option>
+
+      <option value="retirada">
+        Retirada na loja
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <h3>Forma de pagamento</h3>
+
+
+  <div class="payment-options">
+
+    <button
+      class="payment-option active"
+      onclick="selectPay('pix',this)"
+    >
+      Pix
+    </button>
+
+    <button
+      class="payment-option"
+      onclick="selectPay('cartao_credito',this)"
+    >
+      Crédito
+    </button>
+
+    <button
+      class="payment-option"
+      onclick="selectPay('cartao_debito',this)"
+    >
+      Débito
+    </button>
+
+    <button
+      class="payment-option"
+      onclick="selectPay('boleto',this)"
+    >
+      Boleto
+    </button>
+
+  </div>
+
+
+  <!-- PIX -->
+
+  <div
+    id="pay-pix"
+    class="payment-panel"
+  >
+
+    <b>Pagamento via Pix</b>
+
+    <p class="small">
+      Após gerar o pagamento, o QR Code e o
+      código Pix aparecerão nesta tela.
+    </p>
+
+    <div
+      id="pixResult"
+      class="hidden"
+    >
+
+      <div class="qr-box">
+
+        <img id="pixQr">
+
+      </div>
+
+      <div class="field">
+
+        <label>Pix copia e cola</label>
+
+        <textarea
+          id="pixCode"
+          rows="3"
+          readonly
+        ></textarea>
+
+      </div>
+
+      <button
+        class="btn"
+        onclick="copyPix()"
+      >
+        Copiar código Pix
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- CRÉDITO -->
+
+  <div
+    id="pay-cartao_credito"
+    class="payment-panel hidden"
+  >
+
+    <b>Cartão de crédito</b>
+
+    <p class="small">
+      O pagamento por cartão será processado
+      de forma segura pelo provedor de pagamento.
+    </p>
+
+    <div
+      id="cardMountCredit"
+      class="placeholder"
+    >
+      Área do pagamento por cartão.
+    </div>
+
+  </div>
+
+
+  <!-- DÉBITO -->
+
+  <div
+    id="pay-cartao_debito"
+    class="payment-panel hidden"
+  >
+
+    <b>Cartão de débito</b>
+
+    <p class="small">
+      Esta opção será apresentada quando estiver
+      disponível pelo provedor de pagamento.
+    </p>
+
+    <div
+      id="cardMountDebit"
+      class="placeholder"
+    >
+      Área do pagamento por cartão.
+    </div>
+
+  </div>
+
+
+  <!-- BOLETO -->
+
+  <div
+    id="pay-boleto"
+    class="payment-panel hidden"
+  >
+
+    <b>Boleto</b>
+
+    <p class="small">
+      Depois de gerar o boleto, os dados
+      aparecerão nesta tela.
+    </p>
+
+    <div id="boletoResult"></div>
+
+  </div>
+
+
+  <div
+    id="checkoutMsg"
+    class="message hidden"
+  ></div>
+
+
+  <button
+    class="btn btn-primary"
+    style="width:100%;margin-top:15px"
+    onclick="placeOrder()"
+  >
+    Finalizar pedido
+  </button>
+
+</div>
+
+</div>
+
 
 <script>
-const SUPABASE_URL="https://sfzfoavesiintdyoxkca.supabase.co";
-const SUPABASE_KEY="sb_publishable_wM4A1etSRHTcUpE4qUXb-A_suN-jnep";
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let user=null, products=[], cart=[], category=null;
 
-const $=id=>document.getElementById(id);
-const money=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-function setMsg(id,t){$(id).textContent=t;$(id).classList.toggle("hidden",!t)}
-function openAuth(){if(user){if(confirm("Deseja sair da sua conta?"))logout();return}$("authModal").classList.remove("hidden");showAuth("login")}
-function closeAuth(){$("authModal").classList.add("hidden")}
-function showAuth(mode){["loginForm","registerForm","recoveryForm","passwordForm"].forEach(x=>$(x).classList.add("hidden"));$(mode==="register"?"registerForm":mode==="recovery"?"recoveryForm":mode==="password"?"passwordForm":"loginForm").classList.remove("hidden");$("authTitle").textContent=mode==="register"?"Criar conta":mode==="recovery"?"Recuperar senha":mode==="password"?"Nova senha":"Entrar";setMsg("authMsg","")}
-async function login(e){e.preventDefault();const {error}=await sb.auth.signInWithPassword({email:$("loginEmail").value.trim(),password:$("loginPassword").value});if(error)return setMsg("authMsg",error.message);closeAuth();await session()}
-async function register(e){
- e.preventDefault();
- const nome=$("regName").value.trim(),telefone=$("regPhone").value.trim(),email=$("regEmail").value.trim(),password=$("regPassword").value;
- const {data,error}=await sb.auth.signUp({
-  email,
-  password,
-  options:{
-   emailRedirectTo:"https://t-na-m-inky.vercel.app/cliente.html",
-   data:{nome,telefone,tipo:"cliente"}
+/* =====================================
+   SUPABASE
+===================================== */
+
+const SUPABASE_URL =
+"https://sfzfoavesiintdyoxkca.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_wM4A1etSRHTcUpE4qUXb-A_suN-jnep";
+
+const sb =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
+/* =====================================
+   VARIÁVEIS
+===================================== */
+
+let user = null;
+
+let products = [];
+
+let filteredProducts = [];
+
+let cart = [];
+
+let category = null;
+
+let selectedPay = "pix";
+
+let currentProduct = null;
+
+let addressRows = [];
+
+
+/* =====================================
+   UTILIDADES
+===================================== */
+
+const $ = id =>
+document.getElementById(id);
+
+
+const money = value =>
+Number(value || 0).toLocaleString(
+  "pt-BR",
+  {
+    style:"currency",
+    currency:"BRL"
   }
- });
- if(error)return setMsg("authMsg",error.message);
- if(!data?.user)return setMsg("authMsg","Não foi possível criar a conta.");
- // With e-mail confirmation enabled there is no authenticated session yet.
- // Do not write to profiles here, because RLS correctly blocks anonymous writes.
- if(!data.session){
-  setMsg("authMsg","Cadastro criado. Verifique seu e-mail para confirmar a conta.");
-  return;
- }
- const ok=await garantirPerfilCliente(data.user);
- if(!ok)return;
- closeAuth();
- await session();
-}
-async function recover(e){e.preventDefault();const {error}=await sb.auth.resetPasswordForEmail($("recoveryEmail").value.trim(),{redirectTo:location.origin+location.pathname});setMsg("authMsg",error?error.message:"Se o e-mail estiver cadastrado, o link foi enviado.")}
-async function updatePassword(e){e.preventDefault();if($("newPassword").value!==$("newPassword2").value)return setMsg("authMsg","As senhas não conferem.");const {error}=await sb.auth.updateUser({password:$("newPassword").value});if(error)return setMsg("authMsg",error.message);setMsg("authMsg","Senha alterada com sucesso.");setTimeout(()=>{closeAuth()},900)}
-async function logout(){await sb.auth.signOut();await session()}
+);
 
-async function garantirPerfilCliente(user){
- if(!user)return false;
- const meta=user.user_metadata||{};
- const {data:perfil,error:consulta}=await sb.from("profiles").select("id").eq("id",user.id).maybeSingle();
- if(consulta){
-  setMsg("authMsg","Não foi possível verificar o perfil: "+consulta.message);
-  return false;
- }
- if(perfil)return true;
- const {error}=await sb.from("profiles").insert({
-  id:user.id,
-  nome:meta.nome||"",
-  telefone:meta.telefone||""
- });
- if(error){
-  setMsg("authMsg","Conta confirmada, mas não foi possível concluir o perfil: "+error.message);
-  return false;
- }
- return true;
+
+const esc = value =>
+String(value ?? "").replace(
+  /[&<>"']/g,
+  character => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[character])
+);
+
+
+function setMessage(id,text){
+
+  const element = $(id);
+
+  element.textContent = text;
+
+  element.classList.toggle(
+    "hidden",
+    !text
+  );
+
 }
 
-async function session(){const {data}=await sb.auth.getUser();user=data.user||null;$("accountBtn").textContent=user?(user.user_metadata?.nome||"Minha conta"):"Entrar"}
-sb.auth.onAuthStateChange(event=>{if(event==="PASSWORD_RECOVERY"){$("authModal").classList.remove("hidden");showAuth("password")}});
 
-async function loadCategories(){const {data}=await sb.from("categories").select("id,nome").order("nome");if(!data)return;data.forEach(c=>$("categories").insertAdjacentHTML("beforeend",`<button class="chip" onclick="chooseCategory(${JSON.stringify(c.id)},this)">${esc(c.nome)}</button>`))}
-function chooseCategory(id,el){category=id;document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));el.classList.add("active");loadProducts()}
+function scrollProducts(){
+
+  $("productsSection")
+  .scrollIntoView({
+    behavior:"smooth"
+  });
+
+}
+
+
+/* =====================================
+   AUTENTICAÇÃO
+===================================== */
+
+function accountAction(){
+
+  if(user){
+
+    openAccount("dados");
+
+  }else{
+
+    openAuth();
+
+  }
+
+}
+
+
+function openAuth(){
+
+  $("authModal")
+  .classList
+  .remove("hidden");
+
+  showAuth("login");
+
+}
+
+
+function closeAuth(){
+
+  $("authModal")
+  .classList
+  .add("hidden");
+
+}
+
+
+function showAuth(mode){
+
+  [
+    "loginForm",
+    "registerForm",
+    "recoveryForm",
+    "passwordForm"
+  ].forEach(id => {
+
+    $(id)
+    .classList
+    .add("hidden");
+
+  });
+
+
+  const form =
+    mode === "register"
+      ? "registerForm"
+      : mode === "recovery"
+      ? "recoveryForm"
+      : mode === "password"
+      ? "passwordForm"
+      : "loginForm";
+
+
+  $(form)
+  .classList
+  .remove("hidden");
+
+
+  $("authTitle").textContent =
+    mode === "register"
+      ? "Criar conta"
+      : mode === "recovery"
+      ? "Recuperar senha"
+      : mode === "password"
+      ? "Nova senha"
+      : "Entrar";
+
+
+  setMessage(
+    "authMsg",
+    ""
+  );
+
+}
+
+
+async function login(event){
+
+  event.preventDefault();
+
+
+  const email =
+  $("loginEmail")
+  .value
+  .trim();
+
+
+  const password =
+  $("loginPassword")
+  .value;
+
+
+  const {error} =
+  await sb.auth.signInWithPassword({
+    email,
+    password
+  });
+
+
+  if(error){
+
+    setMessage(
+      "authMsg",
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  closeAuth();
+
+  await session();
+
+}
+
+
+async function register(event){
+
+  event.preventDefault();
+
+
+  const nome =
+  $("regName")
+  .value
+  .trim();
+
+
+  const telefone =
+  $("regPhone")
+  .value
+  .trim();
+
+
+  const email =
+  $("regEmail")
+  .value
+  .trim();
+
+
+  const password =
+  $("regPassword")
+  .value;
+
+
+  const {data,error} =
+  await sb.auth.signUp({
+
+    email,
+
+    password,
+
+    options:{
+
+      emailRedirectTo:
+      location.origin + "/",
+
+      data:{
+        nome,
+        telefone,
+        tipo:"cliente"
+      }
+
+    }
+
+  });
+
+
+  if(error){
+
+    setMessage(
+      "authMsg",
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  if(!data?.user){
+
+    setMessage(
+      "authMsg",
+      "Não foi possível criar a conta."
+    );
+
+    return;
+
+  }
+
+
+  if(!data.session){
+
+    setMessage(
+      "authMsg",
+      "Cadastro criado. Verifique seu e-mail para confirmar sua conta."
+    );
+
+    return;
+
+  }
+
+
+  await ensureProfile(
+    data.user
+  );
+
+
+  closeAuth();
+
+  await session();
+
+}
+
+
+async function ensureProfile(currentUser){
+
+  if(!currentUser){
+    return false;
+  }
+
+
+  const {data,error} =
+  await sb
+  .from("profiles")
+  .select("id")
+  .eq(
+    "id",
+    currentUser.id
+  )
+  .maybeSingle();
+
+
+  if(error){
+    return false;
+  }
+
+
+  if(data){
+    return true;
+  }
+
+
+  const metadata =
+  currentUser.user_metadata || {};
+
+
+  const result =
+  await sb
+  .from("profiles")
+  .insert({
+
+    id:currentUser.id,
+
+    nome:
+    metadata.nome || "",
+
+    telefone:
+    metadata.telefone || ""
+
+  });
+
+
+  return !result.error;
+
+}
+
+
+async function recover(event){
+
+  event.preventDefault();
+
+
+  const email =
+  $("recoveryEmail")
+  .value
+  .trim();
+
+
+  const {error} =
+  await sb.auth
+  .resetPasswordForEmail(
+    email,
+    {
+      redirectTo:
+      location.origin + "/"
+    }
+  );
+
+
+  setMessage(
+    "authMsg",
+    error
+      ? error.message
+      : "Se o e-mail estiver cadastrado, o link foi enviado."
+  );
+
+}
+
+
+async function updatePassword(event){
+
+  event.preventDefault();
+
+
+  if(
+    $("newPassword").value !==
+    $("newPassword2").value
+  ){
+
+    setMessage(
+      "authMsg",
+      "As senhas não conferem."
+    );
+
+    return;
+
+  }
+
+
+  const {error} =
+  await sb.auth.updateUser({
+
+    password:
+    $("newPassword").value
+
+  });
+
+
+  setMessage(
+    "authMsg",
+    error
+      ? error.message
+      : "Senha alterada com sucesso."
+  );
+
+}
+
+
+async function logout(){
+
+  await sb.auth.signOut();
+
+  closeAccount();
+
+  await session();
+
+}
+
+
+async function session(){
+
+  const {data} =
+  await sb.auth.getUser();
+
+
+  user =
+  data.user || null;
+
+
+  if(user){
+
+    await ensureProfile(
+      user
+    );
+
+  }
+
+
+  $("accountBtn")
+  .textContent =
+  user
+    ? (
+      user.user_metadata?.nome ||
+      "Minha conta"
+    )
+    : "Entrar";
+
+}
+
+
+sb.auth.onAuthStateChange(
+  event => {
+
+    if(
+      event ===
+      "PASSWORD_RECOVERY"
+    ){
+
+      $("authModal")
+      .classList
+      .remove("hidden");
+
+      showAuth(
+        "password"
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================
+   CATEGORIAS
+===================================== */
+
+async function loadCategories(){
+
+  const {data} =
+  await sb
+  .from("categories")
+  .select("id,nome")
+  .order("nome");
+
+
+  if(!data){
+    return;
+  }
+
+
+  data.forEach(item => {
+
+    $("categories")
+    .insertAdjacentHTML(
+      "beforeend",
+
+      `
+      <button
+        class="category"
+        onclick='chooseCategory(${JSON.stringify(item.id)},this)'
+      >
+        ${esc(item.nome)}
+      </button>
+      `
+
+    );
+
+  });
+
+}
+
+
+function chooseCategory(
+  id,
+  button
+){
+
+  category = id;
+
+
+  document
+  .querySelectorAll(
+    ".category"
+  )
+  .forEach(item => {
+
+    item.classList
+    .remove("active");
+
+  });
+
+
+  button.classList
+  .add("active");
+
+
+  loadProducts();
+
+}
+
+
+/* =====================================
+   PRODUTOS
+===================================== */
+
 async function loadProducts(){
- let q=sb.from("products").select("id,nome,preco,imagem_url,store_id,category_id,ativo,stores(nome)").eq("ativo",true);
- if(category)q=q.eq("category_id",category);const term=$("searchInput").value.trim();if(term)q=q.ilike("nome","%"+term+"%");
- const {data,error}=await q.order("created_at",{ascending:false}).limit(100);
- if(error){$("products").innerHTML='<div class="small">Não foi possível carregar os produtos: '+esc(error.message)+'</div>';return}
- products=data||[];$("products").innerHTML=products.length?products.map(p=>`<article class="product"><div class="pic">${p.imagem_url?`<img src="${esc(p.imagem_url)}" alt="">`:"Imagem do produto"}</div><div class="product-body"><div class="product-name">${esc(p.nome)}</div><div class="price">${money(p.preco)}</div><div class="store">${esc(p.stores?.nome||"Loja")}</div><button class="btn primary" onclick="addCart(${JSON.stringify(p.id)})">Adicionar ao carrinho</button></div></article>`).join(""):'<div class="small">Nenhum produto encontrado.</div>'
+
+  let query =
+  sb
+  .from("products")
+  .select(`
+    id,
+    nome,
+    preco,
+    imagem_url,
+    store_id,
+    category_id,
+    ativo,
+    created_at,
+    stores(nome)
+  `)
+  .eq(
+    "ativo",
+    true
+  );
+
+
+  if(category){
+
+    query =
+    query.eq(
+      "category_id",
+      category
+    );
+
+  }
+
+
+  const term =
+  $("searchInput")
+  .value
+  .trim();
+
+
+  if(term){
+
+    query =
+    query.ilike(
+      "nome",
+      "%" + term + "%"
+    );
+
+  }
+
+
+  const {data,error} =
+  await query
+  .order(
+    "created_at",
+    {
+      ascending:false
+    }
+  )
+  .limit(200);
+
+
+  if(error){
+
+    $("products")
+    .innerHTML =
+    `
+    <div class="empty">
+      Não foi possível carregar os produtos.
+      <br>
+      ${esc(error.message)}
+    </div>
+    `;
+
+    return;
+
+  }
+
+
+  products =
+  data || [];
+
+
+  buildStoreFilter();
+
+  renderProducts();
+
 }
-function addCart(id){const p=products.find(x=>String(x.id)===String(id));if(!p)return;const existing=cart.find(x=>String(x.id)===String(id));if(existing)existing.qty++;else cart.push({...p,qty:1});renderCart()}
-function renderCart(){ $("cartCount").textContent=cart.reduce((a,x)=>a+x.qty,0);$("cartItems").innerHTML=cart.length?cart.map((x,i)=>`<div class="cart-item"><div><b>${esc(x.nome)}</b><div class="small">${x.qty} × ${money(x.preco)}</div></div><button class="btn" onclick="removeCart(${i})">Remover</button></div>`).join(""):'<div class="small" style="padding:20px 0">Seu carrinho está vazio.</div>';$("subtotal").textContent=money(cart.reduce((a,x)=>a+Number(x.preco)*x.qty,0))}
-function removeCart(i){cart.splice(i,1);renderCart()}function toggleCart(){$("cart").classList.toggle("hidden")}
-async function startCheckout(){if(!cart.length)return alert("Seu carrinho está vazio.");if(!user){toggleCart();openAuth();return}const stores=[...new Set(cart.map(x=>x.store_id))];if(stores.length!==1)return alert("Nesta etapa, finalize produtos de uma loja por pedido.");toggleCart();$("checkoutModal").classList.remove("hidden")}
-function closeCheckout(){$("checkoutModal").classList.add("hidden")}
-function getLocation(){return new Promise(resolve=>{if(!navigator.geolocation)return resolve(null);navigator.geolocation.getCurrentPosition(p=>resolve({lat:p.coords.latitude,lng:p.coords.longitude}),()=>resolve(null),{enableHighAccuracy:true,timeout:10000})})}
+
+
+function buildStoreFilter(){
+
+  const select =
+  $("storeFilter");
+
+
+  const previous =
+  select.value;
+
+
+  const stores =
+  new Map();
+
+
+  products.forEach(
+    product => {
+
+      stores.set(
+        String(
+          product.store_id
+        ),
+
+        product.stores?.nome ||
+        "Loja"
+      );
+
+    }
+  );
+
+
+  select.innerHTML =
+  `
+  <option value="">
+    Todas as lojas
+  </option>
+  `;
+
+
+  [...stores]
+  .forEach(
+    ([id,name]) => {
+
+      select
+      .insertAdjacentHTML(
+        "beforeend",
+
+        `
+        <option value="${esc(id)}">
+          ${esc(name)}
+        </option>
+        `
+
+      );
+
+    }
+  );
+
+
+  select.value =
+  previous;
+
+}
+
+
+function renderProducts(){
+
+  let result =
+  [...products];
+
+
+  const minimum =
+  Number(
+    $("minPrice").value ||
+    0
+  );
+
+
+  const maximum =
+  Number(
+    $("maxPrice").value ||
+    0
+  );
+
+
+  const store =
+  $("storeFilter")
+  .value;
+
+
+  if(minimum){
+
+    result =
+    result.filter(
+      item =>
+      Number(item.preco) >=
+      minimum
+    );
+
+  }
+
+
+  if(maximum){
+
+    result =
+    result.filter(
+      item =>
+      Number(item.preco) <=
+      maximum
+    );
+
+  }
+
+
+  if(store){
+
+    result =
+    result.filter(
+      item =>
+      String(item.store_id) ===
+      store
+    );
+
+  }
+
+
+  const sort =
+  $("sortFilter")
+  .value;
+
+
+  if(sort === "menor"){
+
+    result.sort(
+      (a,b) =>
+      Number(a.preco) -
+      Number(b.preco)
+    );
+
+  }
+
+
+  if(sort === "maior"){
+
+    result.sort(
+      (a,b) =>
+      Number(b.preco) -
+      Number(a.preco)
+    );
+
+  }
+
+
+  if(sort === "loja"){
+
+    result.sort(
+      (a,b) =>
+      (
+        a.stores?.nome || ""
+      )
+      .localeCompare(
+        b.stores?.nome || ""
+      )
+    );
+
+  }
+
+
+  filteredProducts =
+  result;
+
+
+  $("resultInfo")
+  .textContent =
+  `${result.length} produto(s) encontrado(s)`;
+
+
+  if(!result.length){
+
+    $("products")
+    .innerHTML =
+    `
+    <div class="empty">
+
+      <div>
+
+        <b>
+          Nenhum produto encontrado.
+        </b>
+
+        <br><br>
+
+        <span class="small">
+          Tente alterar sua pesquisa
+          ou os filtros.
+        </span>
+
+      </div>
+
+    </div>
+    `;
+
+    return;
+
+  }
+
+
+  $("products")
+  .innerHTML =
+  result
+  .map(
+    product => {
+
+      return `
+      <article class="product">
+
+        <div
+          class="product-image"
+          onclick='openProduct(${JSON.stringify(product.id)})'
+        >
+
+          ${
+            product.imagem_url
+            ?
+            `
+            <img
+              src="${esc(product.imagem_url)}"
+              alt="${esc(product.nome)}"
+            >
+            `
+            :
+            "Imagem do produto"
+          }
+
+        </div>
+
+        <div class="product-content">
+
+          <div
+            class="product-name"
+            onclick='openProduct(${JSON.stringify(product.id)})'
+          >
+            ${esc(product.nome)}
+          </div>
+
+          <div class="product-price">
+            ${money(product.preco)}
+          </div>
+
+          <div class="product-store">
+            ${esc(
+              product.stores?.nome ||
+              "Loja"
+            )}
+          </div>
+
+          <div class="product-actions">
+
+            <button
+              class="btn btn-primary"
+              onclick='addCart(${JSON.stringify(product.id)})'
+            >
+              Adicionar
+            </button>
+
+            <button
+              class="btn"
+              onclick='openProduct(${JSON.stringify(product.id)})'
+            >
+              Ver
+            </button>
+
+          </div>
+
+        </div>
+
+      </article>
+      `;
+
+    }
+  )
+  .join("");
+
+}
+
+
+function clearFilters(){
+
+  $("minPrice").value = "";
+
+  $("maxPrice").value = "";
+
+  $("storeFilter").value = "";
+
+  $("sortFilter").value =
+  "relevancia";
+
+  renderProducts();
+
+}
+
+
+/* =====================================
+   DETALHES DO PRODUTO E LOJA
+===================================== */
+
+async function openProduct(id){
+
+  let product =
+  products.find(
+    item =>
+    String(item.id) ===
+    String(id)
+  );
+
+
+  if(!product){
+
+    const result =
+    await sb
+    .from("products")
+    .select(`
+      id,
+      nome,
+      preco,
+      imagem_url,
+      store_id,
+      category_id,
+      ativo,
+      created_at,
+      stores(nome)
+    `)
+    .eq(
+      "id",
+      id
+    )
+    .maybeSingle();
+
+
+    product =
+    result.data;
+
+  }
+
+
+  if(!product){
+    return;
+  }
+
+
+  currentProduct =
+  product;
+
+
+  $("productModal")
+  .classList
+  .remove("hidden");
+
+
+  $("productDetail")
+  .innerHTML =
+  `
+  <div class="placeholder">
+    Carregando produto...
+  </div>
+  `;
+
+
+  const [
+    storeResult,
+    productsResult
+  ] =
+  await Promise.all([
+
+    sb
+    .from("stores")
+    .select("*")
+    .eq(
+      "id",
+      product.store_id
+    )
+    .maybeSingle(),
+
+    sb
+    .from("products")
+    .select(`
+      id,
+      nome,
+      preco,
+      imagem_url,
+      store_id,
+      ativo
+    `)
+    .eq(
+      "store_id",
+      product.store_id
+    )
+    .eq(
+      "ativo",
+      true
+    )
+    .neq(
+      "id",
+      product.id
+    )
+    .limit(8)
+
+  ]);
+
+
+  const store =
+  storeResult.data;
+
+
+  const moreProducts =
+  productsResult.data || [];
+
+
+  const storeCover =
+  store?.fachada_url ||
+  store?.capa_url ||
+  store?.imagem_url ||
+  "";
+
+
+  $("productDetail")
+  .innerHTML =
+  `
+  <div class="product-detail">
+
+    <div class="product-detail-image">
+
+      ${
+        product.imagem_url
+        ?
+        `
+        <img
+          src="${esc(product.imagem_url)}"
+          alt="${esc(product.nome)}"
+        >
+        `
+        :
+        "Imagem do produto"
+      }
+
+    </div>
+
+
+    <div>
+
+      <h1>
+        ${esc(product.nome)}
+      </h1>
+
+      <div class="small">
+        Vendido por
+        ${esc(
+          store?.nome ||
+          product.stores?.nome ||
+          "Loja"
+        )}
+      </div>
+
+      <div class="big-price">
+        ${money(product.preco)}
+      </div>
+
+
+      <button
+        class="btn btn-primary"
+        onclick='addCart(${JSON.stringify(product.id)})'
+      >
+        Adicionar ao carrinho
+      </button>
+
+
+      <button
+        class="btn"
+        onclick='buyNow(${JSON.stringify(product.id)})'
+      >
+        Comprar agora
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="storefront">
+
+    <div
+      class="store-cover"
+
+      ${
+        storeCover
+        ?
+        `
+        style="
+        background-image:
+        linear-gradient(#0004,#0007),
+        url('${esc(storeCover)}')
+        "
+        `
+        :
+        ""
+      }
+    >
+
+      <b>
+        ${esc(
+          store?.nome ||
+          product.stores?.nome ||
+          "Loja"
+        )}
+      </b>
+
+    </div>
+
+
+    <div class="store-information">
+
+      <div>
+
+        <h3>
+          ${esc(
+            store?.nome ||
+            product.stores?.nome ||
+            "Loja"
+          )}
+        </h3>
+
+        <div class="small">
+
+          ${esc(
+            store?.cidade || ""
+          )}
+
+          ${esc(
+            store?.estado || ""
+          )}
+
+        </div>
+
+      </div>
+
+
+      <button
+        class="btn"
+        onclick='showStoreProducts(${JSON.stringify(product.store_id)})'
+      >
+        Visitar loja
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <h3>
+    Mais produtos desta loja
+  </h3>
+
+
+  <div class="related-products">
+
+    ${
+      moreProducts.length
+      ?
+      moreProducts
+      .map(
+        item => {
+
+          return `
+          <div
+            class="related-product"
+            onclick='openProductFromStore(${JSON.stringify(item.id)})'
+          >
+
+            <b>
+              ${esc(item.nome)}
+            </b>
+
+            <span>
+              ${money(item.preco)}
+            </span>
+
+          </div>
+          `;
+
+        }
+      )
+      .join("")
+      :
+      `
+      <div class="small">
+        Nenhum outro produto disponível nesta loja.
+      </div>
+      `
+    }
+
+  </div>
+  `;
+
+}
+
+
+function closeProduct(){
+
+  $("productModal")
+  .classList
+  .add("hidden");
+
+}
+
+
+async function openProductFromStore(id){
+
+  closeProduct();
+
+  await openProduct(id);
+
+}
+
+
+function showStoreProducts(storeId){
+
+  closeProduct();
+
+  $("storeFilter").value =
+  String(storeId);
+
+  renderProducts();
+
+  scrollProducts();
+
+}
+
+
+function buyNow(id){
+
+  addCart(id);
+
+  closeProduct();
+
+  startCheckout();
+
+}
+
+
+/* =====================================
+   CARRINHO
+===================================== */
+
+function addCart(id){
+
+  const product =
+  products.find(
+    item =>
+    String(item.id) ===
+    String(id)
+  );
+
+
+  if(!product){
+    return;
+  }
+
+
+  const existing =
+  cart.find(
+    item =>
+    String(item.id) ===
+    String(id)
+  );
+
+
+  if(existing){
+
+    existing.qty++;
+
+  }else{
+
+    cart.push({
+      ...product,
+      qty:1
+    });
+
+  }
+
+
+  renderCart();
+
+}
+
+
+function renderCart(){
+
+  $("cartCount")
+  .textContent =
+  cart.reduce(
+    (total,item) =>
+    total + item.qty,
+    0
+  );
+
+
+  if(!cart.length){
+
+    $("cartItems")
+    .innerHTML =
+    `
+    <div
+      class="placeholder"
+      style="margin-top:15px"
+    >
+      Seu carrinho está vazio.
+    </div>
+    `;
+
+  }else{
+
+    $("cartItems")
+    .innerHTML =
+    cart
+    .map(
+      (item,index) => {
+
+        return `
+        <div class="cart-item">
+
+          <div>
+
+            <b>
+              ${esc(item.nome)}
+            </b>
+
+            <div class="small">
+
+              ${esc(
+                item.stores?.nome ||
+                "Loja"
+              )}
+
+              <br>
+
+              ${item.qty}
+              ×
+              ${money(item.preco)}
+
+            </div>
+
+          </div>
+
+
+          <button
+            class="btn"
+            onclick="removeCart(${index})"
+          >
+            Remover
+          </button>
+
+        </div>
+        `;
+
+      }
+    )
+    .join("");
+
+  }
+
+
+  const subtotal =
+  cart.reduce(
+    (total,item) =>
+    total +
+    Number(item.preco) *
+    item.qty,
+    0
+  );
+
+
+  $("subtotal")
+  .textContent =
+  money(subtotal);
+
+}
+
+
+function removeCart(index){
+
+  cart.splice(
+    index,
+    1
+  );
+
+  renderCart();
+
+}
+
+
+function toggleCart(){
+
+  $("cart")
+  .classList
+  .toggle("hidden");
+
+}
+
+
+/* =====================================
+   CHECKOUT
+===================================== */
+
+async function startCheckout(){
+
+  if(!cart.length){
+
+    alert(
+      "Seu carrinho está vazio."
+    );
+
+    return;
+
+  }
+
+
+  if(!user){
+
+    $("cart")
+    .classList
+    .add("hidden");
+
+    openAuth();
+
+    return;
+
+  }
+
+
+  const stores =
+  [
+    ...new Set(
+      cart.map(
+        item =>
+        item.store_id
+      )
+    )
+  ];
+
+
+  if(stores.length !== 1){
+
+    alert(
+      "Finalize separadamente os produtos de cada loja."
+    );
+
+    return;
+
+  }
+
+
+  $("cart")
+  .classList
+  .add("hidden");
+
+
+  $("checkoutModal")
+  .classList
+  .remove("hidden");
+
+}
+
+
+function closeCheckout(){
+
+  $("checkoutModal")
+  .classList
+  .add("hidden");
+
+}
+
+
+function selectPay(
+  method,
+  button
+){
+
+  selectedPay =
+  method;
+
+
+  document
+  .querySelectorAll(
+    ".payment-option"
+  )
+  .forEach(
+    item => {
+
+      item.classList
+      .remove("active");
+
+    }
+  );
+
+
+  button.classList
+  .add("active");
+
+
+  document
+  .querySelectorAll(
+    ".payment-panel"
+  )
+  .forEach(
+    item => {
+
+      item.classList
+      .add("hidden");
+
+    }
+  );
+
+
+  $(
+    "pay-" + method
+  )
+  .classList
+  .remove("hidden");
+
+}
+
+
+function getLocation(){
+
+  return new Promise(
+    resolve => {
+
+      if(
+        !navigator.geolocation
+      ){
+
+        resolve(null);
+
+        return;
+
+      }
+
+
+      navigator.geolocation
+      .getCurrentPosition(
+
+        position => {
+
+          resolve({
+
+            lat:
+            position.coords.latitude,
+
+            lng:
+            position.coords.longitude
+
+          });
+
+        },
+
+        () => {
+
+          resolve(null);
+
+        },
+
+        {
+          enableHighAccuracy:true,
+          timeout:10000
+        }
+
+      );
+
+    }
+  );
+
+}
+
+
 async function placeOrder(){
- if(!user)return openAuth();if(!cart.length)return;
- const address=$("address").value.trim(),tipo=$("deliveryType").value;if(tipo==="entrega_loja"&&!address)return setMsg("checkoutMsg","Informe o endereço de entrega.");
- setMsg("checkoutMsg","Preparando pedido...");
- const loc=tipo==="entrega_loja"?await getLocation():null;
- if(tipo==="entrega_loja"&&!loc)return setMsg("checkoutMsg","Para concluir a entrega local, confirme a localização quando o navegador solicitar.");
- const subtotal=cart.reduce((a,x)=>a+Number(x.preco)*x.qty,0),frete=subtotal>=100?0:0,total=subtotal+frete;
- const order={customer_id:user.id,store_id:cart[0].store_id,status:"pendente",subtotal,frete,total,endereco_entrega:address+($("reference").value.trim()?" — Ref.: "+$("reference").value.trim():""),tipo_entrega:tipo,payment_method:$("paymentMethod").value,payment_status:"aguardando_pagamento",cliente_latitude:loc?.lat||null,cliente_longitude:loc?.lng||null,localizacao_confirmada:!!loc,localizacao_confirmada_at:loc?new Date().toISOString():null};
- const {data:o,error}=await sb.from("orders").insert(order).select("id").single();if(error)return setMsg("checkoutMsg","Não foi possível criar o pedido: "+error.message);
- const items=cart.map(x=>({order_id:o.id,product_id:x.id,quantidade:x.qty,preco_unitario:Number(x.preco),subtotal:Number(x.preco)*x.qty}));
- const {error:ie}=await sb.from("order_items").insert(items);if(ie)return setMsg("checkoutMsg","Pedido criado, mas houve erro nos itens: "+ie.message);
- const {data:sess}=await sb.auth.getSession();const token=sess.session?.access_token;
- const r=await fetch(SUPABASE_URL+"/functions/v1/swift-service",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token,"apikey":SUPABASE_KEY},body:JSON.stringify({order_id:o.id})});
- const pay=await r.json().catch(()=>({}));if(!r.ok||!pay.checkout_url)return setMsg("checkoutMsg","Pedido #"+o.id+" criado, mas o pagamento não pôde ser aberto.");
- cart=[];renderCart();location.href=pay.checkout_url
+
+  if(
+    !user ||
+    !cart.length
+  ){
+    return;
+  }
+
+
+  const address =
+  $("address")
+  .value
+  .trim();
+
+
+  const deliveryType =
+  $("deliveryType")
+  .value;
+
+
+  if(
+    deliveryType ===
+    "entrega_loja" &&
+    !address
+  ){
+
+    setMessage(
+      "checkoutMsg",
+      "Informe o endereço de entrega."
+    );
+
+    return;
+
+  }
+
+
+  setMessage(
+    "checkoutMsg",
+    "Criando pedido..."
+  );
+
+
+  const location =
+  deliveryType ===
+  "entrega_loja"
+  ?
+  await getLocation()
+  :
+  null;
+
+
+  if(
+    deliveryType ===
+    "entrega_loja" &&
+    !location
+  ){
+
+    setMessage(
+      "checkoutMsg",
+      "Confirme sua localização para concluir a entrega."
+    );
+
+    return;
+
+  }
+
+
+  const subtotal =
+  cart.reduce(
+    (total,item) =>
+    total +
+    Number(item.preco) *
+    item.qty,
+    0
+  );
+
+
+  const freight =
+  subtotal >= 100
+  ? 0
+  : 0;
+
+
+  const total =
+  subtotal + freight;
+
+
+  const order = {
+
+    customer_id:
+    user.id,
+
+    store_id:
+    cart[0].store_id,
+
+    status:
+    "pendente",
+
+    subtotal,
+
+    frete:
+    freight,
+
+    total,
+
+    endereco_entrega:
+    address +
+    (
+      $("reference")
+      .value
+      .trim()
+      ?
+      " — Ref.: " +
+      $("reference")
+      .value
+      .trim()
+      :
+      ""
+    ),
+
+    tipo_entrega:
+    deliveryType,
+
+    payment_method:
+    selectedPay,
+
+    payment_status:
+    "aguardando_pagamento",
+
+    cliente_latitude:
+    location?.lat ||
+    null,
+
+    cliente_longitude:
+    location?.lng ||
+    null,
+
+    localizacao_confirmada:
+    !!location,
+
+    localizacao_confirmada_at:
+    location
+    ?
+    new Date()
+    .toISOString()
+    :
+    null
+
+  };
+
+
+  const {
+    data:createdOrder,
+    error
+  } =
+  await sb
+  .from("orders")
+  .insert(order)
+  .select("id")
+  .single();
+
+
+  if(error){
+
+    setMessage(
+      "checkoutMsg",
+      "Não foi possível criar o pedido: " +
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  const items =
+  cart.map(
+    item => ({
+
+      order_id:
+      createdOrder.id,
+
+      product_id:
+      item.id,
+
+      quantidade:
+      item.qty,
+
+      preco_unitario:
+      Number(item.preco),
+
+      subtotal:
+      Number(item.preco) *
+      item.qty
+
+    })
+  );
+
+
+  const {
+    error:itemError
+  } =
+  await sb
+  .from("order_items")
+  .insert(items);
+
+
+  if(itemError){
+
+    setMessage(
+      "checkoutMsg",
+      "Pedido criado, mas houve erro nos itens: " +
+      itemError.message
+    );
+
+    return;
+
+  }
+
+
+  const {data:sessionData} =
+  await sb.auth.getSession();
+
+
+  const token =
+  sessionData.session
+  ?.access_token;
+
+
+  try{
+
+    const response =
+    await fetch(
+
+      SUPABASE_URL +
+      "/functions/v1/swift-service",
+
+      {
+
+        method:"POST",
+
+        headers:{
+
+          "Content-Type":
+          "application/json",
+
+          "Authorization":
+          "Bearer " + token,
+
+          "apikey":
+          SUPABASE_KEY
+
+        },
+
+        body:
+        JSON.stringify({
+
+          order_id:
+          createdOrder.id,
+
+          payment_method:
+          selectedPay,
+
+          embedded:true
+
+        })
+
+      }
+
+    );
+
+
+    const payment =
+    await response
+    .json()
+    .catch(
+      () => ({})
+    );
+
+
+    /* PIX */
+
+    if(
+      payment.qr_code_base64 ||
+      payment.qr_code
+    ){
+
+      $("pixResult")
+      .classList
+      .remove("hidden");
+
+
+      if(
+        payment.qr_code_base64
+      ){
+
+        $("pixQr").src =
+        "data:image/png;base64," +
+        payment.qr_code_base64;
+
+      }
+
+
+      $("pixCode").value =
+      payment.qr_code ||
+      payment.copy_paste ||
+      "";
+
+
+      setMessage(
+        "checkoutMsg",
+        "Pedido #" +
+        createdOrder.id +
+        " criado. Aguardando pagamento."
+      );
+
+
+      cart = [];
+
+      renderCart();
+
+      return;
+
+    }
+
+
+    /* BOLETO */
+
+    if(
+      payment.boleto_url ||
+      payment.barcode
+    ){
+
+      $("boletoResult")
+      .innerHTML =
+      `
+      <div class="field">
+
+        <label>
+          Linha digitável
+        </label>
+
+        <textarea
+          readonly
+          rows="3"
+        >${esc(payment.barcode || "")}</textarea>
+
+      </div>
+
+      ${
+        payment.boleto_url
+        ?
+        `
+        <button
+          class="btn"
+          onclick="window.open('${esc(payment.boleto_url)}','_blank')"
+        >
+          Abrir boleto
+        </button>
+        `
+        :
+        ""
+      }
+      `;
+
+
+      setMessage(
+        "checkoutMsg",
+        "Boleto do pedido #" +
+        createdOrder.id +
+        " gerado."
+      );
+
+
+      cart = [];
+
+      renderCart();
+
+      return;
+
+    }
+
+
+    /* CARTÃO */
+
+    if(
+      payment.card_status ||
+      payment.status
+    ){
+
+      setMessage(
+        "checkoutMsg",
+        "Pedido #" +
+        createdOrder.id +
+        " — pagamento: " +
+        (
+          payment.card_status ||
+          payment.status
+        )
+      );
+
+
+      cart = [];
+
+      renderCart();
+
+      return;
+
+    }
+
+
+    /*
+      O BACKEND ANTIGO PODE RETORNAR
+      CHECKOUT_URL.
+
+      NÃO REDIRECIONAMOS O CLIENTE.
+    */
+
+    if(
+      payment.checkout_url
+    ){
+
+      setMessage(
+        "checkoutMsg",
+        "Pedido #" +
+        createdOrder.id +
+        " criado. O módulo de pagamento interno ainda precisa ser conectado ao backend."
+      );
+
+      return;
+
+    }
+
+
+    setMessage(
+      "checkoutMsg",
+      "Pedido #" +
+      createdOrder.id +
+      " criado. O pagamento interno ainda precisa ser concluído no backend."
+    );
+
+
+  }catch(error){
+
+    setMessage(
+      "checkoutMsg",
+      "Pedido criado, mas não foi possível iniciar o pagamento."
+    );
+
+  }
+
 }
-session();loadCategories();loadProducts();renderCart();
+
+
+function copyPix(){
+
+  const code =
+  $("pixCode").value;
+
+
+  if(
+    navigator.clipboard
+  ){
+
+    navigator.clipboard
+    .writeText(code);
+
+  }
+
+}
+
+
+/* =====================================
+   MINHA CONTA
+===================================== */
+
+async function openAccount(
+  tab = "dados"
+){
+
+  if(!user){
+
+    openAuth();
+
+    return;
+
+  }
+
+
+  $("accountModal")
+  .classList
+  .remove("hidden");
+
+
+  $("accountEmail")
+  .textContent =
+  user.email || "";
+
+
+  $("accEmail")
+  .value =
+  user.email || "";
+
+
+  await loadProfile();
+
+  await loadOrders();
+
+  await loadAddresses();
+
+  await loadCoupons();
+
+
+  const button =
+  document.querySelector(
+    `[data-tab="${tab}"]`
+  );
+
+
+  accountTab(
+    tab,
+    button
+  );
+
+}
+
+
+function closeAccount(){
+
+  $("accountModal")
+  .classList
+  .add("hidden");
+
+}
+
+
+function accountTab(
+  name,
+  button
+){
+
+  document
+  .querySelectorAll(
+    ".account-section"
+  )
+  .forEach(
+    item => {
+
+      item.classList
+      .add("hidden");
+
+    }
+  );
+
+
+  document
+  .querySelectorAll(
+    ".account-tab"
+  )
+  .forEach(
+    item => {
+
+      item.classList
+      .remove("active");
+
+    }
+  );
+
+
+  $(
+    "acc-" + name
+  )
+  .classList
+  .remove("hidden");
+
+
+  if(button){
+
+    button.classList
+    .add("active");
+
+  }
+
+}
+
+
+async function loadProfile(){
+
+  if(!user){
+    return;
+  }
+
+
+  const {data} =
+  await sb
+  .from("profiles")
+  .select(
+    "nome,telefone"
+  )
+  .eq(
+    "id",
+    user.id
+  )
+  .maybeSingle();
+
+
+  $("accNome").value =
+  data?.nome ||
+  user.user_metadata?.nome ||
+  "";
+
+
+  $("accTelefone").value =
+  data?.telefone ||
+  user.user_metadata?.telefone ||
+  "";
+
+}
+
+
+async function saveProfile(){
+
+  if(!user){
+    return;
+  }
+
+
+  const {error} =
+  await sb
+  .from("profiles")
+  .upsert(
+    {
+
+      id:user.id,
+
+      nome:
+      $("accNome")
+      .value
+      .trim(),
+
+      telefone:
+      $("accTelefone")
+      .value
+      .trim()
+
+    },
+    {
+      onConflict:"id"
+    }
+  );
+
+
+  $("profileMsg")
+  .textContent =
+  error
+  ?
+  error.message
+  :
+  "Dados atualizados com sucesso.";
+
+}
+
+
+/* =====================================
+   ENDEREÇOS
+===================================== */
+
+async function loadAddresses(){
+
+  if(!user){
+    return;
+  }
+
+
+  const {data,error} =
+  await sb
+  .from("addresses")
+  .select("*")
+  .eq(
+    "user_id",
+    user.id
+  )
+  .limit(50);
+
+
+  if(error){
+
+    $("addressList")
+    .innerHTML =
+    `
+    <div class="placeholder">
+      Não foi possível carregar seus endereços.
+      <br><br>
+      ${esc(error.message)}
+    </div>
+    `;
+
+    return;
+
+  }
+
+
+  addressRows =
+  data || [];
+
+
+  if(!addressRows.length){
+
+    $("addressList")
+    .innerHTML =
+    `
+    <div class="placeholder">
+
+      Você ainda não cadastrou nenhum endereço.
+
+      <br><br>
+
+      <button
+        class="btn btn-primary"
+        onclick="newAddress()"
+      >
+        Cadastrar meu primeiro endereço
+      </button>
+
+    </div>
+    `;
+
+    return;
+
+  }
+
+
+  $("addressList")
+  .innerHTML =
+  addressRows
+  .map(
+    address => {
+
+      const street =
+      address.endereco ||
+      address.rua ||
+      address.logradouro ||
+      "";
+
+
+      const label =
+      address.nome ||
+      address.apelido ||
+      address.label ||
+      "Endereço";
+
+
+      const principal =
+      address.principal ||
+      address.is_default;
+
+
+      return `
+      <div class="account-card">
+
+        <div
+          style="
+          display:flex;
+          justify-content:space-between;
+          gap:12px;
+          align-items:flex-start;
+          "
+        >
+
+          <div>
+
+            <b>
+
+              ${esc(label)}
+
+              ${
+                principal
+                ?
+                " · Principal"
+                :
+                ""
+              }
+
+            </b>
+
+            <div
+              style="margin-top:6px"
+            >
+
+              ${esc(street)}
+
+              ${
+                address.numero
+                ?
+                ", " +
+                esc(address.numero)
+                :
+                ""
+              }
+
+            </div>
+
+            <div class="small">
+
+              ${esc(
+                address.bairro ||
+                ""
+              )}
+
+              ${address.bairro ? " · " : ""}
+
+              ${esc(
+                address.cidade ||
+                ""
+              )}
+
+              ${
+                address.estado
+                ?
+                " - " +
+                esc(address.estado)
+                :
+                ""
+              }
+
+              <br>
+
+              ${esc(
+                address.cep ||
+                ""
+              )}
+
+            </div>
+
+            ${
+              address.complemento
+              ?
+              `
+              <div class="small">
+                ${esc(address.complemento)}
+              </div>
+              `
+              :
+              ""
+            }
+
+          </div>
+
+
+          <div>
+
+            <button
+              class="btn"
+              onclick='editAddress(${JSON.stringify(address.id)})'
+            >
+              Editar
+            </button>
+
+            <button
+              class="btn"
+              onclick='deleteAddress(${JSON.stringify(address.id)})'
+            >
+              Excluir
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+      `;
+
+    }
+  )
+  .join("");
+
+}
+
+
+function newAddress(){
+
+  $("addressEditId").value =
+  "";
+
+  [
+    "addrLabel",
+    "addrCep",
+    "addrNumero",
+    "addrRua",
+    "addrBairro",
+    "addrCidade",
+    "addrEstado",
+    "addrComplemento"
+  ]
+  .forEach(
+    id => {
+
+      $(id).value = "";
+
+    }
+  );
+
+
+  $("addrPrincipal")
+  .checked =
+  addressRows.length === 0;
+
+
+  $("addressForm")
+  .classList
+  .remove("hidden");
+
+
+  setMessage(
+    "addressMsg",
+    ""
+  );
+
+}
+
+
+function cancelAddress(){
+
+  $("addressForm")
+  .classList
+  .add("hidden");
+
+  setMessage(
+    "addressMsg",
+    ""
+  );
+
+}
+
+
+function editAddress(id){
+
+  const address =
+  addressRows.find(
+    item =>
+    String(item.id) ===
+    String(id)
+  );
+
+
+  if(!address){
+    return;
+  }
+
+
+  $("addressEditId").value =
+  address.id;
+
+
+  $("addrLabel").value =
+  address.nome ||
+  address.apelido ||
+  address.label ||
+  "";
+
+
+  $("addrCep").value =
+  address.cep || "";
+
+
+  $("addrNumero").value =
+  address.numero || "";
+
+
+  $("addrRua").value =
+  address.endereco ||
+  address.rua ||
+  address.logradouro ||
+  "";
+
+
+  $("addrBairro").value =
+  address.bairro || "";
+
+
+  $("addrCidade").value =
+  address.cidade || "";
+
+
+  $("addrEstado").value =
+  address.estado || "";
+
+
+  $("addrComplemento").value =
+  address.complemento || "";
+
+
+  $("addrPrincipal")
+  .checked =
+  !!(
+    address.principal ||
+    address.is_default
+  );
+
+
+  $("addressForm")
+  .classList
+  .remove("hidden");
+
+}
+
+
+async function saveAddress(){
+
+  if(!user){
+    return;
+  }
+
+
+  const street =
+  $("addrRua")
+  .value
+  .trim();
+
+
+  const number =
+  $("addrNumero")
+  .value
+  .trim();
+
+
+  const city =
+  $("addrCidade")
+  .value
+  .trim();
+
+
+  const state =
+  $("addrEstado")
+  .value
+  .trim()
+  .toUpperCase();
+
+
+  if(
+    !street ||
+    !number ||
+    !city ||
+    !state
+  ){
+
+    setMessage(
+      "addressMsg",
+      "Preencha rua, número, cidade e estado."
+    );
+
+    return;
+
+  }
+
+
+  const id =
+  $("addressEditId")
+  .value;
+
+
+  let payload = {
+
+    user_id:
+    user.id,
+
+    endereco:
+    street,
+
+    numero:
+    number,
+
+    bairro:
+    $("addrBairro")
+    .value
+    .trim(),
+
+    cidade:
+    city,
+
+    estado:
+    state,
+
+    cep:
+    $("addrCep")
+    .value
+    .trim(),
+
+    complemento:
+    $("addrComplemento")
+    .value
+    .trim()
+
+  };
+
+
+  const label =
+  $("addrLabel")
+  .value
+  .trim();
+
+
+  if(label){
+
+    payload.nome =
+    label;
+
+  }
+
+
+  if(
+    $("addrPrincipal")
+    .checked
+  ){
+
+    payload.principal =
+    true;
+
+  }
+
+
+  let result;
+
+
+  if(id){
+
+    result =
+    await sb
+    .from("addresses")
+    .update(payload)
+    .eq(
+      "id",
+      id
+    )
+    .eq(
+      "user_id",
+      user.id
+    );
+
+  }else{
+
+    result =
+    await sb
+    .from("addresses")
+    .insert(payload);
+
+  }
+
+
+  /*
+    Caso a tabela atual ainda não tenha
+    as colunas nome/principal, tenta salvar
+    usando somente os campos básicos.
+  */
+
+  if(
+    result.error &&
+    /column|schema cache|principal|nome/i
+    .test(
+      result.error.message ||
+      ""
+    )
+  ){
+
+    payload = {
+
+      user_id:
+      user.id,
+
+      endereco:
+      street,
+
+      numero:
+      number,
+
+      bairro:
+      $("addrBairro")
+      .value
+      .trim(),
+
+      cidade:
+      city,
+
+      estado:
+      state,
+
+      cep:
+      $("addrCep")
+      .value
+      .trim(),
+
+      complemento:
+      $("addrComplemento")
+      .value
+      .trim()
+
+    };
+
+
+    if(id){
+
+      result =
+      await sb
+      .from("addresses")
+      .update(payload)
+      .eq(
+        "id",
+        id
+      )
+      .eq(
+        "user_id",
+        user.id
+      );
+
+    }else{
+
+      result =
+      await sb
+      .from("addresses")
+      .insert(payload);
+
+    }
+
+  }
+
+
+  if(result.error){
+
+    setMessage(
+      "addressMsg",
+      "Não foi possível salvar: " +
+      result.error.message
+    );
+
+    return;
+
+  }
+
+
+  setMessage(
+    "addressMsg",
+    "Endereço salvo com sucesso."
+  );
+
+
+  await loadAddresses();
+
+
+  setTimeout(
+    () => {
+
+      cancelAddress();
+
+    },
+    700
+  );
+
+}
+
+
+async function deleteAddress(id){
+
+  const confirmed =
+  confirm(
+    "Deseja excluir este endereço?"
+  );
+
+
+  if(!confirmed){
+    return;
+  }
+
+
+  const {error} =
+  await sb
+  .from("addresses")
+  .delete()
+  .eq(
+    "id",
+    id
+  )
+  .eq(
+    "user_id",
+    user.id
+  );
+
+
+  if(error){
+
+    alert(
+      "Não foi possível excluir: " +
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  await loadAddresses();
+
+}
+
+
+/* =====================================
+   PEDIDOS
+===================================== */
+
+async function loadOrders(){
+
+  if(!user){
+    return;
+  }
+
+
+  const {data,error} =
+  await sb
+  .from("orders")
+  .select(`
+    id,
+    status,
+    total,
+    payment_status,
+    tracking_code,
+    created_at
+  `)
+  .eq(
+    "customer_id",
+    user.id
+  )
+  .order(
+    "created_at",
+    {
+      ascending:false
+    }
+  )
+  .limit(50);
+
+
+  if(error){
+
+    $("ordersList")
+    .innerHTML =
+    `
+    <div class="placeholder">
+      ${esc(error.message)}
+    </div>
+    `;
+
+    return;
+
+  }
+
+
+  if(!data?.length){
+
+    $("ordersList")
+    .innerHTML =
+    `
+    <div class="placeholder">
+      Você ainda não possui pedidos.
+    </div>
+    `;
+
+    return;
+
+  }
+
+
+  $("ordersList")
+  .innerHTML =
+  data
+  .map(
+    order => {
+
+      return `
+      <div class="account-card">
+
+        <b>
+          Pedido #${order.id}
+        </b>
+
+        <div class="small">
+
+          ${
+            new Date(
+              order.created_at
+            )
+            .toLocaleString(
+              "pt-BR"
+            )
+          }
+
+          <br>
+
+          Status:
+          ${esc(order.status || "")}
+
+          <br>
+
+          Pagamento:
+          ${esc(
+            order.payment_status ||
+            ""
+          )}
+
+        </div>
+
+        <div
+          style="
+          margin-top:7px;
+          font-weight:700;
+          "
+        >
+          ${money(order.total)}
+        </div>
+
+        ${
+          order.tracking_code
+          ?
+          `
+          <div class="small">
+            Rastreio:
+            ${esc(order.tracking_code)}
+          </div>
+          `
+          :
+          ""
+        }
+
+      </div>
+      `;
+
+    }
+  )
+  .join("");
+
+}
+
+
+function openOrders(){
+
+  openAccount(
+    "pedidos"
+  );
+
+}
+
+
+/* =====================================
+   CUPONS
+===================================== */
+
+async function loadCoupons(){
+
+  const {data,error} =
+  await sb
+  .from("coupons")
+  .select("*")
+  .eq(
+    "ativo",
+    true
+  )
+  .limit(30);
+
+
+  if(
+    error ||
+    !data?.length
+  ){
+
+    $("couponsList")
+    .innerHTML =
+    `
+    <div class="placeholder">
+      Nenhum cupom disponível no momento.
+    </div>
+    `;
+
+    return;
+
+  }
+
+
+  $("couponsList")
+  .innerHTML =
+  data
+  .map(
+    coupon => {
+
+      return `
+      <div class="account-card">
+
+        <b>
+          ${esc(
+            coupon.codigo ||
+            "Cupom"
+          )}
+        </b>
+
+        <div class="small">
+
+          ${esc(
+            coupon.descricao ||
+            "Consulte as condições."
+          )}
+
+        </div>
+
+      </div>
+      `;
+
+    }
+  )
+  .join("");
+
+}
+
+
+/* =====================================
+   SEGURANÇA
+===================================== */
+
+async function sendPasswordReset(){
+
+  if(
+    !user?.email
+  ){
+    return;
+  }
+
+
+  const {error} =
+  await sb.auth
+  .resetPasswordForEmail(
+
+    user.email,
+
+    {
+      redirectTo:
+      location.origin + "/"
+    }
+
+  );
+
+
+  alert(
+    error
+    ?
+    error.message
+    :
+    "As instruções foram enviadas para seu e-mail."
+  );
+
+}
+
+
+/* =====================================
+   INICIALIZAÇÃO
+===================================== */
+
+session();
+
+loadCategories();
+
+loadProducts();
+
+renderCart();
+
 </script>
-</body><!-- cliente atualizado -->
+
+</body>
 </html>
-```
