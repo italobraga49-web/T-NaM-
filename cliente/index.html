@@ -83,6 +83,13 @@ footer{font-size:13px}
   .big-price{font-size:26px}
 }
 
+
+.cancel-options{display:grid;gap:8px;margin-top:12px}
+.cancel-option{display:flex;align-items:flex-start;gap:9px;border:1px solid var(--line);border-radius:9px;padding:11px;cursor:pointer;background:#fff}
+.cancel-option input{margin-top:2px}
+.cancel-note{font-size:12px;color:var(--muted);line-height:1.45}
+.cancel-btn{border-color:#fda29b;color:#b42318}
+.cancelled-badge{display:inline-block;margin-top:6px;padding:5px 8px;border-radius:999px;background:#fef3f2;color:#b42318;font-size:12px;font-weight:700}
 </style></head>
 <body>
 <div class="utility"><div class="utility-in"><span>Marketplace local • lojas e entregas em um só lugar</span><span>Compra protegida • acompanhe seu pedido</span></div></div>
@@ -102,12 +109,18 @@ footer{font-size:13px}
 
 <div id="authModal" class="modal hidden"><div class="box"><h2 id="authTitle">Entrar</h2><div class="small">Acesse sua conta de cliente.</div>
 <form id="loginForm" onsubmit="login(event)"><button type="button" class="google-btn" onclick="loginWithGoogle()"><span class="google-icon">G</span><span>Continuar com Google</span></button><div class="oauth-sep">ou entre com e-mail</div><div class="field"><label>E-mail</label><input id="loginEmail" type="email" required></div><div class="field"><label>Senha</label><input id="loginPassword" type="password" required></div><div class="auth-actions"><button class="btn primary">Entrar</button><button type="button" class="btn" onclick="showAuth('register')">Criar conta</button></div><button type="button" class="link" onclick="showAuth('recovery')">Esqueci minha senha</button></form>
-<form id="registerForm" class="hidden" onsubmit="register(event)"><div class="field"><label>Nome completo</label><input id="regName" required></div><div class="field"><label>Telefone</label><input id="regPhone" required></div><div class="field"><label>CPF</label><input id="regCpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" required oninput="formatCpfInput(this)"></div><div class="field"><label>Data de nascimento</label><input id="regBirth" type="date" required></div><div class="small" style="margin-top:8px">Cadastro disponível somente para pessoas com 18 anos ou mais.</div><div class="field"><label>E-mail</label><input id="regEmail" type="email" required></div><div class="field"><label>Senha</label><input id="regPassword" type="password" minlength="6" required></div><div class="auth-actions"><button class="btn primary">Criar conta</button><button type="button" class="btn" onclick="showAuth('login')">Voltar</button></div></form>
+<form id="registerForm" class="hidden" onsubmit="register(event)"><div class="field"><label>Nome completo</label><input id="regName" required></div><div class="field"><label>Telefone</label><input id="regPhone" type="tel" autocomplete="tel" placeholder="(00) 00000-0000" required></div><div class="field"><label>CPF</label><input autocomplete="off" id="regCpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" required oninput="formatCpfInput(this)"></div><div class="field"><label>Data de nascimento</label><input autocomplete="bday" id="regBirth" type="date" required></div><div class="small" style="margin-top:8px">Cadastro disponível somente para pessoas com 18 anos ou mais.</div><div class="field"><label>E-mail</label><input id="regEmail" type="email" required></div><div class="field"><label>Senha</label><input id="regPassword" type="password" minlength="6" required></div><div class="auth-actions"><button class="btn primary">Criar conta</button><button type="button" class="btn" onclick="showAuth('login')">Voltar</button></div></form>
 <form id="recoveryForm" class="hidden" onsubmit="recover(event)"><div class="field"><label>E-mail cadastrado</label><input id="recoveryEmail" type="email" required></div><div class="auth-actions"><button class="btn primary">Enviar link</button><button type="button" class="btn" onclick="showAuth('login')">Voltar</button></div></form>
 <form id="passwordForm" class="hidden" onsubmit="updatePassword(event)"><div class="field"><label>Nova senha</label><input id="newPassword" type="password" minlength="6" required></div><div class="field"><label>Confirmar senha</label><input id="newPassword2" type="password" minlength="6" required></div><button class="btn primary" style="width:100%;margin-top:16px">Salvar nova senha</button></form><div id="authMsg" class="msg hidden"></div><button class="link" style="width:100%" onclick="closeAuth()">Fechar</button></div></div>
 
 <div id="accountModal" class="modal hidden"><div class="box wide"><div style="display:flex;justify-content:space-between;align-items:center"><div><h2>Minha conta</h2><div id="accountEmail" class="small"></div></div><button class="btn" onclick="closeAccount()">Fechar</button></div><div class="tabs"><button class="tab active" data-tab="dados" onclick="accountTab('dados',this)">Meus dados</button><button class="tab" data-tab="enderecos" onclick="accountTab('enderecos',this)">Endereços</button><button class="tab" data-tab="pedidos" onclick="accountTab('pedidos',this)">Pedidos</button><button class="tab" data-tab="cupons" onclick="accountTab('cupons',this)">Cupons</button><button class="tab" data-tab="avaliacoes" onclick="accountTab('avaliacoes',this)">Avaliações</button><button class="tab" data-tab="devolucoes" onclick="accountTab('devolucoes',this)">Devoluções</button><button class="tab" data-tab="seguranca" onclick="accountTab('seguranca',this)">Segurança</button></div>
-<section id="acc-dados" class="acc"><div class="field"><label>Nome</label><input id="accNome"></div><div class="field"><label>E-mail</label><input id="accEmail" disabled></div><div class="field"><label>Telefone</label><input id="accTelefone"></div><button class="btn primary" style="margin-top:12px" onclick="saveProfile()">Salvar alterações</button><div id="profileMsg" class="small" style="margin-top:8px"></div></section>
+<section id="acc-dados" class="acc"><h3 style="margin-top:0">Dados pessoais</h3><div class="small">Confira os dados vinculados à sua conta TáNaMão.</div>
+<div class="field"><label>Nome completo</label><input id="accNome" autocomplete="name"></div>
+<div class="field"><label>E-mail</label><input id="accEmail" disabled></div>
+<div class="field"><label>Telefone</label><input id="accTelefone" autocomplete="tel"></div>
+<div class="filter-row"><div class="field"><label>CPF</label><input id="accCpf" disabled></div><div class="field"><label>Data de nascimento</label><input id="accNascimento" type="date" disabled></div></div>
+<div class="notice">CPF e data de nascimento são dados pessoais da conta e não podem ser alterados diretamente por esta tela.</div>
+<button class="btn primary" style="margin-top:12px" onclick="saveProfile()">Salvar nome e telefone</button><div id="profileMsg" class="small" style="margin-top:8px"></div></section>
 <section id="acc-enderecos" class="acc hidden">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px">
 <div><h3 style="margin:0">Meus endereços</h3><div class="small">Cadastre os locais onde deseja receber seus pedidos.</div></div>
@@ -132,6 +145,23 @@ footer{font-size:13px}
 
 <div id="productModal" class="modal hidden"><div class="box wide"><div style="display:flex;justify-content:flex-end"><button class="btn" onclick="closeProduct()">Fechar</button></div><div id="productDetail"></div></div></div>
 <div id="storeModal" class="modal hidden"><div class="box wide"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h2 style="margin:0">Loja</h2><button class="btn" onclick="closeStore()">Fechar</button></div><div id="storeDetail"></div></div></div>
+
+
+<div id="cancelOrderModal" class="modal hidden"><div class="box">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><h2>Cancelar pedido</h2><div id="cancelOrderNumber" class="small"></div></div><button class="btn" onclick="closeCancelOrder()">Fechar</button></div>
+<p class="cancel-note">Selecione o motivo do cancelamento. Depois de confirmar, a solicitação ficará registrada no pedido.</p>
+<div class="cancel-options">
+<label class="cancel-option"><input type="radio" name="cancelReason" value="pedido_por_engano"><span><b>Fiz o pedido por engano</b></span></label>
+<label class="cancel-option"><input type="radio" name="cancelReason" value="nao_quero_mais"><span><b>Não quero mais o produto</b></span></label>
+<label class="cancel-option"><input type="radio" name="cancelReason" value="forma_pagamento"><span><b>Problema ou mudança na forma de pagamento</b></span></label>
+<label class="cancel-option"><input type="radio" name="cancelReason" value="endereco_incorreto"><span><b>Endereço de entrega incorreto</b></span></label>
+<label class="cancel-option"><input type="radio" name="cancelReason" value="prazo_entrega"><span><b>Prazo de entrega não atende</b></span></label>
+<label class="cancel-option"><input type="radio" name="cancelReason" value="outro"><span><b>Outro motivo</b></span></label>
+</div>
+<div class="field"><label>Observação (opcional)</label><textarea id="cancelOrderNote" rows="3" maxlength="500" placeholder="Conte mais detalhes, se desejar."></textarea></div>
+<div id="cancelOrderMsg" class="msg hidden"></div>
+<button id="confirmCancelBtn" class="btn cancel-btn" style="width:100%;margin-top:14px" onclick="confirmCancelOrder()">Confirmar cancelamento</button>
+</div></div>
 
 <div id="checkoutModal" class="modal hidden"><div class="box wide"><div style="display:flex;justify-content:space-between;align-items:center"><h2>Finalizar compra</h2><button class="btn" onclick="closeCheckout()">Fechar</button></div><div class="steps"><div class="step on">1. Endereço</div><div class="step on">2. Entrega</div><div class="step on">3. Pagamento</div></div>
 <div class="field"><label>Endereço de entrega</label><select id="checkoutAddress" onchange="quoteFreight()"><option value="">Carregando endereços...</option></select></div>
@@ -165,6 +195,7 @@ function showAuth(mode){["loginForm","registerForm","recoveryForm","passwordForm
 async function login(e){e.preventDefault();const {error}=await sb.auth.signInWithPassword({email:$("loginEmail").value.trim(),password:$("loginPassword").value});if(error)return setMsg("authMsg",error.message);closeAuth();await session()}
 async function loginWithGoogle(){setMsg("authMsg","Abrindo o Google...");const {error}=await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:"https://tanamao-cliente.vercel.app/"}});if(error)setMsg("authMsg","Não foi possível entrar com Google: "+error.message)}
 function normalizeCpf(v){return String(v||"").replace(/\D/g,"")}
+function formatCpfDisplay(v){const n=normalizeCpf(v);return n.length===11?n.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,"$1.$2.$3-$4"):String(v||"")}
 function formatCpfInput(el){let v=normalizeCpf(el.value).slice(0,11);v=v.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");el.value=v}
 function validCpf(v){const cpf=normalizeCpf(v);if(!/^\d{11}$/.test(cpf)||/^(\d)\1{10}$/.test(cpf))return false;for(let t=9;t<11;t++){let sum=0;for(let i=0;i<t;i++)sum+=Number(cpf[i])*(t+1-i);let d=(sum*10)%11;if(d===10)d=0;if(d!==Number(cpf[t]))return false}return true}
 function isAdult18(v){if(!/^\d{4}-\d{2}-\d{2}$/.test(v))return false;const [y,m,d]=v.split("-").map(Number),b=new Date(y,m-1,d),n=new Date();if(b.getFullYear()!=y||b.getMonth()!=m-1||b.getDate()!=d)return false;let a=n.getFullYear()-y;if(n.getMonth()<m-1||(n.getMonth()==m-1&&n.getDate()<d))a--;return a>=18}
@@ -338,7 +369,7 @@ function copyPix(){navigator.clipboard?.writeText($("pixCode").value)}
 async function openAccount(tab="dados"){if(!user)return openAuth();$("accountModal").classList.remove("hidden");$("accountEmail").textContent=user.email||"";$("accEmail").value=user.email||"";await loadProfile();await loadOrders();await loadAddresses();await loadCoupons();const btn=document.querySelector(`[data-tab="${tab}"]`);accountTab(tab,btn)}
 function closeAccount(){$("accountModal").classList.add("hidden")}
 function accountTab(name,btn){document.querySelectorAll(".acc").forEach(x=>x.classList.add("hidden"));document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));$("acc-"+name).classList.remove("hidden");if(btn)btn.classList.add("active")}
-async function loadProfile(){const {data}=await sb.from("profiles").select("nome,telefone").eq("id",user.id).maybeSingle();$("accNome").value=data?.nome||user.user_metadata?.nome||user.user_metadata?.full_name||user.user_metadata?.name||"";$("accTelefone").value=data?.telefone||user.user_metadata?.telefone||""}
+async function loadProfile(){const {data,error}=await sb.from("profiles").select("nome,telefone,cpf,data_nascimento").eq("id",user.id).maybeSingle();const m=user.user_metadata||{};$("accNome").value=data?.nome||m.nome||m.full_name||m.name||"";$("accTelefone").value=data?.telefone||m.telefone||"";$("accCpf").value=formatCpfDisplay(data?.cpf||m.cpf||"");$("accNascimento").value=data?.data_nascimento||m.data_nascimento||"";if(error)$("profileMsg").textContent="Não foi possível carregar todos os dados pessoais: "+error.message}
 async function saveProfile(){const {error}=await sb.from("profiles").upsert({id:user.id,nome:$("accNome").value.trim(),telefone:$("accTelefone").value.trim()},{onConflict:"id"});$("profileMsg").textContent=error?error.message:"Dados atualizados."}
 const CUSTOMER_FLOW=[
  {key:"realizado",label:"Pedido realizado",msg:"Recebemos seu pedido."},
@@ -364,12 +395,42 @@ function trackingHtml(o,d){
  return `<div id="track-${o.id}" class="tracking-card hidden"><b>Rastreio do pedido${o.tracking_code?" · "+esc(o.tracking_code):""}</b><div class="tracking-line">${CUSTOMER_FLOW.map((x,i)=>`<div class="track-item ${i<idx?"done":i===idx?"current":""}"><b>${esc(x.label)}</b><span>${i===idx?esc(x.msg):i<idx?"Etapa concluída.":"Aguardando esta etapa."}</span></div>`).join("")}</div></div>`;
 }
 function toggleTracking(id){const e=$("track-"+id);if(e)e.classList.toggle("hidden")}
+
+let cancellingOrderId=null;
+function canCancelOrder(o,d){
+ const s=String(o.status||"").toLowerCase(),ds=String(d?.status||"").toLowerCase();
+ if(["cancelado","entregue","em_rota","saiu_para_entrega"].includes(s))return false;
+ if(["pedido_coletado","saiu_para_entrega","em_rota","entregue"].includes(ds))return false;
+ return true;
+}
+function openCancelOrder(id){
+ cancellingOrderId=id;$("cancelOrderNumber").textContent="Pedido #"+id;$("cancelOrderNote").value="";
+ document.querySelectorAll('input[name="cancelReason"]').forEach(x=>x.checked=false);
+ setMsg("cancelOrderMsg","");$("cancelOrderModal").classList.remove("hidden");
+}
+function closeCancelOrder(){$("cancelOrderModal").classList.add("hidden");cancellingOrderId=null}
+const CANCEL_LABELS={pedido_por_engano:"Fiz o pedido por engano",nao_quero_mais:"Não quero mais o produto",forma_pagamento:"Problema ou mudança na forma de pagamento",endereco_incorreto:"Endereço de entrega incorreto",prazo_entrega:"Prazo de entrega não atende",outro:"Outro motivo"};
+async function confirmCancelOrder(){
+ if(!cancellingOrderId||!user)return;
+ const chosen=document.querySelector('input[name="cancelReason"]:checked');
+ if(!chosen)return setMsg("cancelOrderMsg","Selecione o motivo do cancelamento.");
+ const reason=chosen.value,note=$("cancelOrderNote").value.trim();
+ $("confirmCancelBtn").disabled=true;setMsg("cancelOrderMsg","Registrando cancelamento...");
+ // Atualiza somente pedido pertencente ao cliente logado. RLS do banco deve reforçar esta regra.
+ const payload={status:"cancelado",cancel_reason:CANCEL_LABELS[reason]+(note?" — "+note:""),cancelled_at:new Date().toISOString(),cancelled_by:user.id};
+ const {error}=await sb.from("orders").update(payload).eq("id",cancellingOrderId).eq("customer_id",user.id);
+ $("confirmCancelBtn").disabled=false;
+ if(error)return setMsg("cancelOrderMsg","Não foi possível cancelar: "+error.message);
+ setMsg("cancelOrderMsg","Pedido cancelado com sucesso.");
+ setTimeout(async()=>{closeCancelOrder();await loadOrders()},600);
+}
+
 async function loadOrders(){
  const {data,error}=await sb.from("orders").select("id,status,total,payment_status,tracking_code,created_at,tipo_entrega").eq("customer_id",user.id).order("created_at",{ascending:false}).limit(50);
  if(error){$("ordersList").innerHTML=`<div class="placeholder">${esc(error.message)}</div>`;return}
  const orders=data||[];let deliveries={};
  if(orders.length){const dr=await sb.from("deliveries").select("order_id,status").in("order_id",orders.map(x=>x.id));if(!dr.error)(dr.data||[]).forEach(d=>deliveries[String(d.order_id)]=d)}
- $("ordersList").innerHTML=orders.length?orders.map(o=>{const d=deliveries[String(o.id)],idx=customerTrackIndex(o,d),cur=CUSTOMER_FLOW[idx];return `<div class="account-card"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><b>Pedido #${o.id}</b><div class="small">${new Date(o.created_at).toLocaleString("pt-BR")}</div><div style="margin-top:5px"><b>${esc(cur.label)}</b> · ${esc(cur.msg)}</div></div><div style="text-align:right"><b>${money(o.total)}</b><br><button class="btn primary" style="margin-top:8px" onclick="toggleTracking(${o.id})">Rastrear pedido</button></div></div>${trackingHtml(o,d)}</div>`}).join(""):'<div class="placeholder">Você ainda não possui pedidos.</div>';
+ $("ordersList").innerHTML=orders.length?orders.map(o=>{const d=deliveries[String(o.id)],idx=customerTrackIndex(o,d),cur=CUSTOMER_FLOW[idx];return `<div class="account-card"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><b>Pedido #${o.id}</b><div class="small">${new Date(o.created_at).toLocaleString("pt-BR")}</div><div style="margin-top:5px"><b>${esc(cur.label)}</b> · ${esc(cur.msg)}</div></div><div style="text-align:right"><b>${money(o.total)}</b><br><button class="btn primary" style="margin-top:8px" onclick="toggleTracking(${o.id})">Rastrear pedido</button>${String(o.status||"").toLowerCase()==="cancelado"?`<br><span class="cancelled-badge">Pedido cancelado</span>`:canCancelOrder(o,d)?`<br><button class="btn cancel-btn" style="margin-top:7px" onclick="openCancelOrder(${o.id})">Cancelar pedido</button>`:""}</div></div>${trackingHtml(o,d)}</div>`}).join(""):'<div class="placeholder">Você ainda não possui pedidos.</div>';
 }
 let addressRows=[];
 async function loadAddresses(){
