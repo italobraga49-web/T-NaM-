@@ -1,10 +1,21 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TáNaMão Vendedor</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>:root{--p:#ff5a1f;--bg:#f6f7fb;--text:#1d2433;--muted:#6b7280;--line:#e5e7eb}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}button,input,textarea{font:inherit}.hidden{display:none!important}.top{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:10px 24px}.logo{height:50px;max-width:180px;object-fit:contain}.layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 72px)}aside{background:#fff;border-right:1px solid var(--line);padding:20px 12px}.nav{width:100%;border:0;background:transparent;text-align:left;padding:13px 14px;border-radius:10px;margin:3px 0;cursor:pointer}.nav.active,.nav:hover{background:#fff1eb;color:#d84a12;font-weight:700}main{padding:24px;max-width:1200px;width:100%;margin:auto}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:18px}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat b{font-size:25px;display:block;margin-top:7px}label{font-size:13px;font-weight:700;display:block;margin:4px 0 6px}input,textarea{width:100%;padding:12px;border:1px solid #d6dae1;border-radius:10px}.full{grid-column:1/-1}.btn{border:0;border-radius:10px;padding:12px 16px;cursor:pointer;font-weight:700}.primary{background:var(--p);color:#fff}.secondary{background:#eef0f4}.msg{margin-top:12px;padding:11px;border-radius:9px;background:#f3f4f6}.auth{max-width:500px;margin:45px auto}.tabs{display:flex;gap:8px;margin-bottom:16px}.tabs button{flex:1}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:14px}.badge{padding:5px 8px;border-radius:999px;background:#f2f4f7;font-size:12px}.section{display:none}.section.active{display:block}@media(max-width:800px){.layout{grid-template-columns:1fr}aside{display:flex;overflow:auto;padding:8px}.nav{min-width:max-content}.stats,.grid{grid-template-columns:1fr}main{padding:14px}}
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TáNaMão Vendedor</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script><style>:root{--p:#ff5a1f;--bg:#f6f7fb;--text:#1d2433;--muted:#6b7280;--line:#e5e7eb}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}button,input,textarea{font:inherit}.hidden{display:none!important}.top{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:10px 24px}.logo{height:50px;max-width:180px;object-fit:contain}.layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 72px)}aside{background:#fff;border-right:1px solid var(--line);padding:20px 12px}.nav{width:100%;border:0;background:transparent;text-align:left;padding:13px 14px;border-radius:10px;margin:3px 0;cursor:pointer}.nav.active,.nav:hover{background:#fff1eb;color:#d84a12;font-weight:700}main{padding:24px;max-width:1200px;width:100%;margin:auto}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:18px}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat b{font-size:25px;display:block;margin-top:7px}label{font-size:13px;font-weight:700;display:block;margin:4px 0 6px}input,textarea{width:100%;padding:12px;border:1px solid #d6dae1;border-radius:10px}.full{grid-column:1/-1}.btn{border:0;border-radius:10px;padding:12px 16px;cursor:pointer;font-weight:700}.primary{background:var(--p);color:#fff}.secondary{background:#eef0f4}.msg{margin-top:12px;padding:11px;border-radius:9px;background:#f3f4f6}.auth{max-width:500px;margin:45px auto}.tabs{display:flex;gap:8px;margin-bottom:16px}.tabs button{flex:1}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:14px}.badge{padding:5px 8px;border-radius:999px;background:#f2f4f7;font-size:12px}.section{display:none}.section.active{display:block}@media(max-width:800px){.layout{grid-template-columns:1fr}aside{display:flex;overflow:auto;padding:8px}.nav{min-width:max-content}.stats,.grid{grid-template-columns:1fr}main{padding:14px}}
 .preview{width:100%;max-width:220px;height:150px;object-fit:contain;background:#f3f4f6;border:1px dashed var(--line);border-radius:12px;margin-top:8px}
 .media-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}.media-card{border:1px solid var(--line);border-radius:10px;padding:8px;background:#fff}.media-card img,.media-card video{width:100%;height:110px;object-fit:cover;border-radius:8px;background:#f3f4f6}.media-card button{width:100%;margin-top:6px}
 .variant-row{display:grid;grid-template-columns:1.2fr 1fr 1fr .8fr .8fr auto;gap:8px;align-items:end;padding:10px 0;border-bottom:1px solid var(--line)}.variant-row input,.variant-row select{width:100%;padding:10px;border:1px solid #d6dae1;border-radius:9px}.hint{font-size:12px;color:var(--muted);margin-top:5px}.uploadbox{border:1px dashed #cfd4dc;border-radius:12px;padding:14px;background:#fafafa;margin-top:8px}.store-brand{display:grid;grid-template-columns:1fr 1fr;gap:14px}.followers{font-weight:700;color:var(--p)}
 @media(max-width:800px){.media-grid{grid-template-columns:repeat(2,1fr)}.variant-row{grid-template-columns:1fr 1fr}.variant-row .full-mobile{grid-column:1/-1}.store-brand{grid-template-columns:1fr}}
 
 .order-card{border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0;background:#fff}.order-flow{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.flow-step{padding:7px 9px;border-radius:999px;background:#f3f4f6;font-size:12px}.flow-step.done{background:#ecfdf3;color:#067647;font-weight:700}.flow-step.current{background:#fff1eb;color:#d84a12;font-weight:700}.order-actions{display:flex;gap:8px;flex-wrap:wrap}.rule{padding:14px 0;border-bottom:1px solid var(--line)}.rule:last-child{border:0}.rule h3{margin:0 0 6px}.ok{color:#067647}.danger{color:#b42318}.finance-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.finance-box{border:1px solid var(--line);border-radius:12px;padding:15px;background:#fafafa}.finance-box b{display:block;font-size:20px;margin-top:5px}@media(max-width:800px){.finance-grid{grid-template-columns:1fr}.table.orders-table thead{display:none}.table.orders-table,.table.orders-table tbody,.table.orders-table tr,.table.orders-table td{display:block;width:100%}.table.orders-table tr{border-bottom:1px solid var(--line);padding:10px 0}.table.orders-table td{border:0;padding:5px 0}}
+
+.label-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:18px;z-index:9999}
+.label-sheet{width:100%;max-width:720px;background:#fff;border-radius:16px;padding:22px;max-height:92vh;overflow:auto}
+.shipping-label{border:2px solid #111;padding:18px;background:#fff;color:#111;font-family:Arial,sans-serif}
+.shipping-label .label-head{display:flex;justify-content:space-between;gap:16px;align-items:center;border-bottom:2px solid #111;padding-bottom:12px;margin-bottom:12px}
+.shipping-label .label-brand{font-size:28px;font-weight:900}.shipping-label .tracking{font-size:20px;font-weight:900;letter-spacing:1px}
+.shipping-label .label-grid{display:grid;grid-template-columns:1fr 180px;gap:18px}.shipping-label .label-block{border-bottom:1px solid #bbb;padding:10px 0}
+.shipping-label .label-block b{display:block;font-size:12px;text-transform:uppercase;margin-bottom:4px}.shipping-label #labelQr{width:170px;height:170px}
+.label-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+@media(max-width:650px){.shipping-label .label-grid{grid-template-columns:1fr}.shipping-label #labelQr{width:150px;height:150px}}
+@media print{body *{visibility:hidden!important}#labelModal,#labelModal *{visibility:visible!important}#labelModal{position:absolute;inset:0;background:#fff;padding:0}.label-sheet{max-width:none;border-radius:0;padding:0}.label-buttons{display:none!important}.shipping-label{position:absolute;left:0;top:0;width:100%;border:2px solid #111}}
 </style></head><body>
 <div id="authView" class="auth"><div class="card"><div style="text-align:center"><img src="1001111814.png" class="logo" alt="TáNaMão"><h2>Central do Vendedor</h2><p class="muted">Entre ou cadastre sua loja.</p></div><div class="tabs"><button class="btn primary" onclick="showAuth('login')">Entrar</button><button class="btn secondary" onclick="showAuth('cadastro')">Cadastrar</button></div><div id="loginBox"><label>E-mail</label><input id="loginEmail" type="email"><label>Senha</label><input id="loginSenha" type="password"><button class="btn primary" style="width:100%;margin-top:14px" onclick="login()">Entrar</button></div><div id="cadBox" class="hidden"><div class="grid"><div><label>Seu nome</label><input id="cadNome"></div><div><label>Telefone</label><input id="cadTelefone"></div><div class="full"><label>Nome da loja</label><input id="cadLoja"></div><div><label>E-mail</label><input id="cadEmail" type="email"></div><div><label>Senha</label><input id="cadSenha" type="password" minlength="6"></div></div><button class="btn primary" style="width:100%;margin-top:14px" onclick="cadastrar()">Criar conta de vendedor</button></div><div id="authMsg"></div></div></div>
 <div id="app" class="hidden"><header class="top"><img src="1001111814.png" class="logo" alt="TáNaMão"><div><span id="lojaTopo" class="badge">Minha loja</span> <button class="btn secondary" onclick="logout()">Sair</button></div></header><div class="layout"><aside><button class="nav active" onclick="go('inicio',this)">Visão geral</button><button class="nav" onclick="go('loja',this)">Minha loja</button><button class="nav" onclick="go('produtos',this)">Produtos</button><button class="nav" onclick="go('pedidos',this)">Pedidos</button><button class="nav" onclick="go('financeiro',this)">Financeiro</button><button class="nav" onclick="go('cupons',this)">Cupons</button><button class="nav" onclick="go('regras',this)">Regras e políticas</button></aside><main>
@@ -16,7 +27,7 @@
 </div><div class="full"><span class="followers">Seguidores: <span id="lojaSeguidores">0</span></span></div></div><button class="btn primary" style="margin-top:15px" onclick="salvarLoja()">Salvar dados da loja</button><div id="lojaMsg"></div></div></section>
 <section id="produtos" class="section"><h1>Produtos</h1>
 <div class="card"><h3>Novo produto</h3><div class="grid">
-<div><label>Nome</label><input id="prodNome"></div><div><label>Preço base (R$)</label><input id="prodPreco" type="number" min="0" step="0.01"></div>
+<div><label>Categoria *</label><select id="prodCategoria" onchange="atualizarSubcategorias()" style="width:100%;padding:12px;border:1px solid #d6dae1;border-radius:10px"><option value="">Selecione uma categoria</option><option>Eletrônicos e Tecnologia</option><option>Roupas e Moda</option><option>Calçados</option><option>Bolsas e Acessórios</option><option>Beleza e Cuidados Pessoais</option><option>Casa, Móveis e Decoração</option><option>Cozinha e Utilidades</option><option>Mercado e Alimentos</option><option>Bebidas</option><option>Bebês e Infantil</option><option>Brinquedos e Jogos</option><option>Esportes e Lazer</option><option>Pet Shop</option><option>Livros e Papelaria</option><option>Ferramentas e Construção</option><option>Automotivo</option><option>Jardim e Área Externa</option><option>Instrumentos Musicais</option><option>Presentes e Festas</option><option>Artesanato</option><option>Outros</option></select></div><div><label>Subcategoria</label><select id="prodSubcategoria" disabled style="width:100%;padding:12px;border:1px solid #d6dae1;border-radius:10px"><option value="">Primeiro selecione a categoria</option></select></div><div><label>Nome</label><input id="prodNome"></div><div><label>Preço base (R$)</label><input id="prodPreco" type="number" min="0" step="0.01"></div>
 <div><label>Estoque base</label><input id="prodEstoque" type="number" min="0" value="0"></div>
 <div><label>URL da imagem principal</label><input id="prodImagem" placeholder="https://..."></div>
 <div class="full"><label>Descrição</label><textarea id="prodDescricao"></textarea></div>
@@ -36,7 +47,7 @@
 </div>
 <div id="variantList"></div>
 <button class="btn primary" style="margin-top:15px" onclick="salvarProduto()">Cadastrar produto completo</button><div id="prodMsg"></div></div>
-<div class="card"><table class="table"><thead><tr><th>Produto</th><th>Preço</th><th>Estoque</th><th>Variações</th><th>Mídias</th><th>Status</th></tr></thead><tbody id="prodLista"></tbody></table></div></section>
+<div class="card"><table class="table"><thead><tr><th>Produto</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Variações</th><th>Mídias</th><th>Status</th></tr></thead><tbody id="prodLista"></tbody></table></div></section>
 <section id="pedidos" class="section"><h1>Pedidos</h1><p class="muted">O pagamento é confirmado pelo sistema de pagamentos. Depois da confirmação, atualize somente as etapas operacionais permitidas.</p><div id="pedidoLista"></div></section>
 <section id="financeiro" class="section"><h1>Financeiro e recebimentos</h1>
 <div class="card"><h3>Mercado Pago</h3><p class="muted">Os pagamentos e repasses devem ser processados pelo provedor conectado. Nenhuma credencial privada fica neste arquivo.</p><span id="mpStatus" class="badge">Verificando...</span></div>
@@ -52,6 +63,28 @@
 <div class="rule"><h3>Fiscalização</h3><p class="muted">Anúncios podem ser suspensos ou removidos quando violarem as regras. Violações graves ou repetidas podem levar à limitação ou suspensão da conta, observadas as políticas e a legislação aplicável.</p></div>
 </div></section>
 </main></div></div>
+
+<div id="labelModal" class="label-modal hidden" onclick="if(event.target===this)fecharEtiqueta()">
+  <div class="label-sheet">
+    <div id="shippingLabel" class="shipping-label">
+      <div class="label-head"><div><div class="label-brand">TáNaMão</div><div>ETIQUETA DE ENTREGA</div></div><div style="text-align:right"><div>Pedido <b id="labelOrder">#—</b></div><div id="labelTracking" class="tracking">TNM—</div></div></div>
+      <div class="label-grid">
+        <div>
+          <div class="label-block"><b>Destinatário</b><span id="labelCustomer">—</span></div>
+          <div class="label-block"><b>Endereço / destino</b><span id="labelAddress">—</span></div>
+          <div class="label-block"><b>Modalidade</b><span id="labelDelivery">—</span></div>
+          <div class="label-block"><b>Remetente</b><span id="labelStore">—</span></div>
+        </div>
+        <div style="text-align:center"><canvas id="labelQr"></canvas><div style="font-size:11px;margin-top:6px">Escaneie para identificar o pedido</div></div>
+      </div>
+    </div>
+    <div class="label-buttons">
+      <button class="btn primary" onclick="window.print()">Imprimir / Salvar em PDF</button>
+      <button class="btn secondary" onclick="fecharEtiqueta()">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL='https://sfzfoavesiintdyoxkca.supabase.co',SUPABASE_KEY='sb_publishable_wM4A1etSRHTcUpE4qUXb-A_suN-jnep';const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);let usuario=null,loja=null;let variantDrafts=[];const MEDIA_BUCKET='marketplace-media';const $=x=>document.getElementById(x),money=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});function msg(id,t){$(id).innerHTML='<div class="msg">'+t+'</div>'}function showAuth(t){$('loginBox').classList.toggle('hidden',t!=='login');$('cadBox').classList.toggle('hidden',t!=='cadastro')}function go(id,b){document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active')}
 async function cadastrar(){const nome=$('cadNome').value.trim(),telefone=$('cadTelefone').value.trim(),nomeLoja=$('cadLoja').value.trim(),email=$('cadEmail').value.trim(),password=$('cadSenha').value;if(!nome||!nomeLoja||!email||password.length<6)return msg('authMsg','Preencha os dados obrigatórios.');const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:'https://tanamao-vendedor.vercel.app/',data:{tipo:'vendedor',nome,telefone,loja:nomeLoja}}});if(error)return msg('authMsg','Erro: '+error.message);if(!data.session)return msg('authMsg','Cadastro realizado. Confirme seu e-mail e depois entre.');await iniciar(data.session.user)}
@@ -120,15 +153,40 @@ function renderVariants(){
  <div><label>Preço (opcional)</label><input type="number" min="0" step=".01" value="${v.preco||''}" placeholder="Preço base" oninput="updateVariant(${i},'preco',this.value)"></div>
  <button class="btn secondary full-mobile" type="button" onclick="removeVariant(${i})">Remover</button></div>`).join(''):'<div class="muted">Nenhuma variação adicionada. Produtos sem variação continuam permitidos.</div>';
 }
+
+const SUBCATEGORIAS={
+'Eletrônicos e Tecnologia':['Celulares e Smartphones','Computadores e Notebooks','Tablets','TV e Vídeo','Áudio e Som','Fones de Ouvido','Smartwatches e Relógios Inteligentes','Games e Consoles','Câmeras e Fotografia','Acessórios para Celular','Acessórios para Computador','Cabos e Carregadores','Outros Eletrônicos'],
+'Roupas e Moda':['Camisetas e Blusas','Camisas','Calças','Shorts e Bermudas','Vestidos','Saias','Conjuntos','Moda Masculina','Moda Feminina','Moda Infantil','Moda Íntima','Moda Praia','Roupas Esportivas','Outras Roupas'],
+'Calçados':['Tênis','Sapatos','Sandálias','Chinelos','Botas','Sapatilhas','Calçados Infantis','Calçados Esportivos','Outros Calçados'],
+'Bolsas e Acessórios':['Bolsas','Mochilas','Carteiras','Cintos','Bonés e Chapéus','Óculos','Relógios','Joias e Bijuterias','Acessórios de Moda','Outros Acessórios'],
+'Beleza e Cuidados Pessoais':['Perfumes','Maquiagem','Cuidados com o Cabelo','Cuidados com a Pele','Higiene Pessoal','Barbearia','Unhas','Acessórios de Beleza','Outros'],
+'Casa, Móveis e Decoração':['Móveis','Quarto','Sala','Banheiro','Decoração','Iluminação','Organização','Cama, Mesa e Banho','Eletrodomésticos','Outros'],
+'Cozinha e Utilidades':['Panelas','Pratos e Louças','Copos e Taças','Talheres','Potes e Recipientes','Utensílios de Cozinha','Eletroportáteis','Organização de Cozinha','Outros'],
+'Mercado e Alimentos':['Mercearia','Arroz, Feijão e Grãos','Massas','Biscoitos e Snacks','Doces e Chocolates','Carnes e Frios','Frutas e Verduras','Congelados','Temperos','Outros Alimentos'],
+'Bebidas':['Água','Refrigerantes','Sucos','Energéticos','Café','Chás','Outras Bebidas'],
+'Bebês e Infantil':['Roupas para Bebê','Fraldas','Higiene do Bebê','Mamadeiras','Alimentação Infantil','Carrinhos','Berços','Acessórios para Bebê','Outros'],
+'Brinquedos e Jogos':['Brinquedos Infantis','Bonecas','Carrinhos','Jogos de Tabuleiro','Jogos Educativos','Quebra-cabeças','Brinquedos Eletrônicos','Outros'],
+'Esportes e Lazer':['Futebol','Academia e Fitness','Ciclismo','Corrida','Camping','Pesca','Acessórios Esportivos','Outros'],
+'Pet Shop':['Ração','Petiscos','Higiene Animal','Brinquedos para Pets','Coleiras e Guias','Camas e Casas','Acessórios','Outros'],
+'Livros e Papelaria':['Livros','Cadernos','Canetas e Lápis','Material Escolar','Material de Escritório','Agendas','Outros'],
+'Ferramentas e Construção':['Ferramentas Manuais','Ferramentas Elétricas','Materiais de Construção','Elétrica','Hidráulica','Pintura','Equipamentos','Outros'],
+'Automotivo':['Peças Automotivas','Acessórios para Carros','Acessórios para Motos','Som Automotivo','Limpeza Automotiva','Ferramentas Automotivas','Outros'],
+'Jardim e Área Externa':['Plantas','Vasos','Ferramentas de Jardim','Móveis Externos','Churrasco','Piscina','Outros'],
+'Instrumentos Musicais':['Violão e Guitarra','Teclados','Percussão','Áudio Profissional','Microfones','Acessórios Musicais','Outros'],
+'Presentes e Festas':['Presentes','Decoração de Festa','Aniversário','Balões','Lembrancinhas','Embalagens','Outros'],
+'Artesanato':['Materiais para Artesanato','Produtos Artesanais','Costura','Crochê e Tricô','Personalizados','Outros'],
+'Outros':['Outros Produtos']};
+function atualizarSubcategorias(){const c=$('prodCategoria').value,s=$('prodSubcategoria');if(!c||!SUBCATEGORIAS[c]){s.disabled=true;s.innerHTML='<option value="">Primeiro selecione a categoria</option>';return}s.disabled=false;s.innerHTML='<option value="">Selecione uma subcategoria</option>'+SUBCATEGORIAS[c].map(x=>`<option value="${x}">${x}</option>`).join('')}
+
 async function salvarProduto(){
  try{
-  const nome=$('prodNome').value.trim(),preco=Number($('prodPreco').value),estoque=Number($('prodEstoque').value||0),descricao=$('prodDescricao').value.trim()||null;
+  const categoria=$('prodCategoria').value,subcategoria=$('prodSubcategoria').value||null,nome=$('prodNome').value.trim(),preco=Number($('prodPreco').value),estoque=Number($('prodEstoque').value||0),descricao=$('prodDescricao').value.trim()||null;if(!categoria)return msg('prodMsg','Selecione a categoria do produto.');
   if(!nome||!Number.isFinite(preco)||preco<0)return msg('prodMsg','Informe nome e preço.');
   const files=[...($('prodArquivos').files||[])];
   const extraUrls=$('prodMediaUrls').value.split(/\n/).map(x=>x.trim()).filter(Boolean);
   if(files.length+extraUrls.length>7)return msg('prodMsg','O produto pode ter no máximo 7 fotos/vídeos adicionais.');
   msg('prodMsg','Cadastrando produto e enviando mídias...');
-  const pr=await sb.from('products').insert({store_id:loja.id,nome,preco,estoque,descricao,imagem_url:$('prodImagem').value.trim()||null,ativo:true}).select('id').single();
+  const pr=await sb.from('products').insert({store_id:loja.id,categoria,subcategoria,nome,preco,estoque,descricao,imagem_url:$('prodImagem').value.trim()||null,ativo:true}).select('id').single();
   if(pr.error)throw pr.error;const productId=pr.data.id;
   const media=[];
   if($('prodImagem').value.trim())media.push({product_id:productId,url:$('prodImagem').value.trim(),tipo:'imagem',ordem:0,principal:true});
@@ -138,24 +196,50 @@ async function salvarProduto(){
   const vars=variantDrafts.filter(v=>String(v.valor||'').trim()).map(v=>({product_id:productId,tipo:v.tipo,nome:v.nome,valor:String(v.valor).trim(),cor:String(v.cor||'').trim()||null,estoque:Number(v.estoque||0),preco:v.preco===''||v.preco==null?null:Number(v.preco),ativo:true}));
   if(vars.length){const vr=await sb.from('product_variants').insert(vars);if(vr.error)throw vr.error}
   msg('prodMsg','Produto completo cadastrado com sucesso.');
-  ['prodNome','prodPreco','prodDescricao','prodImagem','prodMediaUrls'].forEach(id=>$(id).value='');$('prodEstoque').value='0';$('prodArquivos').value='';$('prodMediaPreview').innerHTML='';variantDrafts=[];renderVariants();await carregarProdutos();
+  ['prodNome','prodPreco','prodDescricao','prodImagem','prodMediaUrls'].forEach(id=>$(id).value='');$('prodCategoria').value='';$('prodSubcategoria').innerHTML='<option value="">Primeiro selecione a categoria</option>';$('prodSubcategoria').disabled=true;$('prodEstoque').value='0';$('prodArquivos').value='';$('prodMediaPreview').innerHTML='';variantDrafts=[];renderVariants();await carregarProdutos();
  }catch(e){msg('prodMsg','Erro: '+e.message)}
 }
 async function carregarProdutos(){
- const r=await sb.from('products').select('id,nome,preco,estoque,ativo').eq('store_id',loja.id).order('created_at',{ascending:false}),a=r.data||[];
+ const r=await sb.from('products').select('id,nome,categoria,subcategoria,preco,estoque,ativo').eq('store_id',loja.id).order('created_at',{ascending:false}),a=r.data||[];
  $('nProdutos').textContent=a.length;
  let counts={};
  if(a.length){const ids=a.map(x=>x.id);const [vr,mr]=await Promise.all([sb.from('product_variants').select('product_id').in('product_id',ids),sb.from('product_media').select('product_id').in('product_id',ids)]);for(const p of ids)counts[p]={v:(vr.data||[]).filter(x=>String(x.product_id)===String(p)).length,m:(mr.data||[]).filter(x=>String(x.product_id)===String(p)).length}}
- $('prodLista').innerHTML=a.length?a.map(p=>`<tr><td>${p.nome}</td><td>${money(p.preco)}</td><td>${p.estoque??0}</td><td>${counts[p.id]?.v||0}</td><td>${counts[p.id]?.m||0}</td><td>${p.ativo?'Ativo':'Inativo'}</td></tr>`).join(''):'<tr><td colspan="6">Nenhum produto.</td></tr>';
+ $('prodLista').innerHTML=a.length?a.map(p=>`<tr><td>${p.nome}</td><td><b>${p.categoria||'Sem categoria'}</b>${p.subcategoria?`<div class="hint">${p.subcategoria}</div>`:''}</td><td>${money(p.preco)}</td><td>${p.estoque??0}</td><td>${counts[p.id]?.v||0}</td><td>${counts[p.id]?.m||0}</td><td>${p.ativo?'Ativo':'Inativo'}</td></tr>`).join(''):'<tr><td colspan="7">Nenhum produto.</td></tr>';
 }
 const ORDER_FLOW=['aguardando_pagamento','pagamento_confirmado','preparando','preparado','aguardando_entregador','em_rota','entregue'];
 function orderLabel(s){return ({pendente:'Aguardando pagamento',aguardando_pagamento:'Aguardando pagamento',confirmado:'Pagamento confirmado',pagamento_confirmado:'Pagamento confirmado',preparando:'Preparando',preparado:'Pedido preparado',aguardando_entregador:'Aguardando entregador/coleta',enviado:'Aguardando entregador/coleta',em_rota:'Em rota de entrega',entregue:'Entregue',cancelado:'Cancelado'})[s]||s||'—'}
 function effectiveOrderStatus(o){if(o.payment_status!=='pago'&&o.payment_status!=='approved')return 'aguardando_pagamento';if(['pendente','confirmado','aguardando_pagamento','pagamento_confirmado'].includes(o.status))return 'pagamento_confirmado';return o.status}
 function flowHtml(o){const s=effectiveOrderStatus(o),idx=ORDER_FLOW.indexOf(s);return ORDER_FLOW.map((x,i)=>`<span class="flow-step ${i<idx?'done':i===idx?'current':''}">${orderLabel(x)}</span>`).join('')}
-function orderActions(o){const s=effectiveOrderStatus(o);if(s==='pagamento_confirmado')return `<button class="btn primary" onclick="mudarStatusPedido(${o.id},'preparando')">Iniciar preparação</button>`;if(s==='preparando')return `<button class="btn primary" onclick="mudarStatusPedido(${o.id},'preparado')">Marcar como preparado</button>`;if(s==='preparado')return `<button class="btn primary" onclick="mudarStatusPedido(${o.id},'aguardando_entregador')">Disponibilizar para coleta/entrega</button>`;return ''}
+function labelButton(o){return ['pago','approved'].includes(o.payment_status)?`<button class="btn secondary" onclick="abrirEtiqueta(${o.id})">🏷️ Etiqueta</button>`:''}
+function orderActions(o){const s=effectiveOrderStatus(o),et=labelButton(o);if(s==='pagamento_confirmado')return `${et}<button class="btn primary" onclick="mudarStatusPedido(${o.id},'preparando')">Iniciar preparação</button>`;if(s==='preparando')return `${et}<button class="btn primary" onclick="mudarStatusPedido(${o.id},'preparado')">Marcar como preparado</button>`;if(s==='preparado')return `${et}<button class="btn primary" onclick="mudarStatusPedido(${o.id},'aguardando_entregador')">Disponibilizar para coleta/entrega</button>`;return et}
 async function mudarStatusPedido(id,status){const r=await sb.from('orders').update({status}).eq('id',id).eq('store_id',loja.id);if(r.error)return alert('Não foi possível atualizar: '+r.error.message);await carregarPedidos()}
+
+function fecharEtiqueta(){$('labelModal').classList.add('hidden')}
+function formatEndereco(v){
+ if(!v)return 'Endereço não informado';
+ if(typeof v==='string'){try{v=JSON.parse(v)}catch(e){return v}}
+ if(typeof v==='object')return [v.rua||v.endereco,v.numero,v.complemento,v.bairro,v.cidade,v.estado||v.uf,v.cep].filter(Boolean).join(', ');
+ return String(v);
+}
+async function abrirEtiqueta(id){
+ const r=await sb.from('orders').select('id,store_id,customer_id,payment_status,tipo_entrega,tracking_code,endereco_entrega').eq('id',id).eq('store_id',loja.id).single();
+ if(r.error)return alert('Não foi possível carregar a etiqueta: '+r.error.message);
+ const o=r.data;
+ if(!['pago','approved'].includes(o.payment_status))return alert('A etiqueta só fica disponível após a confirmação do pagamento.');
+ if(!o.tracking_code)return alert('Pagamento confirmado, mas o código TNM ainda não foi gerado. Verifique o gatilho SQL de rastreio.');
+ let nomeCliente='Cliente';
+ if(o.customer_id){const pr=await sb.from('profiles').select('nome').eq('id',o.customer_id).maybeSingle();if(pr.data?.nome)nomeCliente=pr.data.nome}
+ $('labelOrder').textContent='#'+o.id;$('labelTracking').textContent=o.tracking_code;$('labelCustomer').textContent=nomeCliente;
+ $('labelAddress').textContent=o.tipo_entrega==='retirada'?'RETIRADA NA LOJA':formatEndereco(o.endereco_entrega);
+ $('labelDelivery').textContent=o.tipo_entrega==='retirada'?'Retirada na loja':'Entrega local';
+ $('labelStore').textContent=loja.nome||'Loja TáNaMão';
+ const payload=JSON.stringify({plataforma:'TaNaMao',pedido:o.id,rastreio:o.tracking_code});
+ const canvas=$('labelQr');if(window.QRCode)await QRCode.toCanvas(canvas,payload,{width:170,margin:1});
+ $('labelModal').classList.remove('hidden');
+}
+
 async function carregarPedidos(){
- const r=await sb.from('orders').select('id,status,total,subtotal,frete,created_at,payment_status,tipo_entrega').eq('store_id',loja.id).order('created_at',{ascending:false}),a=r.data||[];
+ const r=await sb.from('orders').select('id,status,total,subtotal,frete,created_at,payment_status,tipo_entrega,tracking_code,customer_id,endereco_entrega').eq('store_id',loja.id).order('created_at',{ascending:false}),a=r.data||[];
  $('nPedidos').textContent=a.length;$('nPendentes').textContent=a.filter(x=>effectiveOrderStatus(x)!=='entregue').length;
  const gross=a.filter(x=>['pago','approved'].includes(x.payment_status)).reduce((s,x)=>s+Number(x.total||0),0);$('nVendas').textContent=money(gross);
  $('pedidoLista').innerHTML=a.length?a.map(o=>`<div class="order-card"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><b>Pedido #${o.id}</b><div class="muted">${new Date(o.created_at).toLocaleString('pt-BR')} · ${o.tipo_entrega==='retirada'?'Retirada':'Entrega local'}</div></div><div style="text-align:right"><b>${money(o.total)}</b><div class="muted">Pagamento: ${orderLabel(effectiveOrderStatus(o)==='aguardando_pagamento'?'aguardando_pagamento':'pagamento_confirmado')}</div></div></div><div class="order-flow">${flowHtml(o)}</div><div class="order-actions">${orderActions(o)}</div></div>`).join(''):'<div class="card">Nenhum pedido.</div>';
