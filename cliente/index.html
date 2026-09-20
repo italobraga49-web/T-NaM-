@@ -435,8 +435,21 @@ async function quoteFreight(){
  showFreightLoading("Calculando entrega de "+storeIds.length+" loja(s)...");
  const quotes={};let totalFrete=0,totalDist=0,maxDur=0;
  for(const storeId of storeIds){
-   const {data,error}=await sb.functions.invoke("cotacao-frete",{body:{address_id:selectedCheckoutAddress.id,store_id:storeId}});
-   if(error||!data?.success||data.entrega_disponivel===false)return showFreightError(data?.error||data?.motivo||error?.message||"Não foi possível calcular o frete.");
+   const {data,error}=await sb.functions.invoke("cotacao-frete",{body:{address_id:selectedCheckoutAddress.id,store_id:Number(storeId)}});
+   if(error){
+     let detalhe="";
+     try{
+       const response=error.context;
+       if(response && typeof response.clone==="function"){
+         const payload=await response.clone().json();
+         detalhe=payload?.error||payload?.motivo||"";
+       }
+     }catch(_){}
+     return showFreightError(detalhe||data?.error||data?.motivo||error?.message||"Não foi possível calcular o frete.");
+   }
+   if(!data?.success||data.entrega_disponivel===false){
+     return showFreightError(data?.error||data?.motivo||"Não foi possível calcular o frete.");
+   }
    quotes[storeId]=data;totalFrete+=Number(data.frete||0);totalDist+=Number(data.distancia_km||0);maxDur=Math.max(maxDur,Number(data.duracao_min||0));
  }
  freightQuote={success:true,entrega_disponivel:true,por_loja:quotes,frete:Math.round(totalFrete*100)/100,distancia_km:totalDist,duracao_min:maxDur,frete_gratis:totalFrete===0};
