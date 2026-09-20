@@ -260,40 +260,69 @@ function flowHtml(o){const s=effectiveOrderStatus(o),idx=ORDER_FLOW.indexOf(s);r
 function orderActions(o){const s=effectiveOrderStatus(o);if(s==='pagamento_confirmado')return `<button class="btn primary" onclick="mudarStatusPedido(${o.id},'preparando')">Iniciar preparação</button>`;if(s==='preparando')return `<button class="btn primary" onclick="mudarStatusPedido(${o.id},'preparado')">Marcar como preparado</button>`;if(s==='preparado')return `<button class="btn primary" onclick="mudarStatusPedido(${o.id},'aguardando_entregador')">Disponibilizar para coleta/entrega</button>`;return ''}
 async function mudarStatusPedido(id,status){const r=await sb.from('orders').update({status}).eq('id',id).eq('store_id',loja.id);if(r.error)return alert('Não foi possível atualizar: '+r.error.message);await carregarPedidos()}
 async function carregarPedidos(){
- $('pedidoLista').innerHTML='<div class="card">Carregando pedidos...</div>';
- let r=await sb.from('orders').select('*').eq('store_id',loja.id).order('created_at',{ascending:false});
- if(r.error){
-   $('pedidoLista').innerHTML='<div class="card danger"><b>Não foi possível carregar os pedidos desta loja.</b><div class="muted" style="margin-top:6px">'+esc(r.error.message)+'</div><div class="muted" style="margin-top:6px">Loja ID: '+esc(String(loja.id))+'</div></div>';
-   $('nPedidos').textContent='0';$('nPendentes').textContent='0';return;
+ const box=$('pedidoLista');
+ const etapa=t=>{if(box)box.innerHTML='<div class="card"><b>Carregando pedidos...</b><div class="muted" style="margin-top:8px">'+esc(t)+'</div></div>'};
+ const falha=(etapaNome,e)=>{
+   const detalhe=e?.message||String(e||'Erro desconhecido');
+   if(box)box.innerHTML='<div class="card danger"><b>Falha ao carregar pedidos</b><div style="margin-top:8px"><b>Etapa:</b> '+esc(etapaNome)+'</div><div class="muted" style="margin-top:6px">'+esc(detalhe)+'</div><div class="muted" style="margin-top:6px">Loja ID: '+esc(String(loja?.id||'—'))+'</div></div>';
+   $('nPedidos').textContent='0';$('nPendentes').textContent='0';
+ };
+ const limite=(promise,nome,ms=12000)=>Promise.race([
+   promise,
+   new Promise((_,reject)=>setTimeout(()=>reject(new Error('Tempo limite excedido ao consultar '+nome+'. Verifique RLS, conexão e a consulta no Supabase.')),ms))
+ ]);
+ try{
+   if(!loja?.id)throw new Error('A loja autenticada não possui ID.');
+   etapa('1/4 — consultando orders para a loja '+loja.id);
+   const r=await limite(sb.from('orders').select('*').eq('store_id',loja.id).order('created_at',{ascending:false}),'orders');
+   if(r.error)throw new Error('orders: '+r.error.message);
+   const a=r.data||[];
+
+   $('nPedidos').textContent=a.length;
+   $('nPendentes').textContent=a.filter(x=>effectiveOrderStatus(x)!=='entregue').length;
+   const gross=a.filter(x=>['pago','approved'].includes(String(x.payment_status||'').toLowerCase())).reduce((v,x)=>v+Number(x.total||0),0);
+   $('nVendas').textContent=money(gross);
+   if(!a.length){
+     box.innerHTML='<div class="card"><b>Nenhum pedido encontrado para esta loja.</b><div class="muted" style="margin-top:7px">Loja ID: '+esc(String(loja.id))+'</div><div class="muted" style="margin-top:5px">Se o cliente já criou um pedido, confira se o registro em orders possui este mesmo store_id.</div></div>';
+     if($('sellerGross'))$('sellerGross').textContent=money(gross);
+     return;
+   }
+
+   etapa('2/4 — carregando itens dos '+a.length+' pedido(s)');
+   const ids=a.map(x=>x.id);
+   let ir=await limite(sb.from('order_items').select('id,order_id,product_id,quantidade,preco_unitario,subtotal,products(id,nome,imagem_url)').in('order_id',ids),'order_items');
+   if(ir.error){
+     ir=await limite(sb.from('order_items').select('id,order_id,product_id,quantidade,preco_unitario,subtotal').in('order_id',ids),'order_items (consulta simples)');
+     if(ir.error)throw new Error('order_items: '+ir.error.message);
+   }
+   const itens=ir.data||[];
+   const porPedido={};itens.forEach(i=>(porPedido[i.order_id]??=[]).push(i));
+
+   etapa('3/4 — carregando dados dos clientes');
+   const clientes={};const customerIds=[...new Set(a.map(x=>x.customer_id).filter(Boolean))];
+   if(customerIds.length){
+     let pr=await limite(sb.from('profiles').select('id,nome,telefone,cpf').in('id',customerIds),'profiles');
+     if(pr.error)pr=await limite(sb.from('profiles').select('id,nome,telefone').in('id',customerIds),'profiles (consulta simples)');
+     // profiles é complemento: snapshots do próprio pedido continuam funcionando se RLS impedir.
+     if(!pr.error)(pr.data||[]).forEach(x=>clientes[x.id]=x);
+   }
+
+   etapa('4/4 — montando os pedidos na tela');
+   const enderecoTexto=x=>{if(!x)return'Não informado';if(typeof x==='string'){try{x=JSON.parse(x)}catch(e){return esc(x)}}return esc([x.rua||x.endereco,x.numero,x.complemento,x.bairro,x.cidade,x.estado||x.uf,x.cep].filter(Boolean).join(', '))};
+   box.innerHTML=a.map(o=>{
+     const c=clientes[o.customer_id]||{},nome=o.cliente_nome||c.nome||'Cliente',tel=o.cliente_telefone||c.telefone||'Não informado',cpf=o.cliente_cpf||c.cpf||'Não informado',ps=porPedido[o.id]||[];
+     const produtos=ps.length?ps.map(i=>`<div class="order-product-row">${i.products?.imagem_url?`<img class="order-product-img" src="${esc(i.products.imagem_url)}">`:`<div class="order-product-img"></div>`}<div><strong>${esc(i.products?.nome||'Produto')}</strong><div class="order-product-id">ID do produto: ${esc(String(i.product_id||i.products?.id||'—'))}</div><div>Quantidade: ${i.quantidade||0} × ${money(i.preco_unitario||0)}</div></div><strong>${money(i.subtotal||0)}</strong></div>`).join(''):'<div style="padding:10px" class="muted">Itens não disponíveis.</div>';
+     return `<div class="order-card"><div class="order-head"><div><div class="order-id">Pedido #${esc(String(o.id))}</div><div class="muted" style="font-size:11px">${o.created_at?new Date(o.created_at).toLocaleString('pt-BR'):'—'}</div></div><div class="order-total">${money(o.total)}<div class="muted" style="font-size:11px">${esc(o.payment_status||'aguardando_pagamento')}</div></div></div>
+      <div class="order-content"><div class="order-info-grid">
+       <div class="order-info"><div class="order-info-title">Cliente</div><strong>${esc(nome)}</strong><div>Contato: ${esc(tel)}</div><div class="cpf-private">CPF: ${esc(cpf)}</div><div>ID cliente: ${esc(String(o.customer_id||'—'))}</div><div class="privacy-note">Dados exibidos somente para atendimento deste pedido.</div></div>
+       <div class="order-info"><div class="order-info-title">Entrega</div><strong>${o.tipo_entrega==='retirada'?'Retirada na loja':'Endereço de entrega'}</strong><div>${o.tipo_entrega==='retirada'?'Cliente fará a retirada na loja.':enderecoTexto(o.endereco_entrega)}</div></div>
+       <div class="order-info"><div class="order-info-title">Rastreio</div><div class="order-track">${esc(o.tracking_code||'Gerado após confirmação do pagamento')}</div><div>Frete: ${money(o.frete||0)}</div><div>Pagamento: ${esc(o.payment_method||'—')}</div></div>
+      </div><div class="order-products"><div class="order-products-title">Produtos deste pedido</div>${produtos}</div><div class="order-flow">${flowHtml(o)}</div><div class="order-actions">${orderActions(o)}<button class="btn secondary" onclick='visualizarEtiqueta(${JSON.stringify(o)})'>Visualizar etiqueta</button></div></div></div>`;
+   }).join('');
+   if($('sellerGross'))$('sellerGross').textContent=money(gross);
+ }catch(e){
+   falha('carregarPedidos',e);
  }
- const a=r.data||[];
- $('nPedidos').textContent=a.length;$('nPendentes').textContent=a.filter(x=>effectiveOrderStatus(x)!=='entregue').length;
- const gross=a.filter(x=>['pago','approved'].includes(x.payment_status)).reduce((s,x)=>s+Number(x.total||0),0);$('nVendas').textContent=money(gross);
- const ids=a.map(x=>x.id); let itens=[];
- if(ids.length){
-   let ir=await sb.from('order_items').select('id,order_id,product_id,quantidade,preco_unitario,subtotal,products(id,nome,imagem_url)').in('order_id',ids);
-   if(ir.error)ir=await sb.from('order_items').select('id,order_id,product_id,quantidade,preco_unitario,subtotal').in('order_id',ids);
-   itens=ir.data||[];
- }
- const porPedido={};itens.forEach(i=>(porPedido[i.order_id]??=[]).push(i));
- const clientes={};const customerIds=[...new Set(a.map(x=>x.customer_id).filter(Boolean))];
- if(customerIds.length){
-   let pr=await sb.from('profiles').select('id,nome,telefone,cpf').in('id',customerIds);
-   if(pr.error)pr=await sb.from('profiles').select('id,nome,telefone').in('id',customerIds);
-   (pr.data||[]).forEach(x=>clientes[x.id]=x);
- }
- const enderecoTexto=x=>{if(!x)return'Não informado';if(typeof x==='string'){try{x=JSON.parse(x)}catch(e){return esc(x)}}return esc([x.rua||x.endereco,x.numero,x.complemento,x.bairro,x.cidade,x.estado||x.uf,x.cep].filter(Boolean).join(', '))};
- $('pedidoLista').innerHTML=a.length?a.map(o=>{
-   const c=clientes[o.customer_id]||{}, nome=o.cliente_nome||c.nome||'Cliente', tel=o.cliente_telefone||c.telefone||'Não informado', cpf=o.cliente_cpf||c.cpf||'Não informado', status=effectiveOrderStatus(o), ps=porPedido[o.id]||[];
-   const produtos=ps.length?ps.map(i=>`<div class="order-product-row">${i.products?.imagem_url?`<img class="order-product-img" src="${esc(i.products.imagem_url)}">`:`<div class="order-product-img"></div>`}<div><strong>${esc(i.products?.nome||'Produto')}</strong><div class="order-product-id">ID do produto: ${esc(String(i.product_id||i.products?.id||'—'))}</div><div>Quantidade: ${i.quantidade||0} × ${money(i.preco_unitario||0)}</div></div><strong>${money(i.subtotal||0)}</strong></div>`).join(''):'<div style="padding:10px" class="muted">Itens não disponíveis.</div>';
-   return `<div class="order-card"><div class="order-head"><div><div class="order-id">Pedido #${o.id}</div><div class="muted" style="font-size:11px">${new Date(o.created_at).toLocaleString('pt-BR')}</div></div><div class="order-total">${money(o.total)}<div class="muted" style="font-size:11px">${esc(o.payment_status||'aguardando_pagamento')}</div></div></div>
-   <div class="order-content"><div class="order-info-grid">
-    <div class="order-info"><div class="order-info-title">Cliente</div><strong>${esc(nome)}</strong><div>Contato: ${esc(tel)}</div><div class="cpf-private">CPF: ${esc(cpf)}</div><div>ID cliente: ${esc(String(o.customer_id||'—'))}</div><div class="privacy-note">Dados exibidos somente para atendimento deste pedido.</div></div>
-    <div class="order-info"><div class="order-info-title">Entrega</div><strong>${o.tipo_entrega==='retirada'?'Retirada na loja':'Endereço de entrega'}</strong><div>${o.tipo_entrega==='retirada'?'Cliente fará a retirada na loja.':enderecoTexto(o.endereco_entrega)}</div></div>
-    <div class="order-info"><div class="order-info-title">Rastreio</div><div class="order-track">${esc(o.tracking_code||'Gerado após confirmação do pagamento')}</div><div>Frete: ${money(o.frete||0)}</div><div>Pagamento: ${esc(o.payment_method||'—')}</div></div>
-   </div><div class="order-products"><div class="order-products-title">Produtos deste pedido</div>${produtos}</div><div class="order-flow">${flowHtml(o)}</div><div class="order-actions">${orderActions(o)}<button class="btn secondary" onclick='visualizarEtiqueta(${JSON.stringify(o)})'>Visualizar etiqueta</button></div></div></div>`;
- }).join(''):'<div class="card">Nenhum pedido.</div>';
- if($('sellerGross'))$('sellerGross').textContent=money(gross);
 }
 
 function fecharEtiqueta(){$('etiquetaModal').classList.add('hidden')}
