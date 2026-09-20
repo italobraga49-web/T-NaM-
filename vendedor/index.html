@@ -8,11 +8,11 @@
 
 /* ===== PEDIDO COMPLETO DO CLIENTE ===== */
 .order-products{margin-top:10px;border:1px solid var(--line);border-radius:11px;overflow:hidden}.order-products-title{padding:8px 10px;background:#f5f6f8;font-size:11px;font-weight:900;text-transform:uppercase}.order-product-row{display:grid;grid-template-columns:54px 1fr auto;gap:9px;align-items:center;padding:8px 10px;border-top:1px solid var(--line)}.order-product-row:first-of-type{border-top:0}.order-product-img{width:54px;height:54px;border-radius:8px;object-fit:cover;background:#eee}.order-product-id{font-family:monospace;font-size:11px;color:#666}.cpf-private{font-size:12px}.privacy-note{font-size:10px;color:#777;margin-top:5px}
-</style></head><body>
+.cep-status{font-size:12px;margin-top:6px;font-weight:700}.cep-ok{color:#067647}.cep-erro{color:#b42318}.cep-buscando{color:#6b7280}.cep-lock{background:#f5f6f8;color:#4b5563}</style></head><body>
 <div id="authView" class="auth"><div class="card"><div style="text-align:center"><img src="1001111814.png" class="logo" alt="TáNaMão"><h2>Central do Vendedor</h2><p class="muted">Entre ou cadastre sua loja.</p></div><div class="tabs"><button class="btn primary" onclick="showAuth('login')">Entrar</button><button class="btn secondary" onclick="showAuth('cadastro')">Cadastrar</button></div><div id="loginBox"><label>E-mail</label><input id="loginEmail" type="email"><label>Senha</label><input id="loginSenha" type="password"><button class="btn primary" style="width:100%;margin-top:14px" onclick="login()">Entrar</button></div><div id="cadBox" class="hidden"><div class="grid"><div><label>Seu nome</label><input id="cadNome"></div><div><label>Telefone</label><input id="cadTelefone"></div><div class="full"><label>Nome da loja</label><input id="cadLoja"></div><div><label>E-mail</label><input id="cadEmail" type="email"></div><div><label>Senha</label><input id="cadSenha" type="password" minlength="6"></div></div><button class="btn primary" style="width:100%;margin-top:14px" onclick="cadastrar()">Criar conta de vendedor</button></div><div id="authMsg"></div></div></div>
 <div id="app" class="hidden"><header class="top"><img src="1001111814.png" class="logo" alt="TáNaMão"><div><span id="lojaTopo" class="badge">Minha loja</span> <button class="btn secondary" onclick="logout()">Sair</button></div></header><div class="layout"><aside><button class="nav active" onclick="go('inicio',this)">Visão geral</button><button class="nav" onclick="go('loja',this)">Minha loja</button><button class="nav" onclick="go('produtos',this)">Produtos</button><button class="nav" onclick="go('pedidos',this)">Pedidos</button><button class="nav" onclick="go('financeiro',this)">Financeiro</button><button class="nav" onclick="go('cupons',this)">Cupons</button><button class="nav" onclick="go('regras',this)">Regras e políticas</button></aside><main>
 <section id="inicio" class="section active"><h1>Central do Vendedor</h1><p class="muted">Acompanhe sua operação no TáNaMão.</p><div class="stats"><div class="card stat">Produtos<b id="nProdutos">0</b></div><div class="card stat">Pedidos<b id="nPedidos">0</b></div><div class="card stat">Pendentes<b id="nPendentes">0</b></div><div class="card stat">Vendas<b id="nVendas">R$ 0,00</b></div></div></section>
-<section id="loja" class="section"><h1>Minha loja</h1><div class="card"><div class="grid"><div><label>Nome da loja</label><input id="lojaNome"></div><div><label>Telefone</label><input id="lojaTelefone"></div><div><label>CEP</label><input id="lojaCep"></div><div><label>Endereço / Rua</label><input id="lojaEndereco"></div><div><label>Número</label><input id="lojaNumero"></div><div><label>Bairro</label><input id="lojaBairro"></div><div><label>Cidade</label><input id="lojaCidade"></div><div><label>Estado (UF)</label><input id="lojaEstado" maxlength="2"></div><div class="full"><label>Complemento</label><input id="lojaComplemento"></div><div class="full"><label>Descrição</label><textarea id="lojaDescricao"></textarea></div>
+<section id="loja" class="section"><h1>Minha loja</h1><div class="card"><div class="grid"><div><label>Nome da loja</label><input id="lojaNome"></div><div><label>Telefone</label><input id="lojaTelefone"></div><div><label>CEP</label><input id="lojaCep" inputmode="numeric" maxlength="9" placeholder="00000-000" oninput="formatarCepLoja(this)" onblur="buscarCepVendedor()"><div id="cepStatus" class="cep-status"></div></div><div><label>Endereço / Rua</label><input id="lojaEndereco"></div><div><label>Número</label><input id="lojaNumero"></div><div><label>Bairro</label><input id="lojaBairro"></div><div><label>Cidade</label><input id="lojaCidade" class="cep-lock" readonly></div><div><label>Estado (UF)</label><input id="lojaEstado" class="cep-lock" maxlength="2" readonly></div><div class="full"><label>Complemento</label><input id="lojaComplemento"></div><div class="full"><label>Descrição</label><textarea id="lojaDescricao"></textarea></div>
 <div class="full store-brand">
 <div><label>Logo da loja — URL</label><input id="lojaLogoUrl" placeholder="https://..."><div class="uploadbox"><label>Ou enviar logo do celular/computador</label><input id="lojaLogoFile" type="file" accept="image/*" onchange="previewFile(this,'lojaLogoPreview')"><img id="lojaLogoPreview" class="preview hidden"></div></div>
 <div><label>Capa/fachada — URL</label><input id="lojaCapaUrl" placeholder="https://..."><div class="uploadbox"><label>Ou enviar capa do celular/computador</label><input id="lojaCapaFile" type="file" accept="image/*" onchange="previewFile(this,'lojaCapaPreview')"><img id="lojaCapaPreview" class="preview hidden"></div></div>
@@ -71,8 +71,60 @@ async function uploadMedia(file,path){
  const {data}=sb.storage.from(MEDIA_BUCKET).getPublicUrl(full);
  return data.publicUrl;
 }
+
+let cepLojaValidado=null;
+function cepSomenteNumeros(v){return String(v||'').replace(/\D/g,'').slice(0,8)}
+function cepFormatado(v){const n=cepSomenteNumeros(v);return n.length>5?n.slice(0,5)+'-'+n.slice(5):n}
+function formatarCepLoja(el){
+ const antes=cepSomenteNumeros(el.value);
+ el.value=cepFormatado(antes);
+ if(cepLojaValidado && antes!==cepLojaValidado){
+   cepLojaValidado=null;
+   $('cepStatus').className='cep-status';
+   $('cepStatus').textContent='';
+   $('lojaCidade').value='';$('lojaEstado').value='';
+ }
+}
+async function buscarCepVendedor(){
+ const cep=cepSomenteNumeros($('lojaCep').value);
+ $('lojaCep').value=cepFormatado(cep);
+ if(cep.length!==8){
+   cepLojaValidado=null;
+   $('cepStatus').className='cep-status cep-erro';
+   $('cepStatus').textContent='Digite um CEP válido com 8 números.';
+   return false;
+ }
+ $('cepStatus').className='cep-status cep-buscando';
+ $('cepStatus').textContent='Consultando CEP autorizado...';
+ const {data,error}=await sb.rpc('buscar_cep_vendedor',{p_cep:cep});
+ if(error){
+   cepLojaValidado=null;
+   $('cepStatus').className='cep-status cep-erro';
+   $('cepStatus').textContent='Não foi possível consultar o CEP: '+error.message;
+   return false;
+ }
+ const e=Array.isArray(data)?data[0]:data;
+ if(!e){
+   cepLojaValidado=null;
+   $('lojaEndereco').value='';$('lojaBairro').value='';$('lojaCidade').value='';$('lojaEstado').value='';
+   $('cepStatus').className='cep-status cep-erro';
+   $('cepStatus').textContent='CEP não autorizado para cadastro de vendedores no TáNaMão.';
+   return false;
+ }
+ cepLojaValidado=cep;
+ $('lojaCep').value=cepFormatado(e.cep||cep);
+ $('lojaEndereco').value=e.logradouro||'';
+ $('lojaBairro').value=e.bairro||'';
+ $('lojaCidade').value=e.cidade||'';
+ $('lojaEstado').value=(e.uf||'').toUpperCase();
+ $('cepStatus').className='cep-status cep-ok';
+ $('cepStatus').textContent='CEP autorizado: '+[e.bairro,e.cidade,e.uf].filter(Boolean).join(' - ');
+ return true;
+}
+
 function preencherLoja(){
  [['lojaNome','nome'],['lojaTelefone','telefone'],['lojaCep','cep'],['lojaEndereco','endereco'],['lojaNumero','numero'],['lojaBairro','bairro'],['lojaCidade','cidade'],['lojaEstado','estado'],['lojaComplemento','complemento'],['lojaDescricao','descricao'],['lojaLogoUrl','logo_url'],['lojaCapaUrl','capa_url']].forEach(([i,k])=>$(i).value=loja?.[k]||'');
+ $('lojaCep').value=cepFormatado($('lojaCep').value);cepLojaValidado=cepSomenteNumeros(loja?.cep||'')||null;
  if(loja?.logo_url){$('lojaLogoPreview').src=loja.logo_url;$('lojaLogoPreview').classList.remove('hidden')}
  if(loja?.capa_url){$('lojaCapaPreview').src=loja.capa_url;$('lojaCapaPreview').classList.remove('hidden')}
  carregarSeguidores();
@@ -80,12 +132,18 @@ function preencherLoja(){
 async function carregarSeguidores(){const r=await sb.from('store_followers').select('user_id',{count:'exact',head:true}).eq('store_id',loja.id);$('lojaSeguidores').textContent=r.count||0}
 async function salvarLoja(){
  try{
+  msg('lojaMsg','Validando CEP...');
+  const cepAtual=cepSomenteNumeros($('lojaCep').value);
+  if(cepAtual.length!==8 || cepLojaValidado!==cepAtual){
+    const okCep=await buscarCepVendedor();
+    if(!okCep)return msg('lojaMsg','O CEP precisa estar cadastrado e ativo em ceps_vendedores para salvar a loja.');
+  }
   msg('lojaMsg','Salvando...');
   let logo=$('lojaLogoUrl').value.trim()||null,capa=$('lojaCapaUrl').value.trim()||null;
   const lf=$('lojaLogoFile').files?.[0],cf=$('lojaCapaFile').files?.[0];
   if(lf)logo=await uploadMedia(lf,`stores/${loja.id}/logo`);
   if(cf)capa=await uploadMedia(cf,`stores/${loja.id}/capa`);
-  const d={nome:$('lojaNome').value.trim(),telefone:$('lojaTelefone').value.trim()||null,cep:$('lojaCep').value.trim()||null,endereco:$('lojaEndereco').value.trim()||null,numero:$('lojaNumero').value.trim()||null,bairro:$('lojaBairro').value.trim()||null,cidade:$('lojaCidade').value.trim()||null,estado:$('lojaEstado').value.trim().toUpperCase()||null,complemento:$('lojaComplemento').value.trim()||null,descricao:$('lojaDescricao').value.trim()||null,logo_url:logo,capa_url:capa,latitude:null,longitude:null};
+  const d={nome:$('lojaNome').value.trim(),telefone:$('lojaTelefone').value.trim()||null,cep:cepSomenteNumeros($('lojaCep').value)||null,endereco:$('lojaEndereco').value.trim()||null,numero:$('lojaNumero').value.trim()||null,bairro:$('lojaBairro').value.trim()||null,cidade:$('lojaCidade').value.trim()||null,estado:$('lojaEstado').value.trim().toUpperCase()||null,complemento:$('lojaComplemento').value.trim()||null,descricao:$('lojaDescricao').value.trim()||null,logo_url:logo,capa_url:capa,latitude:null,longitude:null};
   const r=await sb.from('stores').update(d).eq('id',loja.id).eq('owner_id',usuario.id).select().single();
   if(r.error)throw r.error;loja=r.data;$('lojaTopo').textContent=loja.nome;msg('lojaMsg','Dados, identidade visual e endereço da loja salvos.');
  }catch(e){msg('lojaMsg','Erro: '+e.message)}
