@@ -8,6 +8,7 @@
 
 /* ===== PEDIDO COMPLETO DO CLIENTE ===== */
 .order-products{margin-top:10px;border:1px solid var(--line);border-radius:11px;overflow:hidden}.order-products-title{padding:8px 10px;background:#f5f6f8;font-size:11px;font-weight:900;text-transform:uppercase}.order-product-row{display:grid;grid-template-columns:54px 1fr auto;gap:9px;align-items:center;padding:8px 10px;border-top:1px solid var(--line)}.order-product-row:first-of-type{border-top:0}.order-product-img{width:54px;height:54px;border-radius:8px;object-fit:cover;background:#eee}.order-product-id{font-family:monospace;font-size:11px;color:#666}.cpf-private{font-size:12px}.privacy-note{font-size:10px;color:#777;margin-top:5px}
+.order-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.order-id{font-size:18px;font-weight:900}.order-total{text-align:right;font-size:18px;font-weight:900}.order-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}.order-info{border:1px solid var(--line);border-radius:10px;padding:11px;background:#fafafa;font-size:12px;line-height:1.55}.order-info-title{font-size:10px;text-transform:uppercase;font-weight:900;color:var(--muted);margin-bottom:5px}.order-track{font-family:monospace;font-weight:800;word-break:break-all}.label-preview{border:2px solid #111;border-radius:14px;background:#fff;padding:18px;color:#111;max-width:720px;margin:auto}.label-preview h2{margin:0}.label-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.label-block{border:1px solid #bbb;border-radius:9px;padding:10px}.label-warning{margin-top:12px;padding:10px;border-radius:8px;background:#fff7ed;border:1px solid #fed7aa;color:#854d0e;font-size:12px}@media(max-width:800px){.order-info-grid,.label-grid{grid-template-columns:1fr}}
 .cep-status{font-size:12px;margin-top:6px;font-weight:700}.cep-ok{color:#067647}.cep-erro{color:#b42318}.cep-buscando{color:#6b7280}.cep-lock{background:#f5f6f8;color:#4b5563}</style></head><body>
 <div id="authView" class="auth"><div class="card"><div style="text-align:center"><img src="1001111814.png" class="logo" alt="TáNaMão"><h2>Central do Vendedor</h2><p class="muted">Entre ou cadastre sua loja.</p></div><div class="tabs"><button class="btn primary" onclick="showAuth('login')">Entrar</button><button class="btn secondary" onclick="showAuth('cadastro')">Cadastrar</button></div><div id="loginBox"><label>E-mail</label><input id="loginEmail" type="email"><label>Senha</label><input id="loginSenha" type="password"><button class="btn primary" style="width:100%;margin-top:14px" onclick="login()">Entrar</button></div><div id="cadBox" class="hidden"><div class="grid"><div><label>Seu nome</label><input id="cadNome"></div><div><label>Telefone</label><input id="cadTelefone"></div><div class="full"><label>Nome da loja</label><input id="cadLoja"></div><div><label>E-mail</label><input id="cadEmail" type="email"></div><div><label>Senha</label><input id="cadSenha" type="password" minlength="6"></div></div><button class="btn primary" style="width:100%;margin-top:14px" onclick="cadastrar()">Criar conta de vendedor</button></div><div id="authMsg"></div></div></div>
 <div id="app" class="hidden"><header class="top"><img src="1001111814.png" class="logo" alt="TáNaMão"><div><span id="lojaTopo" class="badge">Minha loja</span> <button class="btn secondary" onclick="logout()">Sair</button></div></header><div class="layout"><aside><button class="nav active" onclick="go('inicio',this)">Visão geral</button><button class="nav" onclick="go('loja',this)">Minha loja</button><button class="nav" onclick="go('produtos',this)">Produtos</button><button class="nav" onclick="go('pedidos',this)">Pedidos</button><button class="nav" onclick="go('financeiro',this)">Financeiro</button><button class="nav" onclick="go('cupons',this)">Cupons</button><button class="nav" onclick="go('regras',this)">Regras e políticas</button></aside><main>
@@ -61,6 +62,12 @@
 <div class="rule"><h3>Fiscalização</h3><p class="muted">Anúncios podem ser suspensos ou removidos quando violarem as regras. Violações graves ou repetidas podem levar à limitação ou suspensão da conta, observadas as políticas e a legislação aplicável.</p></div>
 </div></section>
 </main></div></div>
+<div id="etiquetaModal" class="hidden" style="position:fixed;inset:0;background:#0008;z-index:9999;padding:18px;overflow:auto">
+ <div style="max-width:800px;margin:20px auto;background:#fff;border-radius:14px;padding:16px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><b>Prévia da etiqueta</b><button class="btn secondary" onclick="fecharEtiqueta()">Fechar</button></div>
+  <div id="etiquetaConteudo"></div>
+ </div>
+</div>
 <script>
 const SUPABASE_URL='https://sfzfoavesiintdyoxkca.supabase.co',SUPABASE_KEY='sb_publishable_wM4A1etSRHTcUpE4qUXb-A_suN-jnep';const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);let usuario=null,loja=null;let variantDrafts=[];const MEDIA_BUCKET='marketplace-media';const $=x=>document.getElementById(x),money=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});function msg(id,t){$(id).innerHTML='<div class="msg">'+t+'</div>'}function showAuth(t){$('loginBox').classList.toggle('hidden',t!=='login');$('cadBox').classList.toggle('hidden',t!=='cadastro')}function go(id,b){document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active')}
 async function cadastrar(){const nome=$('cadNome').value.trim(),telefone=$('cadTelefone').value.trim(),nomeLoja=$('cadLoja').value.trim(),email=$('cadEmail').value.trim(),password=$('cadSenha').value;if(!nome||!nomeLoja||!email||password.length<6)return msg('authMsg','Preencha os dados obrigatórios.');const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:'https://tanamao-vendedor.vercel.app/',data:{tipo:'vendedor',nome,telefone,loja:nomeLoja}}});if(error)return msg('authMsg','Erro: '+error.message);if(!data.session)return msg('authMsg','Cadastro realizado. Confirme seu e-mail e depois entre.');await iniciar(data.session.user)}
@@ -253,9 +260,11 @@ function flowHtml(o){const s=effectiveOrderStatus(o),idx=ORDER_FLOW.indexOf(s);r
 function orderActions(o){const s=effectiveOrderStatus(o);if(s==='pagamento_confirmado')return `<button class="btn primary" onclick="mudarStatusPedido(${o.id},'preparando')">Iniciar preparação</button>`;if(s==='preparando')return `<button class="btn primary" onclick="mudarStatusPedido(${o.id},'preparado')">Marcar como preparado</button>`;if(s==='preparado')return `<button class="btn primary" onclick="mudarStatusPedido(${o.id},'aguardando_entregador')">Disponibilizar para coleta/entrega</button>`;return ''}
 async function mudarStatusPedido(id,status){const r=await sb.from('orders').update({status}).eq('id',id).eq('store_id',loja.id);if(r.error)return alert('Não foi possível atualizar: '+r.error.message);await carregarPedidos()}
 async function carregarPedidos(){
- let r=await sb.from('orders').select('id,status,total,subtotal,frete,created_at,payment_status,payment_method,tipo_entrega,tracking_code,customer_id,endereco_entrega,cliente_nome,cliente_telefone,cliente_cpf').eq('store_id',loja.id).order('created_at',{ascending:false});
+ $('pedidoLista').innerHTML='<div class="card">Carregando pedidos...</div>';
+ let r=await sb.from('orders').select('*').eq('store_id',loja.id).order('created_at',{ascending:false});
  if(r.error){
-   r=await sb.from('orders').select('id,status,total,subtotal,frete,created_at,payment_status,payment_method,tipo_entrega,tracking_code,customer_id,endereco_entrega').eq('store_id',loja.id).order('created_at',{ascending:false});
+   $('pedidoLista').innerHTML='<div class="card danger"><b>Não foi possível carregar os pedidos desta loja.</b><div class="muted" style="margin-top:6px">'+esc(r.error.message)+'</div><div class="muted" style="margin-top:6px">Loja ID: '+esc(String(loja.id))+'</div></div>';
+   $('nPedidos').textContent='0';$('nPendentes').textContent='0';return;
  }
  const a=r.data||[];
  $('nPedidos').textContent=a.length;$('nPendentes').textContent=a.filter(x=>effectiveOrderStatus(x)!=='entregue').length;
@@ -282,10 +291,27 @@ async function carregarPedidos(){
     <div class="order-info"><div class="order-info-title">Cliente</div><strong>${esc(nome)}</strong><div>Contato: ${esc(tel)}</div><div class="cpf-private">CPF: ${esc(cpf)}</div><div>ID cliente: ${esc(String(o.customer_id||'—'))}</div><div class="privacy-note">Dados exibidos somente para atendimento deste pedido.</div></div>
     <div class="order-info"><div class="order-info-title">Entrega</div><strong>${o.tipo_entrega==='retirada'?'Retirada na loja':'Endereço de entrega'}</strong><div>${o.tipo_entrega==='retirada'?'Cliente fará a retirada na loja.':enderecoTexto(o.endereco_entrega)}</div></div>
     <div class="order-info"><div class="order-info-title">Rastreio</div><div class="order-track">${esc(o.tracking_code||'Gerado após confirmação do pagamento')}</div><div>Frete: ${money(o.frete||0)}</div><div>Pagamento: ${esc(o.payment_method||'—')}</div></div>
-   </div><div class="order-products"><div class="order-products-title">Produtos deste pedido</div>${produtos}</div><div class="order-flow">${flowHtml(o)}</div><div class="order-actions">${orderActions(o)}</div></div></div>`;
+   </div><div class="order-products"><div class="order-products-title">Produtos deste pedido</div>${produtos}</div><div class="order-flow">${flowHtml(o)}</div><div class="order-actions">${orderActions(o)}<button class="btn secondary" onclick='visualizarEtiqueta(${JSON.stringify(o)})'>Visualizar etiqueta</button></div></div></div>`;
  }).join(''):'<div class="card">Nenhum pedido.</div>';
  if($('sellerGross'))$('sellerGross').textContent=money(gross);
 }
+
+function fecharEtiqueta(){$('etiquetaModal').classList.add('hidden')}
+function visualizarEtiqueta(o){
+ const pago=['pago','approved'].includes(String(o.payment_status||'').toLowerCase());
+ const endereco=(()=>{let x=o.endereco_entrega;if(!x)return'Não informado';if(typeof x==='string'){try{x=JSON.parse(x)}catch(e){return esc(x)}}return esc([x.rua||x.endereco,x.numero,x.complemento,x.bairro,x.cidade,x.estado||x.uf,x.cep].filter(Boolean).join(', '))})();
+ $('etiquetaConteudo').innerHTML=`<div class="label-preview">
+  <div style="display:flex;justify-content:space-between;gap:12px"><div><h2>TáNaMão</h2><b>Pedido #${esc(String(o.id))}</b></div><div style="text-align:right"><b>${pago?'ETIQUETA LIBERADA':'PRÉVIA'}</b><div style="font-size:11px">${esc(orderLabel(effectiveOrderStatus(o)))}</div></div></div>
+  <div class="label-grid">
+   <div class="label-block"><b>DESTINATÁRIO</b><div>${esc(o.cliente_nome||'Cliente')}</div><div>${endereco}</div></div>
+   <div class="label-block"><b>REMETENTE</b><div>${esc(loja?.nome||'Loja')}</div><div>${esc([loja?.endereco,loja?.numero,loja?.bairro,loja?.cidade,loja?.estado,loja?.cep].filter(Boolean).join(', '))}</div></div>
+  </div>
+  <div class="label-block" style="margin-top:12px"><b>RASTREIO</b><div class="order-track">${esc(o.tracking_code||(pago?'Aguardando geração':'Será liberado após confirmação do pagamento'))}</div><div>Frete: ${money(o.frete||0)}</div></div>
+  ${pago?'':`<div class="label-warning"><b>Somente prévia.</b> O pagamento ainda não foi confirmado. Esta etiqueta não está liberada para postagem/entrega.</div>`}
+ </div>`;
+ $('etiquetaModal').classList.remove('hidden');
+}
+
 async function carregarFinanceiro(){
  const r=await sb.from('mp_seller_connections').select('*').eq('store_id',loja.id).maybeSingle();$('mpStatus').textContent=r.data?'Mercado Pago conectado':'Mercado Pago ainda não conectado';
  // A comissão não é inventada no frontend: tenta ler configuração administrativa; se não existir, mostra "A definir".
