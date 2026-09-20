@@ -47,7 +47,7 @@
 <div id="variantList"></div>
 <button class="btn primary" style="margin-top:15px" onclick="salvarProduto()">Cadastrar produto completo</button><div id="prodMsg"></div></div>
 <div class="card"><table class="table"><thead><tr><th>Produto</th><th>Preço</th><th>Estoque</th><th>Variações</th><th>Mídias</th><th>Status</th></tr></thead><tbody id="prodLista"></tbody></table></div></section>
-<section id="pedidos" class="section"><h1>Pedidos</h1><p class="muted">O pagamento é confirmado pelo sistema de pagamentos. Depois da confirmação, atualize somente as etapas operacionais permitidas.</p><div id="pedidoLista"></div></section>
+<section id="pedidos" class="section"><h1>Pedidos</h1><p class="muted">Todo pedido criado aparece aqui imediatamente, mesmo antes do pagamento. A preparação só é liberada após a confirmação do pagamento.</p><div style="margin:12px 0"><button class="btn secondary" onclick="carregarPedidos()">Atualizar pedidos</button></div><div id="pedidoLista"><div class="card muted">Abra esta área para carregar os pedidos.</div></div></section>
 <section id="financeiro" class="section"><h1>Financeiro e recebimentos</h1>
 <div class="card"><h3>Mercado Pago</h3><p class="muted">Os pagamentos e repasses devem ser processados pelo provedor conectado. Nenhuma credencial privada fica neste arquivo.</p><span id="mpStatus" class="badge">Verificando...</span></div>
 <div class="card"><h3>Condições financeiras do vendedor</h3><div class="finance-grid"><div class="finance-box">Taxa da plataforma<b id="sellerFee">A definir</b><span class="muted">Percentual configurado pela administração.</span></div><div class="finance-box">Vendas pagas<b id="sellerGross">R$ 0,00</b><span class="muted">Total bruto de pedidos pagos.</span></div><div class="finance-box">Estimativa líquida<b id="sellerNet">—</b><span class="muted">Antes de eventuais tarifas do provedor, estornos e ajustes.</span></div></div><p class="muted" style="margin-top:14px">A taxa efetiva, prazo de repasse e eventuais tarifas devem ser apresentados ao vendedor antes de entrarem em vigor. O valor final recebido deve ser calculado no servidor, nunca apenas neste HTML.</p></div></section>
@@ -69,12 +69,25 @@
  </div>
 </div>
 <script>
-const SUPABASE_URL='https://sfzfoavesiintdyoxkca.supabase.co',SUPABASE_KEY='sb_publishable_wM4A1etSRHTcUpE4qUXb-A_suN-jnep';const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);let usuario=null,loja=null;let variantDrafts=[];const MEDIA_BUCKET='marketplace-media';const $=x=>document.getElementById(x),money=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});function msg(id,t){$(id).innerHTML='<div class="msg">'+t+'</div>'}function showAuth(t){$('loginBox').classList.toggle('hidden',t!=='login');$('cadBox').classList.toggle('hidden',t!=='cadastro')}function go(id,b){document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active')}
+const SUPABASE_URL='https://sfzfoavesiintdyoxkca.supabase.co',SUPABASE_KEY='sb_publishable_wM4A1etSRHTcUpE4qUXb-A_suN-jnep';const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);let usuario=null,loja=null;let variantDrafts=[];const MEDIA_BUCKET='marketplace-media';const $=x=>document.getElementById(x),money=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));function msg(id,t){$(id).innerHTML='<div class="msg">'+t+'</div>'}function showAuth(t){$('loginBox').classList.toggle('hidden',t!=='login');$('cadBox').classList.toggle('hidden',t!=='cadastro')}function go(id,b){
+ document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+ $(id).classList.add('active');
+ document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));
+ b.classList.add('active');
+ if(id==='pedidos')carregarPedidos().catch(e=>{
+   $('pedidoLista').innerHTML='<div class="card danger"><b>Erro ao abrir Pedidos</b><div class="muted">'+esc(e?.message||String(e))+'</div></div>';
+ });
+}
 async function cadastrar(){const nome=$('cadNome').value.trim(),telefone=$('cadTelefone').value.trim(),nomeLoja=$('cadLoja').value.trim(),email=$('cadEmail').value.trim(),password=$('cadSenha').value;if(!nome||!nomeLoja||!email||password.length<6)return msg('authMsg','Preencha os dados obrigatórios.');const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:'https://tanamao-vendedor.vercel.app/',data:{tipo:'vendedor',nome,telefone,loja:nomeLoja}}});if(error)return msg('authMsg','Erro: '+error.message);if(!data.session)return msg('authMsg','Cadastro realizado. Confirme seu e-mail e depois entre.');await iniciar(data.session.user)}
 async function login(){const {data,error}=await sb.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginSenha').value});if(error)return msg('authMsg','Erro: '+error.message);await iniciar(data.user)}async function logout(){await sb.auth.signOut();location.reload()}
 async function garantirPerfil(u){const m=u.user_metadata||{},r=await sb.from('profiles').select('id').eq('id',u.id).maybeSingle();if(!r.data)await sb.from('profiles').insert({id:u.id,nome:m.nome||u.email,telefone:m.telefone||null,tipo:'vendedor'})}
 async function garantirLoja(u){let r=await sb.from('stores').select('*').eq('owner_id',u.id).maybeSingle();if(r.data)return r.data;const m=u.user_metadata||{};r=await sb.from('stores').insert({owner_id:u.id,nome:m.loja||'Minha loja',telefone:m.telefone||null,ativo:true}).select().single();return r.data||null}
-async function iniciar(u){usuario=u;await garantirPerfil(u);loja=await garantirLoja(u);if(!loja)return msg('authMsg','Conta autenticada, mas não foi possível criar/carregar a loja. Verifique as políticas RLS de stores.');$('authView').classList.add('hidden');$('app').classList.remove('hidden');$('lojaTopo').textContent=loja.nome||'Minha loja';preencherLoja();await Promise.all([carregarProdutos(),carregarPedidos(),carregarFinanceiro(),carregarCupons()])}
+async function iniciar(u){usuario=u;await garantirPerfil(u);loja=await garantirLoja(u);if(!loja)return msg('authMsg','Conta autenticada, mas não foi possível criar/carregar a loja. Verifique as políticas RLS de stores.');$('authView').classList.add('hidden');$('app').classList.remove('hidden');$('lojaTopo').textContent=loja.nome||'Minha loja';preencherLoja();
+ try{await carregarPedidos()}catch(e){console.error('Pedidos:',e)}
+ carregarProdutos().catch(e=>console.error('Produtos:',e));
+ carregarFinanceiro().catch(e=>console.error('Financeiro:',e));
+ carregarCupons().catch(e=>console.error('Cupons:',e));
+}
 function previewFile(input,imgId){const f=input.files?.[0],img=$(imgId);if(!f){img.classList.add('hidden');return}img.src=URL.createObjectURL(f);img.classList.remove('hidden')}
 async function uploadMedia(file,path){
  const safe=(file.name||'arquivo').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9._-]/g,'_');
