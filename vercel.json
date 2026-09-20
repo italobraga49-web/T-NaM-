@@ -1,0 +1,13 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/vendedor",
+      "destination": "/vendedor.html"
+    },
+    {
+      "source": "/entregador",
+      "destination": "/entregador.html"
+    }
+  ]
+}
