@@ -162,12 +162,8 @@ footer{font-size:13px}
 }
 
 
-/* ===== FULL perto de você + Frete Grátis ===== */
-.full-badge{display:inline-flex;align-items:center;gap:3px;background:#16803c;color:#fff;border-radius:999px;padding:3px 6px;font-size:9px;font-weight:900;letter-spacing:.2px}
-.full-row{margin-top:5px}
-.free-shipping-badge{display:inline-flex;align-items:center;gap:4px;background:#eaf8ef;color:#16803c;border:1px solid #a6e3b8;border-radius:999px;padding:4px 7px;font-size:10px;font-weight:900}
-.full-section-note{font-size:11px;color:var(--muted)}
-@media(max-width:700px){.full-badge,.free-shipping-badge{font-size:8px;padding:3px 5px}.full-row{margin-top:3px}}
+.full-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#19b84a,#087a2d);color:#fff;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:900;box-shadow:0 2px 6px rgba(8,122,45,.22)}
+.full-row{margin-top:5px}.full-note{font-size:11px;color:var(--muted)}
 
 </style></head>
 <body>
@@ -178,7 +174,7 @@ footer{font-size:13px}
 <section class="hero"><div class="hero-main"><h1>Compre perto de você e compare ofertas.</h1><p>Pesquise o mesmo produto em diferentes vendedores, compare preços e escolha a opção ideal sem sair do TáNaMão.</p><button class="btn" onclick="scrollProducts()">Explorar produtos</button></div></section>
 <section class="section"><div class="section-head"><h2>Categorias</h2><span>Encontre rapidamente o que procura</span></div><div id="categories" class="categories"><button class="chip active" onclick="chooseCategory(null,this)">Todos</button></div></section>
 
-<section class="section hidden" id="fullSection"><div class="section-head"><h2><span class="full-badge">FULL</span> Perto de você</h2><span>Produtos de lojas próximas</span></div><div id="fullProducts" class="highlight-grid"></div><div class="full-section-note">A proximidade é calculada usando o endereço selecionado pelo cliente e a localização cadastrada da loja.</div></section>
+<section class="section hidden" id="fullSection"><div class="section-head"><h2><span class="full-badge">🚚 FULL</span> Perto de você</h2><span>Produtos de lojas a até 20 km</span></div><div id="fullProducts" class="highlight-grid"></div></section>
 <section class="section" id="promoSection"><div class="section-head"><h2>🔥 Ofertas especiais</h2><span>Produtos em promoção</span></div><div id="promoProducts" class="highlight-grid"></div></section>
 <section class="section" id="lowStockSection"><div class="section-head"><h2>⏳ Últimas unidades</h2><span>Produtos com estoque quase esgotado</span></div><div id="lowStockProducts" class="highlight-grid"></div></section>
 <section class="section" id="productsSection"><div class="section-head"><h2>Produtos e ofertas</h2><span id="resultInfo">Carregando ofertas...</span></div><div class="catalog">
@@ -268,7 +264,7 @@ let user=null,products=[],filteredProducts=[],cart=[],category=null,selectedPay=
 let customerLocation=null,locationAskedForUser=null;
 let checkoutAddresses=[],selectedCheckoutAddress=null,freightQuote=null,freightQuoteKey="";
 let availableCoupons=[],appliedCoupon=null,claimedCouponIds=new Set(),usedCouponIds=new Set();
-let fullNearbyStoreIds=new Set(),FULL_MAX_KM=10;
+let fullNearbyStoreIds=new Set(); const FULL_MAX_KM=20;
 const $=id=>document.getElementById(id),money=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"}),esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 function setMsg(id,t){$(id).textContent=t;$(id).classList.toggle("hidden",!t)}
 function scrollProducts(){$("productsSection").scrollIntoView({behavior:"smooth"})}
@@ -293,6 +289,32 @@ function closeLocationModal(){$("locationModal").classList.add("hidden")}
 function allowLocation(){if(!navigator.geolocation){setMsg("locationMsg","Este aparelho ou navegador não oferece suporte à localização.");return}setMsg("locationMsg","Obtendo sua localização...");navigator.geolocation.getCurrentPosition(p=>{customerLocation={lat:p.coords.latitude,lng:p.coords.longitude,accuracy:p.coords.accuracy};setMsg("locationMsg","Localização permitida com sucesso.");setTimeout(closeLocationModal,700)},e=>{const m=e.code===1?"Você não permitiu o acesso à localização. Você pode continuar usando seu endereço cadastrado.":"Não foi possível obter sua localização agora. Você pode continuar usando seu endereço cadastrado.";setMsg("locationMsg",m)},{enableHighAccuracy:true,timeout:10000,maximumAge:300000})}
 sb.auth.onAuthStateChange(event=>{if(event==="PASSWORD_RECOVERY"){$("authModal").classList.remove("hidden");showAuth("password")}});
 
+
+function haversineKm(lat1,lon1,lat2,lon2){
+ const n=[lat1,lon1,lat2,lon2].map(Number); if(n.some(v=>!Number.isFinite(v)))return null;
+ const [a,b,c,d]=n,R=6371,rad=x=>x*Math.PI/180,dLat=rad(c-a),dLon=rad(d-b);
+ const q=Math.sin(dLat/2)**2+Math.cos(rad(a))*Math.cos(rad(c))*Math.sin(dLon/2)**2;
+ return 2*R*Math.asin(Math.sqrt(q));
+}
+function isFullProduct(p){return fullNearbyStoreIds.has(String(p.store_id))}
+function fullBadge(p){return isFullProduct(p)?'<div class="full-row"><span class="full-badge">🚚 FULL</span></div>':""}
+async function refreshFullNearby(){
+ fullNearbyStoreIds=new Set();
+ if(!user){renderProducts();return}
+ const {data:addr}=await sb.from("addresses").select("id,latitude,longitude,principal").eq("user_id",user.id).not("latitude","is",null).not("longitude","is",null).order("principal",{ascending:false}).limit(1).maybeSingle();
+ if(!addr){renderProducts();return}
+ const ids=[...new Set(products.map(p=>p.store_id).filter(Boolean))];
+ if(!ids.length){renderProducts();return}
+ const {data:stores}=await sb.from("stores").select("id,latitude,longitude").in("id",ids);
+ (stores||[]).forEach(s=>{const km=haversineKm(addr.latitude,addr.longitude,s.latitude,s.longitude);if(km!==null&&km<=FULL_MAX_KM)fullNearbyStoreIds.add(String(s.id))});
+ renderProducts();
+ if(document.getElementById("fullSection")){
+   const fp=products.filter(isFullProduct).slice(0,12);
+   $("fullSection").classList.toggle("hidden",!fp.length);
+   $("fullProducts").innerHTML=fp.map(card).join("");
+ }
+}
+
 async function loadCategories(){const {data}=await sb.from("categories").select("id,nome").order("nome");if(!data)return;data.forEach(c=>$("categories").insertAdjacentHTML("beforeend",`<button class="chip" onclick="chooseCategory(${JSON.stringify(c.id)},this)">${esc(c.nome)}</button>`))}
 function chooseCategory(id,el){category=id;document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));el.classList.add("active");loadProducts()}
 async function loadProducts(){let q=sb.from("products").select("id,nome,preco,preco_oferta,oferta_especial_ativa,oferta_expira_em,estoque,imagem_url,store_id,category_id,ativo,created_at,stores(nome)").eq("ativo",true);if(category)q=q.eq("category_id",category);const term=$("searchInput").value.trim();if(term)q=q.ilike("nome","%"+term+"%");const {data,error}=await q.order("created_at",{ascending:false}).limit(200);if(error){$("products").innerHTML=`<div class="empty">Não foi possível carregar os produtos:<br>${esc(error.message)}</div>`;return}products=data||[];buildStoreFilter();renderProducts();refreshFullNearby()}
@@ -302,38 +324,11 @@ function offerActive(p){return !!p.oferta_especial_ativa&&Number(p.preco_oferta|
 function productPrice(p){return offerActive(p)?Number(p.preco_oferta):Number(p.preco||0)}
 function lowStock(p){const n=Number(p.estoque);return Number.isFinite(n)&&n>0&&n<=5}
 function productBadges(p){return `${offerActive(p)?'<span class="promo-badge">OFERTA</span>':""}${lowStock(p)?'<span class="stock-badge">ÚLTIMAS '+Number(p.estoque)+'</span>':""}`}
-
-function haversineKm(lat1,lon1,lat2,lon2){
- const R=6371,toRad=x=>Number(x)*Math.PI/180;
- const a1=toRad(lat1),a2=toRad(lat2),dlat=toRad(Number(lat2)-Number(lat1)),dlon=toRad(Number(lon2)-Number(lon1));
- const a=Math.sin(dlat/2)**2+Math.cos(a1)*Math.cos(a2)*Math.sin(dlon/2)**2;
- return 2*R*Math.asin(Math.sqrt(a));
-}
-async function refreshFullNearby(){
- fullNearbyStoreIds=new Set();
- if(!user){renderHighlights();return}
- let addr=selectedCheckoutAddress;
- if(!addr){
-   const {data}=await sb.from("addresses").select("id,latitude,longitude,principal").eq("user_id",user.id).order("principal",{ascending:false}).limit(1).maybeSingle();
-   addr=data||null;
- }
- if(addr?.latitude==null||addr?.longitude==null){renderHighlights();return}
- const ids=[...new Set(products.map(p=>p.store_id).filter(Boolean))];
- if(!ids.length){renderHighlights();return}
- const {data:stores}=await sb.from("stores").select("id,latitude,longitude").in("id",ids);
- (stores||[]).forEach(s=>{
-   if(s.latitude!=null&&s.longitude!=null&&haversineKm(addr.latitude,addr.longitude,s.latitude,s.longitude)<=FULL_MAX_KM)
-     fullNearbyStoreIds.add(String(s.id));
- });
- renderHighlights();
-}
-function isFullProduct(p){return fullNearbyStoreIds.has(String(p.store_id))}
-
 function renderHighlights(){
- const promo=products.filter(offerActive).slice(0,12),low=products.filter(lowStock).slice(0,12),full=products.filter(isFullProduct).slice(0,12);
- $("promoSection").classList.toggle("hidden",!promo.length);$("lowStockSection").classList.toggle("hidden",!low.length);$("fullSection").classList.toggle("hidden",!full.length);
+ const promo=products.filter(offerActive).slice(0,12),low=products.filter(lowStock).slice(0,12);
+ $("promoSection").classList.toggle("hidden",!promo.length);$("lowStockSection").classList.toggle("hidden",!low.length);
  const card=p=>`<article class="highlight-card" onclick="openProduct(${JSON.stringify(p.id)})">${p.imagem_url?`<img src="${esc(p.imagem_url)}" alt="${esc(p.nome)}">`:'<div class="pic">Imagem</div>'}<div class="inside"><b>${esc(p.nome)}</b>${offerActive(p)?`<div class="old-price">${money(p.preco)}</div>`:""}<div class="hp">${money(productPrice(p))}</div>${lowStock(p)?`<div class="small">Só ${Number(p.estoque)} restante(s)</div>`:""}</div></article>`;
- $("promoProducts").innerHTML=promo.map(card).join("");$("lowStockProducts").innerHTML=low.map(card).join("");$("fullProducts").innerHTML=full.map(card).join("");
+ $("promoProducts").innerHTML=promo.map(card).join("");$("lowStockProducts").innerHTML=low.map(card).join("");
 }
 
 function renderProducts(){
@@ -342,7 +337,7 @@ function renderProducts(){
  const sort=$("sortFilter").value;if(sort==="menor")a.sort((x,y)=>productPrice(x)-productPrice(y));if(sort==="maior")a.sort((x,y)=>productPrice(y)-productPrice(x));if(sort==="loja")a.sort((x,y)=>(x.stores?.nome||"").localeCompare(y.stores?.nome||""));
  if(sort==="relevancia")a.sort((x,y)=>(offerActive(y)-offerActive(x))||(lowStock(y)-lowStock(x)));
  filteredProducts=a;$("resultInfo").textContent=`${a.length} oferta(s) encontrada(s)`;renderHighlights();
- $("products").innerHTML=a.length?a.map(p=>`<article class="product" onclick="openProduct(${JSON.stringify(p.id)})"><div class="pic">${productBadges(p)}${p.imagem_url?`<img src="${esc(p.imagem_url)}" alt="${esc(p.nome)}">`:"Imagem do produto"}</div><div class="product-body"><div class="product-name">${esc(p.nome)}</div>${isFullProduct(p)?`<div class="full-row"><span class="full-badge">FULL</span></div>`:""}${offerActive(p)?`<div class="old-price">${money(p.preco)}</div>`:""}<div class="price">${money(productPrice(p))}</div>${lowStock(p)?`<div class="small" style="color:#b42318;font-weight:800">Quase esgotado</div>`:""}<div class="store">Vendido por <button class="link" style="padding:0;font-size:inherit" onclick="event.stopPropagation();openStore(${JSON.stringify(p.store_id)})">${esc(p.stores?.nome||"Loja")} · Ver loja</button></div><div class="product-actions"><button class="btn primary" onclick="event.stopPropagation();addCart(${JSON.stringify(p.id)})">Adicionar</button><button class="btn" onclick="event.stopPropagation();openProduct(${JSON.stringify(p.id)})">Ver</button></div></div></article>`).join(""):'<div class="empty"><div><b>Nenhuma oferta encontrada.</b><br><span class="small">Tente outro produto, vendedor ou faixa de preço.</span></div></div>';
+ $("products").innerHTML=a.length?a.map(p=>`<article class="product" onclick="openProduct(${JSON.stringify(p.id)})"><div class="pic">${productBadges(p)}${p.imagem_url?`<img src="${esc(p.imagem_url)}" alt="${esc(p.nome)}">`:"Imagem do produto"}</div><div class="product-body"><div class="product-name">${esc(p.nome)}</div>${fullBadge(p)}${offerActive(p)?`<div class="old-price">${money(p.preco)}</div>`:""}<div class="price">${money(productPrice(p))}</div>${lowStock(p)?`<div class="small" style="color:#b42318;font-weight:800">Quase esgotado</div>`:""}<div class="store">Vendido por <button class="link" style="padding:0;font-size:inherit" onclick="event.stopPropagation();openStore(${JSON.stringify(p.store_id)})">${esc(p.stores?.nome||"Loja")} · Ver loja</button></div><div class="product-actions"><button class="btn primary" onclick="event.stopPropagation();addCart(${JSON.stringify(p.id)})">Adicionar</button><button class="btn" onclick="event.stopPropagation();openProduct(${JSON.stringify(p.id)})">Ver</button></div></div></article>`).join(""):'<div class="empty"><div><b>Nenhuma oferta encontrada.</b><br><span class="small">Tente outro produto, vendedor ou faixa de preço.</span></div></div>';
 }
 function clearFilters(){$("minPrice").value="";$("maxPrice").value="";$("storeFilter").value="";$("sortFilter").value="relevancia";renderProducts()}
 
@@ -415,7 +410,7 @@ async function loadCheckoutAddresses(){
 }
 function renderCheckoutAddress(){
  const id=$("checkoutAddress").value;
- selectedCheckoutAddress=checkoutAddresses.find(a=>String(a.id)===String(id))||null;setTimeout(refreshFullNearby,0);
+ selectedCheckoutAddress=checkoutAddresses.find(a=>String(a.id)===String(id))||null;
  if(!selectedCheckoutAddress){$("checkoutAddressPreview").classList.add("hidden");return}
  const a=selectedCheckoutAddress;
  $("checkoutAddressPreview").innerHTML=`<b>${esc(a.nome_destinatario||"Endereço de entrega")}</b><div>${esc(a.rua||"")}${a.numero?", "+esc(a.numero):""}</div><div class="small">${esc(a.bairro||"")} · ${esc(a.cidade||"")}${a.estado?" - "+esc(a.estado):""} · ${esc(a.cep||"")}</div>${a.complemento?`<div class="small">${esc(a.complemento)}</div>`:""}`;
@@ -432,7 +427,8 @@ function showFreightQuote(q){
 }
 async function quoteFreight(){
  renderCheckoutAddress();freightQuote=null;freightQuoteKey="";
- if($("deliveryType").value==="retirada"){$("freightBox").classList.add("hidden");renderCheckoutSummary();return}
+ if($("deliveryType").value==="retirada"){
+ freightQuote=null; freightKey="";$("freightBox").classList.add("hidden");renderCheckoutSummary();return}
  if(!selectedCheckoutAddress)return showFreightError("Selecione um endereço de entrega.");
  const storeIds=[...new Set(cart.map(x=>String(x.store_id)))];
  if(!storeIds.length)return showFreightError("Não foi possível identificar as lojas.");
@@ -448,7 +444,6 @@ async function quoteFreight(){
  showFreightQuote(freightQuote);renderCheckoutSummary();
 }
 function renderCheckoutSummary(){
- const freeShipCoupon=selectedCoupon();
  const subtotal=cart.reduce((a,x)=>a+Number(x.preco)*x.qty,0);
  const frete=$("deliveryType")?.value==="retirada"?0:Number(freightQuote?.frete||0);
  const desconto=calculateCouponDiscount(subtotal);
@@ -456,7 +451,8 @@ function renderCheckoutSummary(){
  if($("checkoutSummary"))$("checkoutSummary").innerHTML=`<b>Resumo da compra</b><div class="small" style="margin-top:7px">Produtos: ${money(subtotal)}<br>Entrega: ${money(frete)}<br>Desconto: ${money(desconto)}</div><div class="total" style="margin-bottom:0"><span>Total</span><span>${money(total)}</span></div>`;
 }
 async function deliveryTypeChanged(){
- if($("deliveryType").value==="retirada"){freightQuote=null;freightQuoteKey="";$("freightBox").classList.add("hidden");$("freightPrice").textContent=money(0);renderCheckoutSummary();return}
+ if($("deliveryType").value==="retirada"){
+ freightQuote=null; freightKey="";freightQuote=null;freightQuoteKey="";$("freightBox").classList.add("hidden");$("freightPrice").textContent=money(0);renderCheckoutSummary();return}
  await quoteFreight();
 }
 function openCheckoutAddresses(){
@@ -644,8 +640,8 @@ async function loadCoupons(){
    (ur.data||[]).forEach(x=>usedCouponIds.add(String(x.coupon_id)));
  }
  const visible=availableCoupons.filter(c=>!usedCouponIds.has(String(c.id)));
- $("couponsList").innerHTML=error||!visible.length?'<div class="placeholder">Nenhum cupom disponível no momento.</div>':visible.map(c=>`<div class="coupon-card"><div class="coupon-code">${esc(c.codigo||"Cupom")}</div>${c.frete_gratis?`<div style="margin:6px 0"><span class="free-shipping-badge">🚚 FRETE GRÁTIS</span></div>`:""}<div>${esc(c.descricao||"Promoção disponível")}</div><div class="small">${c.store_id?"Cupom da loja":"Cupom da plataforma"}${c.valor_minimo?` · Compra mínima ${money(c.valor_minimo)}`:""}</div><div class="coupon-actions">${claimedCouponIds.has(String(c.id))?`<span class="coupon-wanted">✓ Cupom salvo</span><button class="btn" onclick="copyCouponCode('${esc(c.codigo)}')">Copiar</button>`:`<button class="btn primary" onclick="claimCoupon(${JSON.stringify(c.id)})">Sim, eu quero</button>`}</div></div>`).join("");
- const sel=$("checkoutCoupon");if(sel){const usable=visible.filter(c=>claimedCouponIds.has(String(c.id)));sel.innerHTML='<option value="">Sem cupom</option>'+usable.map(c=>`<option value="${esc(c.id)}">${c.frete_gratis?"🚚 FRETE GRÁTIS · ":""}${esc(c.codigo)} — ${c.store_id?"Loja":"TáNaMão"}</option>`).join("");}
+ $("couponsList").innerHTML=error||!visible.length?'<div class="placeholder">Nenhum cupom disponível no momento.</div>':visible.map(c=>`<div class="coupon-card"><div class="coupon-code">${esc(c.codigo||"Cupom")}</div>${c.frete_gratis?`<div style="margin-top:6px"><span class="badge">🚚 FRETE GRÁTIS</span></div>`:""}<div>${esc(c.descricao||"Promoção disponível")}</div><div class="small">${c.store_id?"Cupom da loja":"Cupom da plataforma"}${c.valor_minimo?` · Compra mínima ${money(c.valor_minimo)}`:""}</div><div class="coupon-actions">${claimedCouponIds.has(String(c.id))?`<span class="coupon-wanted">✓ Cupom salvo</span><button class="btn" onclick="copyCouponCode('${esc(c.codigo)}')">Copiar</button>`:`<button class="btn primary" onclick="claimCoupon(${JSON.stringify(c.id)})">Sim, eu quero</button>`}</div></div>`).join("");
+ const sel=$("checkoutCoupon");if(sel){const usable=visible.filter(c=>claimedCouponIds.has(String(c.id)));sel.innerHTML='<option value="">Sem cupom</option>'+usable.map(c=>`<option value="${esc(c.id)}">${esc(c.codigo)} — ${c.store_id?"Loja":"TáNaMão"}</option>`).join("");}
 }
 async function claimCoupon(id){
  if(!user)return openAuth();
@@ -655,7 +651,6 @@ async function claimCoupon(id){
  claimedCouponIds.add(String(c.id));await copyCouponCode(c.codigo);await loadCoupons();
 }
 async function copyCouponCode(code){try{await navigator.clipboard.writeText(code);alert("Cupom "+code+" copiado e salvo para usar no checkout.")}catch(e){alert("Seu cupom é: "+code)}}
-function couponGivesFreeShipping(c){return !!c?.frete_gratis}
 function selectedCoupon(){const id=$("checkoutCoupon")?.value;return availableCoupons.find(c=>String(c.id)===String(id)&&claimedCouponIds.has(String(c.id))&&!usedCouponIds.has(String(c.id)))||null}
 function calculateCouponDiscount(subtotal){
  const c=selectedCoupon();appliedCoupon=c;if(!c)return 0;
