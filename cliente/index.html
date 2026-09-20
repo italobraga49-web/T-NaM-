@@ -1,3 +1,4 @@
+```
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -213,6 +214,11 @@ footer{font-size:13px}
 <div class="field"><label>Bairro</label><input id="addrBairro"></div>
 <div class="filter-row"><div class="field"><label>Cidade</label><input id="addrCidade"></div><div class="field"><label>Estado</label><input id="addrEstado" maxlength="2" placeholder="MA"></div></div>
 <div class="field"><label>Complemento</label><input id="addrComplemento" placeholder="Apartamento, bloco, ponto de referência..."></div>
+<div style="border:1px solid var(--line);background:#fafafa;border-radius:10px;padding:12px;margin-top:13px">
+ <b>Localização para entrega</b>
+ <div id="addrLocationStatus" class="small" style="margin:6px 0 10px">Confirme sua localização estando no endereço cadastrado.</div>
+ <button class="btn" type="button" onclick="confirmAddressLocation()">Confirmar localização deste endereço</button>
+</div>
 <label style="display:flex;gap:8px;align-items:center;margin-top:13px;font-size:13px"><input id="addrPrincipal" type="checkbox" style="width:auto"> Definir como endereço principal</label>
 <div class="auth-actions"><button class="btn primary" type="button" onclick="saveAddress()">Salvar endereço</button><button class="btn" type="button" onclick="cancelAddress()">Cancelar</button></div>
 <div id="addressMsg" class="msg hidden"></div>
@@ -263,6 +269,7 @@ const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let user=null,products=[],filteredProducts=[],cart=[],category=null,selectedPay="pix",currentProduct=null;
 let customerLocation=null,locationAskedForUser=null;
 let checkoutAddresses=[],selectedCheckoutAddress=null,freightQuote=null,freightQuoteKey="";
+let addressLocationConfirmed=null;
 let availableCoupons=[],appliedCoupon=null,claimedCouponIds=new Set(),usedCouponIds=new Set();
 let fullNearbyStoreIds=new Set(); const FULL_MAX_KM=20;
 const $=id=>document.getElementById(id),money=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"}),esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
@@ -430,6 +437,8 @@ async function quoteFreight(){
  if($("deliveryType").value==="retirada"){
  freightQuote=null; freightKey="";$("freightBox").classList.add("hidden");renderCheckoutSummary();return}
  if(!selectedCheckoutAddress)return showFreightError("Selecione um endereço de entrega.");
+ if(selectedCheckoutAddress.latitude==null||selectedCheckoutAddress.longitude==null)
+   return showFreightError("Este endereço ainda não possui localização confirmada. Vá em Minha conta > Endereços, edite o endereço e confirme sua localização.");
  const storeIds=[...new Set(cart.map(x=>String(x.store_id)))];
  if(!storeIds.length)return showFreightError("Não foi possível identificar as lojas.");
  showFreightLoading("Calculando entrega de "+storeIds.length+" loja(s)...");
@@ -586,20 +595,26 @@ async function loadAddresses(){
     <div><b>${esc(a.nome_destinatario||"Endereço")}${a.principal||a.is_default?' · Principal':''}</b>
     <div style="margin-top:5px">${esc(a.rua||"")}${a.numero?", "+esc(a.numero):""}</div>
     <div class="small">${esc(a.bairro||"")} · ${esc(a.cidade||"")}${a.estado?" - "+esc(a.estado):""} ${esc(a.cep||"")}</div>
-    ${a.complemento?`<div class="small">${esc(a.complemento)}</div>`:""}</div>
+    ${a.complemento?`<div class="small">${esc(a.complemento)}</div>`:""}
+    <div class="small" style="margin-top:5px;color:${a.latitude!=null&&a.longitude!=null?'var(--green)':'#b42318'};font-weight:700">${a.latitude!=null&&a.longitude!=null?'✓ Localização confirmada':'⚠ Localização não confirmada'}</div></div>
     <div><button class="btn" onclick="editAddress(${JSON.stringify(a.id)})">Editar</button> <button class="btn" onclick="deleteAddress(${JSON.stringify(a.id)})">Excluir</button></div>
    </div></div>`).join(""):'<div class="placeholder">Você ainda não cadastrou nenhum endereço.<br><br><button class="btn primary" onclick="newAddress()">Cadastrar meu primeiro endereço</button></div>';
 }
 function newAddress(){
+ addressLocationConfirmed=null;
  $("addressEditId").value="";["addrLabel","addrCep","addrNumero","addrRua","addrBairro","addrCidade","addrEstado","addrComplemento"].forEach(id=>$(id).value="");
  $("addrPrincipal").checked=addressRows.length===0;$("addressForm").classList.remove("hidden");setMsg("addressMsg","");
+ const st=$("addrLocationStatus");if(st)st.textContent="Confirme sua localização estando no endereço cadastrado.";
 }
 function cancelAddress(){$("addressForm").classList.add("hidden");setMsg("addressMsg","")}
 function editAddress(id){
  const a=addressRows.find(x=>String(x.id)===String(id));if(!a)return;
  $("addressEditId").value=a.id;$("addrLabel").value=a.nome_destinatario||"";$("addrCep").value=a.cep||"";$("addrNumero").value=a.numero||"";
  $("addrRua").value=a.rua||"";$("addrBairro").value=a.bairro||"";$("addrCidade").value=a.cidade||"";$("addrEstado").value=a.estado||"";
- $("addrComplemento").value=a.complemento||"";$("addrPrincipal").checked=!!(a.principal||a.is_default);$("addressForm").classList.remove("hidden");setMsg("addressMsg","");
+ $("addrComplemento").value=a.complemento||"";$("addrPrincipal").checked=!!(a.principal||a.is_default);
+ addressLocationConfirmed=(a.latitude!=null&&a.longitude!=null)?{latitude:Number(a.latitude),longitude:Number(a.longitude),accuracy:null}:null;
+ $("addressForm").classList.remove("hidden");setMsg("addressMsg","");
+ const st=$("addrLocationStatus");if(st)st.textContent=addressLocationConfirmed?"Localização já confirmada para este endereço.":"Confirme sua localização estando no endereço cadastrado.";
 }
 function formatCepInput(el){let v=String(el.value||"").replace(/\D/g,"").slice(0,8);if(v.length>5)v=v.slice(0,5)+"-"+v.slice(5);el.value=v}
 async function lookupCep(){
@@ -612,6 +627,31 @@ async function lookupCep(){
   setMsg("addressMsg","CEP localizado. Informe o número e confira o endereço.");
  }catch(e){setMsg("addressMsg","Não foi possível consultar o CEP agora. Você pode preencher o endereço manualmente.");}
 }
+function getAddressGps(){
+ return new Promise((resolve,reject)=>{
+  if(!navigator.geolocation)return reject(new Error("Este aparelho ou navegador não oferece suporte à localização."));
+  navigator.geolocation.getCurrentPosition(
+   p=>resolve({latitude:Number(p.coords.latitude.toFixed(7)),longitude:Number(p.coords.longitude.toFixed(7)),accuracy:Number.isFinite(p.coords.accuracy)?Math.round(p.coords.accuracy):null}),
+   e=>reject(new Error(e.code===1?"Permissão de localização negada.":e.code===2?"Não foi possível determinar sua localização.":e.code===3?"A localização demorou para responder.":"Não foi possível obter sua localização.")),
+   {enableHighAccuracy:true,timeout:20000,maximumAge:0}
+  );
+ });
+}
+async function confirmAddressLocation(){
+ const st=$("addrLocationStatus");
+ try{
+  if(st)st.textContent="Obtendo sua localização...";
+  const loc=await getAddressGps();
+  addressLocationConfirmed=loc;
+  if(st)st.innerHTML="Localização confirmada."+ (loc.accuracy!=null?" Precisão aproximada: <b>"+loc.accuracy+" m</b>.":"");
+  setMsg("addressMsg","Localização confirmada. Agora salve o endereço.");
+ }catch(e){
+  addressLocationConfirmed=null;
+  if(st)st.textContent=e?.message||String(e);
+  setMsg("addressMsg",e?.message||String(e));
+ }
+}
+
 async function saveAddress(){
  if(!user)return;
  const rua=$("addrRua").value.trim();
@@ -625,7 +665,9 @@ async function saveAddress(){
  const principal=$("addrPrincipal").checked;
  if(!cep||!rua||!numero||!bairro||!cidade||!estado)return setMsg("addressMsg","Preencha CEP, rua, número, bairro, cidade e estado.");
  const id=$("addressEditId").value;
- const payload={user_id:user.id,nome_destinatario:nomeDestinatario||"Meu endereço",cep,rua,numero,complemento,bairro,cidade,estado,principal};
+ if(!addressLocationConfirmed)return setMsg("addressMsg","Confirme a localização deste endereço antes de salvar.");
+ const payload={user_id:user.id,nome_destinatario:nomeDestinatario||"Meu endereço",cep,rua,numero,complemento,bairro,cidade,estado,principal,
+  latitude:addressLocationConfirmed.latitude,longitude:addressLocationConfirmed.longitude,geocodificado_em:new Date().toISOString()};
  setMsg("addressMsg","Salvando endereço...");
  let result=id?await sb.from("addresses").update(payload).eq("id",id).eq("user_id",user.id):await sb.from("addresses").insert(payload);
  if(result.error)return setMsg("addressMsg","Não foi possível salvar: "+result.error.message);
@@ -751,3 +793,4 @@ function startSupportEmail(){
 </div>
 
 </body></html>
+```
