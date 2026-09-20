@@ -12,7 +12,13 @@
 <div id="authView" class="auth"><div class="card"><div style="text-align:center"><img src="1001111814.png" class="logo" alt="TáNaMão"><h2>Central do Vendedor</h2><p class="muted">Entre ou cadastre sua loja.</p></div><div class="tabs"><button class="btn primary" onclick="showAuth('login')">Entrar</button><button class="btn secondary" onclick="showAuth('cadastro')">Cadastrar</button></div><div id="loginBox"><label>E-mail</label><input id="loginEmail" type="email"><label>Senha</label><input id="loginSenha" type="password"><button class="btn primary" style="width:100%;margin-top:14px" onclick="login()">Entrar</button></div><div id="cadBox" class="hidden"><div class="grid"><div><label>Seu nome</label><input id="cadNome"></div><div><label>Telefone</label><input id="cadTelefone"></div><div class="full"><label>Nome da loja</label><input id="cadLoja"></div><div><label>E-mail</label><input id="cadEmail" type="email"></div><div><label>Senha</label><input id="cadSenha" type="password" minlength="6"></div></div><button class="btn primary" style="width:100%;margin-top:14px" onclick="cadastrar()">Criar conta de vendedor</button></div><div id="authMsg"></div></div></div>
 <div id="app" class="hidden"><header class="top"><img src="1001111814.png" class="logo" alt="TáNaMão"><div><span id="lojaTopo" class="badge">Minha loja</span> <button class="btn secondary" onclick="logout()">Sair</button></div></header><div class="layout"><aside><button class="nav active" onclick="go('inicio',this)">Visão geral</button><button class="nav" onclick="go('loja',this)">Minha loja</button><button class="nav" onclick="go('produtos',this)">Produtos</button><button class="nav" onclick="go('pedidos',this)">Pedidos</button><button class="nav" onclick="go('financeiro',this)">Financeiro</button><button class="nav" onclick="go('cupons',this)">Cupons</button><button class="nav" onclick="go('regras',this)">Regras e políticas</button></aside><main>
 <section id="inicio" class="section active"><h1>Central do Vendedor</h1><p class="muted">Acompanhe sua operação no TáNaMão.</p><div class="stats"><div class="card stat">Produtos<b id="nProdutos">0</b></div><div class="card stat">Pedidos<b id="nPedidos">0</b></div><div class="card stat">Pendentes<b id="nPendentes">0</b></div><div class="card stat">Vendas<b id="nVendas">R$ 0,00</b></div></div></section>
-<section id="loja" class="section"><h1>Minha loja</h1><div class="card"><div class="grid"><div><label>Nome da loja</label><input id="lojaNome"></div><div><label>Telefone</label><input id="lojaTelefone"></div><div><label>CEP</label><input id="lojaCep" inputmode="numeric" maxlength="9" placeholder="00000-000" oninput="formatarCepLoja(this)" onblur="buscarCepVendedor()"><div id="cepStatus" class="cep-status"></div></div><div><label>Endereço / Rua</label><input id="lojaEndereco"></div><div><label>Número</label><input id="lojaNumero"></div><div><label>Bairro</label><input id="lojaBairro"></div><div><label>Cidade</label><input id="lojaCidade" class="cep-lock" readonly></div><div><label>Estado (UF)</label><input id="lojaEstado" class="cep-lock" maxlength="2" readonly></div><div class="full"><label>Complemento</label><input id="lojaComplemento"></div><div class="full"><label>Descrição</label><textarea id="lojaDescricao"></textarea></div>
+<section id="loja" class="section"><h1>Minha loja</h1><div class="card"><div class="grid"><div><label>Nome da loja</label><input id="lojaNome"></div><div><label>Telefone</label><input id="lojaTelefone"></div><div><label>CEP</label><input id="lojaCep" inputmode="numeric" maxlength="9" placeholder="00000-000" oninput="formatarCepLoja(this)" onblur="buscarCepVendedor()"><div id="cepStatus" class="cep-status"></div></div><div><label>Endereço / Rua</label><input id="lojaEndereco"></div><div><label>Número</label><input id="lojaNumero"></div><div><label>Bairro</label><input id="lojaBairro"></div><div><label>Cidade</label><input id="lojaCidade" class="cep-lock" readonly></div><div><label>Estado (UF)</label><input id="lojaEstado" class="cep-lock" maxlength="2" readonly></div><div class="full"><label>Complemento</label><input id="lojaComplemento"></div>
+<div class="full" style="border:1px solid #e5e7eb;border-radius:12px;padding:12px;background:#fafafa">
+  <strong>Localização da loja</strong>
+  <div id="lojaLocalizacaoStatus" class="hint" style="margin:6px 0 10px">Confirme a localização para liberar o cálculo de frete por rota.</div>
+  <button type="button" class="btn" onclick="confirmarLocalizacaoLoja()">Confirmar localização da loja</button>
+</div>
+<div class="full"><label>Descrição</label><textarea id="lojaDescricao"></textarea></div>
 <div class="full store-brand">
 <div><label>Logo da loja — URL</label><input id="lojaLogoUrl" placeholder="https://..."><div class="uploadbox"><label>Ou enviar logo do celular/computador</label><input id="lojaLogoFile" type="file" accept="image/*" onchange="previewFile(this,'lojaLogoPreview')"><img id="lojaLogoPreview" class="preview hidden"></div></div>
 <div><label>Capa/fachada — URL</label><input id="lojaCapaUrl" placeholder="https://..."><div class="uploadbox"><label>Ou enviar capa do celular/computador</label><input id="lojaCapaFile" type="file" accept="image/*" onchange="previewFile(this,'lojaCapaPreview')"><img id="lojaCapaPreview" class="preview hidden"></div></div>
@@ -122,9 +128,40 @@ async function buscarCepVendedor(){
  return true;
 }
 
+
+let localizacaoLojaConfirmada=null;
+function obterGpsLoja(){
+ return new Promise((resolve,reject)=>{
+  if(!navigator.geolocation)return reject(new Error('Este navegador não oferece localização.'));
+  navigator.geolocation.getCurrentPosition(
+   p=>resolve({latitude:Number(p.coords.latitude.toFixed(7)),longitude:Number(p.coords.longitude.toFixed(7)),precisao:Math.round(p.coords.accuracy||0)}),
+   e=>reject(new Error(({1:'Permissão de localização negada.',2:'Não foi possível determinar a localização.',3:'A localização demorou para responder.'})[e.code]||'Não foi possível obter a localização.')),
+   {enableHighAccuracy:true,timeout:20000,maximumAge:0}
+  );
+ });
+}
+async function confirmarLocalizacaoLoja(){
+ const st=$('lojaLocalizacaoStatus');
+ try{
+  if(st)st.textContent='Obtendo localização...';
+  const loc=await obterGpsLoja();
+  localizacaoLojaConfirmada=loc;
+  const r=await sb.from('stores').update({latitude:loc.latitude,longitude:loc.longitude}).eq('id',loja.id).eq('owner_id',usuario.id).select().single();
+  if(r.error)throw r.error;
+  loja=r.data;
+  if(st)st.innerHTML='Localização confirmada. Precisão aproximada: <b>'+loc.precisao+' m</b>.';
+  msg('lojaMsg','Localização da loja salva. O cálculo de rota já pode usar estas coordenadas.');
+ }catch(e){
+  if(st)st.textContent=e.message||String(e);
+  msg('lojaMsg','Não foi possível confirmar a localização da loja.');
+ }
+}
+
 function preencherLoja(){
  [['lojaNome','nome'],['lojaTelefone','telefone'],['lojaCep','cep'],['lojaEndereco','endereco'],['lojaNumero','numero'],['lojaBairro','bairro'],['lojaCidade','cidade'],['lojaEstado','estado'],['lojaComplemento','complemento'],['lojaDescricao','descricao'],['lojaLogoUrl','logo_url'],['lojaCapaUrl','capa_url']].forEach(([i,k])=>$(i).value=loja?.[k]||'');
  $('lojaCep').value=cepFormatado($('lojaCep').value);cepLojaValidado=cepSomenteNumeros(loja?.cep||'')||null;
+ const stLoc=$('lojaLocalizacaoStatus');
+ if(stLoc)stLoc.textContent=(loja?.latitude!=null&&loja?.longitude!=null)?'Localização já confirmada para esta loja.':'Confirme a localização para liberar o cálculo de frete por rota.';
  if(loja?.logo_url){$('lojaLogoPreview').src=loja.logo_url;$('lojaLogoPreview').classList.remove('hidden')}
  if(loja?.capa_url){$('lojaCapaPreview').src=loja.capa_url;$('lojaCapaPreview').classList.remove('hidden')}
  carregarSeguidores();
@@ -143,7 +180,7 @@ async function salvarLoja(){
   const lf=$('lojaLogoFile').files?.[0],cf=$('lojaCapaFile').files?.[0];
   if(lf)logo=await uploadMedia(lf,`stores/${loja.id}/logo`);
   if(cf)capa=await uploadMedia(cf,`stores/${loja.id}/capa`);
-  const d={nome:$('lojaNome').value.trim(),telefone:$('lojaTelefone').value.trim()||null,cep:cepSomenteNumeros($('lojaCep').value)||null,endereco:$('lojaEndereco').value.trim()||null,numero:$('lojaNumero').value.trim()||null,bairro:$('lojaBairro').value.trim()||null,cidade:$('lojaCidade').value.trim()||null,estado:$('lojaEstado').value.trim().toUpperCase()||null,complemento:$('lojaComplemento').value.trim()||null,descricao:$('lojaDescricao').value.trim()||null,logo_url:logo,capa_url:capa,latitude:null,longitude:null};
+  const d={nome:$('lojaNome').value.trim(),telefone:$('lojaTelefone').value.trim()||null,cep:cepSomenteNumeros($('lojaCep').value)||null,endereco:$('lojaEndereco').value.trim()||null,numero:$('lojaNumero').value.trim()||null,bairro:$('lojaBairro').value.trim()||null,cidade:$('lojaCidade').value.trim()||null,estado:$('lojaEstado').value.trim().toUpperCase()||null,complemento:$('lojaComplemento').value.trim()||null,descricao:$('lojaDescricao').value.trim()||null,logo_url:logo,capa_url:capa,latitude:localizacaoLojaConfirmada?.latitude ?? loja?.latitude ?? null,longitude:localizacaoLojaConfirmada?.longitude ?? loja?.longitude ?? null};
   const r=await sb.from('stores').update(d).eq('id',loja.id).eq('owner_id',usuario.id).select().single();
   if(r.error)throw r.error;loja=r.data;$('lojaTopo').textContent=loja.nome;msg('lojaMsg','Dados, identidade visual e endereço da loja salvos.');
  }catch(e){msg('lojaMsg','Erro: '+e.message)}
